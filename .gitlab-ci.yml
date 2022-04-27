@@ -21,22 +21,21 @@ setup:
   stage: setup
   script:
   - chmod +x gradlew && ./gradlew setup
-  - mv src/main/java/org* projects/Kettle/src/main/java
 
 test:
   stage: test
   script:
-  - chmod +x gradlew && ./gradlew check
+  - cd projects && ../gradlew Magma:test
 
 build:
   stage: build
   script:
-  - chmod +x gradlew && ./gradlew build githubRelease
+  - chmod +x gradlew && ./gradlew outputJar
   only:
   - master
   artifacts:
     paths:
-      - build/distributions/*.jar
+      - build/distributions/*server.*
 
 after_script:
 - echo "End CI"
