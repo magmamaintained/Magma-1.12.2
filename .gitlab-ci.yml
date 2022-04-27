@@ -33,11 +33,16 @@ build:
   stage: build
   script:
   - chmod +x gradlew && ./gradlew outputJar
-  only:
-  - master
   artifacts:
     paths:
       - build/distributions/*server.*
+publish:
+  stage: build
+  script:
+  # - chmod +x gradlew && ./gradlew publish
+  - echo We will publish soon 🚧
+  only:
+  - master
 
 after_script:
 - echo "End CI"
