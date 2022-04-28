@@ -33,7 +33,7 @@ apply plugin: "net.minecrell.licenser"
 
 group 'magmafoundation'
 
-version '1.12.2-' + versioning.info.build
+version '1.12.2-' + versioning.info.commit.substring(0, 8) // Use 8 characters for the commit hash
 
 println(version)
 
@@ -360,7 +360,7 @@ publishing {
             name = 'MagmaFoundation'
             url = 'https://git.magmafoundation.org/api/v4/projects/7/packages/maven/'
             credentials(HttpHeaderCredentials) {
-                name = "Private-Token"
+                name = "Job-Token"
                 value = System.getenv("CI_JOB_TOKEN")
             }
             authentication {
