@@ -39,8 +39,7 @@ build:
 publish:
   stage: build
   script:
-  # - chmod +x gradlew && ./gradlew publish
-  - echo We will publish soon 🚧
+   - chmod +x gradlew && ./gradlew publish
   only:
   - master
 

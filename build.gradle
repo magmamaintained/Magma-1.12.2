@@ -3,11 +3,6 @@ buildscript {
         mavenLocal()
         mavenCentral()
         maven {
-            name = "magma"
-//            TEMP
-            url = "https://raw.githubusercontent.com/Hexeption/Magma-Repo/repository"
-        }
-        maven {
             name = "forge"
             url = "https://maven.minecraftforge.net"
         }
@@ -28,7 +23,7 @@ buildscript {
 }
 
 apply plugin: 'java'
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
 apply plugin: "idea"
 apply plugin: 'net.minecraftforge.gradle.patcher'
 apply plugin: 'net.minecraftforge.gradle.launch4j'
@@ -38,15 +33,7 @@ apply plugin: "net.minecrell.licenser"
 
 group 'magmafoundation'
 
-if (System.getenv("STABLE_BUILD") != null) {
-    if (System.getenv("STABLE_BUILD") == '1') {
-        version versioning.info.build + "-STABLE"
-    } else {
-        version versioning.info.build + "-DEV"
-    }
-} else {
-    version versioning.info.build + "-CUSTOM"
-}
+version '1.12.2-' + versioning.info.build
 
 println(version)
 
@@ -69,10 +56,6 @@ repositories {
         name 'maven'
         url 'https://mvnrepository.com/artifact/'
     }
-//    maven {
-//        name 'MagmaFoundation'
-//        url = "https://raw.githubusercontent.com/Hexeption/Magma-Repo/repository"
-//    }
     maven {
         name 'Spigot'
         url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
@@ -82,7 +65,7 @@ repositories {
     }
 }
 
-configurations{
+configurations {
     compile.extendsFrom exported
     libraries
 }
@@ -124,7 +107,7 @@ dependencies {
     compile 'javassist:javassist:3.12.1.GA'
 }
 
-jar{
+jar {
     into('lib') {
         from configurations.libraries
     }
@@ -239,11 +222,11 @@ outputJar {
     classifier = 'server'
 
     manifest.attributes([
-            "Implementation-Title": "Magma",
+            "Implementation-Title"  : "Magma",
             "Implementation-Version": version,
-            "Main-Class": "net.minecraftforge.fml.relauncher.ServerLaunchWrapper",
-            "TweakClass": "net.minecraftforge.fml.common.launcher.FMLTweaker",
-            "Class-Path": getServerClasspath(file("jsons/1.12.2-rel.json"))
+            "Main-Class"            : "net.minecraftforge.fml.relauncher.ServerLaunchWrapper",
+            "TweakClass"            : "net.minecraftforge.fml.common.launcher.FMLTweaker",
+            "Class-Path"            : getServerClasspath(file("jsons/1.12.2-rel.json"))
     ])
 }
 
@@ -251,11 +234,11 @@ processJson {
     releaseJson = "jsons/1.12.2-rel.json"
     addReplacements([
             "@minecraft_version@": project.minecraft.version,
-            "@version@": project.version,
-            "@project@": "magma",
-            "@artifact@": "mf:magma:${project.version}",
-            "@universal_jar@": { outputJar.archiveName },
-            "@timestamp@": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+            "@version@"          : project.version,
+            "@project@"          : "magma",
+            "@artifact@"         : "mf:magma:${project.version}",
+            "@universal_jar@"    : { outputJar.archiveName },
+            "@timestamp@"        : new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
     ])
 }
 
@@ -285,8 +268,7 @@ String getServerClasspath(File file) {
     def node = new JsonSlurper().parse(file)
     def out = new StringBuilder()
     node.versionInfo.libraries.each { lib ->
-        if (lib.serverreq)
-        {
+        if (lib.serverreq) {
             def split = lib.name.split(':')
             def group = split[0].replace('.', '/')
             def artifact = split[1]
@@ -325,23 +307,65 @@ license {
     }
 }
 
-githubRelease {
-    if(System.getenv("GITHUB_TOKEN") != null){
-        token System.getenv("GITHUB_TOKEN")
-    }else{
-        token ""
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifact file("build/distributions/${project.name}-${project.version}-server.jar").canonicalPath
+
+            pom {
+                groupId = project.group
+                version = project.version
+                artifactId = project.archivesBaseName
+                name = project.archivesBaseName
+                packaging = 'jar'
+                description = 'Minecraft Forge Hybrid server implementing the Spigot/Bukkit API (Cauldron for 1.12)'
+                url = 'https://github.com/MinecraftForge/MinecraftForge'
+
+                scm {
+                    url = 'https://git.magmafoundation.org/magmafoundation/Magma'
+                    connection = 'scm:git:git://git.magmafoundation.org:2224/magmafoundation/Magma.git'
+                    developerConnection = 'scm:git:git@git.magmafoundation.org:2224/magmafoundation/Magma.git'
+                }
+
+                issueManagement {
+                    system = 'gitlab'
+                    url = 'https://git.magmafoundation.org/magmafoundation/Magma/issues'
+                }
+
+                licenses {
+                    license {
+                        name = 'Magma Public License'
+                        url = 'https://git.magmafoundation.org/magmafoundation/Magma/-/raw/master/LICENSE'
+                        distribution = 'repo'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'Hexeption'
+                        name = 'Hexeption'
+                        email = 'admin@hexeption.co.uk'
+                    }
+                }
+            }
+        }
     }
-    owner "MagmaFoundation"
-    repo "Magma"
-    releaseName "Magma Dev " + versioning.info.branch + "-" + versioning.info.build
-    prerelease true
-//    body { """\
-//## Change Log
-//${changelog().call().replace('\n', '\n* ')}
-//""" }
-    draft false
-    releaseAssets = [
-            fileTree("build/distributions/").filter { it.name.endsWith("jar") || it.name.endsWith("zip") },
-            fileTree("/release/").filter { it.name.endsWith("zip") }
-    ]
+
+    repositories {
+        maven {
+            name = 'myRepo'
+            url = "file://${buildDir}/repo"
+        }
+        maven {
+            // gitlab repo
+            name = 'MagmaFoundation'
+            url = 'https://git.magmafoundation.org/api/v4/projects/7/packages/maven/'
+            credentials(HttpHeaderCredentials) {
+                name = "Private-Token"
+                value = System.getenv("CI_JOB_TOKEN")
+            }
+            authentication {
+                header(HttpHeaderAuthentication)
+            }
+        }
+    }
 }
