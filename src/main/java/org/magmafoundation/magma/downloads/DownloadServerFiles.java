@@ -19,6 +19,7 @@
 package org.magmafoundation.magma.downloads;
 
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.channels.Channels;
@@ -69,11 +70,14 @@ public class DownloadServerFiles {
 
         File minecraftlibraries = new File(fileName);
         if (!minecraftlibraries.exists() && !minecraftlibraries.isDirectory()
-            || getLibrariesVersion()) {
+                || getLibrariesVersion()) {
             System.out.println("Downloading Server Libraries ...");
             try {
                 URL website = new URL(downloadLink);
-                ReadableByteChannel rbc = Channels.newChannel(website.openStream());
+                HttpURLConnection connection = (HttpURLConnection) website.openConnection();
+                connection.setRequestMethod("GET");
+                connection.addRequestProperty("User-Agent", "Magma");
+                ReadableByteChannel rbc = Channels.newChannel(connection.getInputStream());
                 FileOutputStream fos = new FileOutputStream(fileName);
                 fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
                 System.out.println("Extracting Zip");
