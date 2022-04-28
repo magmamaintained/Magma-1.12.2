@@ -4,6 +4,7 @@ stages:
 - setup
 - test
 - build
+- publish
 
 before_script:
 #  - echo `pwd` # debug
