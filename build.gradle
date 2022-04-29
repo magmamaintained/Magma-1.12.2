@@ -92,7 +92,6 @@ dependencies {
     compile 'com.google.guava:guava:21.0'
     compile 'commons-lang:commons-lang:2.6'
     compile 'jline:jline:2.13'
-    compile 'mysql:mysql-connector-java:5.1.46'
     compile 'it.unimi.dsi:fastutil:7.1.0'
     compile 'org.yaml:snakeyaml:1.19'
     compile 'org.jline:jline:3.5.1'
@@ -100,9 +99,11 @@ dependencies {
     compile 'org.xerial:sqlite-jdbc:3.21.0.1'
     compile 'org.apache.commons:commons-lang3:3.5'
     compile 'org.ow2.asm:asm-debug-all:5.2'
-    compile 'org.apache.logging.log4j:log4j-iostreams:2.15.0'
-    compile 'org.apache.logging.log4j:log4j-api:2.15.0'
-    compile 'org.apache.logging.log4j:log4j-core:2.15.0'
+    compile 'org.apache.logging.log4j:log4j-iostreams:2.17.2'
+    compile 'org.apache.logging.log4j:log4j-api:2.17.2'
+    compile 'org.apache.logging.log4j:log4j-core:2.17.2'
+    compile "org.slf4j:slf4j-api:1.7.30"
+    compile "org.slf4j:slf4j-nop:1.7.30"
     compile 'org.reflections:reflections:0.9.10'
     compile 'javassist:javassist:3.12.1.GA'
 }
@@ -224,9 +225,9 @@ outputJar {
     manifest.attributes([
             "Implementation-Title"  : "Magma",
             "Implementation-Version": version,
-            "Main-Class"            : "net.minecraftforge.fml.relauncher.ServerLaunchWrapper",
-            "TweakClass"            : "net.minecraftforge.fml.common.launcher.FMLTweaker",
-            "Class-Path"            : getServerClasspath(file("jsons/1.12.2-rel.json"))
+            "Main-Class": "net.minecraftforge.fml.relauncher.ServerLaunchWrapper",
+            "TweakClass": "net.minecraftforge.fml.common.launcher.FMLTweaker",
+            "Class-Path": "minecraft_server.1.12.2.jar"
     ])
 }
 
@@ -262,23 +263,6 @@ genGradleProjects {
 }
 
 
-import groovy.json.JsonSlurper
-
-String getServerClasspath(File file) {
-    def node = new JsonSlurper().parse(file)
-    def out = new StringBuilder()
-    node.versionInfo.libraries.each { lib ->
-        if (lib.serverreq) {
-            def split = lib.name.split(':')
-            def group = split[0].replace('.', '/')
-            def artifact = split[1]
-            def version = split[2]
-            out += "libraries/$group/$artifact/$version/$artifact-${version}.jar "
-        }
-    }
-    out += "minecraft_server.1.12.2.jar"
-    return out.toString()
-}
 
 def patcher_plugin = plugins.apply('net.minecraftforge.gradle.patcher')
 task genPluginJar(type: net.minecraftforge.gradle.patcher.TaskReobfuscate, dependsOn: reobfuscate) {
