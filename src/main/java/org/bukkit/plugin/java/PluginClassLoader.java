@@ -10,12 +10,16 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.CodeSigner;
 import java.security.CodeSource;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 import net.minecraft.launchwrapper.LaunchClassLoader;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.Validate;
 import org.bukkit.plugin.InvalidPluginException;
@@ -46,6 +50,8 @@ public final class PluginClassLoader extends URLClassLoader {
     private IllegalStateException pluginState;
     private Patcher patcher;
     private java.util.logging.Logger logger; // Paper - add field
+
+    private final List<Package> packageCache = new ArrayList<>();
 
     static {
         try {
@@ -198,6 +204,8 @@ public final class PluginClassLoader extends URLClassLoader {
                     URL jarURL = jarURLConnection.getJarFileURL();
                     CodeSource codeSource = new CodeSource(jarURL, new CodeSigner[0]);
 
+                    fixPackage(name);
+
                     result = this.defineClass(name, bytecode, 0, bytecode.length, codeSource);
                     if (result != null) {
                         this.resolveClass(result);
@@ -209,6 +217,41 @@ public final class PluginClassLoader extends URLClassLoader {
         }
 
         return result;
+    }
+
+    private void fixPackage(String name) {
+        int dot = name.lastIndexOf('.');
+        if (dot != -1) {
+            String pkgName = name.substring(0, dot);
+            Package pkg = getPackage(pkgName);
+            if (pkg == null) {
+                try {
+                    if (manifest != null) {
+                        pkg = definePackage(pkgName, manifest, url);
+                    } else {
+                        pkg = definePackage(pkgName, null, null, null, null, null, null, null);
+                    }
+                } catch (IllegalArgumentException ignored) {
+                }
+            }
+            if (!packageCache.contains(pkg)) {
+                Attributes attributes = manifest.getMainAttributes();
+                if (attributes != null) {
+                    try {
+                        try {
+                            ObfuscationReflectionHelper.setPrivateValue(Package.class, pkg, attributes.getValue(Attributes.Name.IMPLEMENTATION_TITLE), "implTitle");
+                            ObfuscationReflectionHelper.setPrivateValue(Package.class, pkg, attributes.getValue(Attributes.Name.IMPLEMENTATION_VERSION), "implVersion");
+                            ObfuscationReflectionHelper.setPrivateValue(Package.class, pkg, attributes.getValue(Attributes.Name.IMPLEMENTATION_VENDOR), "implVendor");
+                            ObfuscationReflectionHelper.setPrivateValue(Package.class, pkg, attributes.getValue(Attributes.Name.SPECIFICATION_TITLE), "specTitle");
+                            ObfuscationReflectionHelper.setPrivateValue(Package.class, pkg, attributes.getValue(Attributes.Name.SPECIFICATION_VERSION), "specVersion");
+                            ObfuscationReflectionHelper.setPrivateValue(Package.class, pkg, attributes.getValue(Attributes.Name.SPECIFICATION_VENDOR), "specVendor");
+                        } catch (Exception ignored) {}
+                    } finally {
+                        packageCache.add(pkg);
+                    }
+                }
+            }
+        }
     }
 
     public PluginDescriptionFile getDescription() {

@@ -32,10 +32,15 @@ import java.net.URLClassLoader;
 import java.net.URLStreamHandlerFactory;
 import java.security.CodeSigner;
 import java.security.CodeSource;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import org.apache.commons.io.IOUtils;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -49,6 +54,8 @@ public class DelegateURLClassLoder extends URLClassLoader {
     public static final String desc = DelegateURLClassLoder.class.getName().replace('.', '/');
     private final PluginDescriptionFile description;
     private final Map<String, Class<?>> classeCache = new HashMap<>();
+    private final List<Package> packageCache = new ArrayList<>();
+
 
     {
         PluginDescriptionFile description = null;
@@ -127,6 +134,9 @@ public class DelegateURLClassLoder extends URLClassLoader {
             final JarURLConnection jarURLConnection = (JarURLConnection) url.openConnection();
             final URL jarURL = jarURLConnection.getJarFileURL();
             final CodeSource codeSource = new CodeSource(jarURL, new CodeSigner[0]);
+
+            fixPackage(name, jarURLConnection.getManifest(), url);
+
             result = this.defineClass(name, bytecode, 0, bytecode.length, codeSource);
             if (result != null) {
                 this.resolveClass(result);
@@ -141,6 +151,41 @@ public class DelegateURLClassLoder extends URLClassLoader {
         this.classeCache.put(name, clazz);
         if (ConfigurationSerializable.class.isAssignableFrom(clazz)) {
             ConfigurationSerialization.registerClass((Class<? extends ConfigurationSerializable>) clazz);
+        }
+    }
+
+    private void fixPackage(String name, Manifest manifest, URL url) {
+        int dot = name.lastIndexOf('.');
+        if (dot != -1) {
+            String pkgName = name.substring(0, dot);
+            Package pkg = getPackage(pkgName);
+            if (pkg == null) {
+                try {
+                    if (manifest != null) {
+                        pkg = definePackage(pkgName, manifest, url);
+                    } else {
+                        pkg = definePackage(pkgName, null, null, null, null, null, null, null);
+                    }
+                } catch (IllegalArgumentException ignored) {
+                }
+            }
+            if (!packageCache.contains(pkg)) {
+                Attributes attributes = manifest.getMainAttributes();
+                if (attributes != null) {
+                    try {
+                        try {
+                            ObfuscationReflectionHelper.setPrivateValue(Package.class, pkg, attributes.getValue(Attributes.Name.IMPLEMENTATION_TITLE), "implTitle");
+                            ObfuscationReflectionHelper.setPrivateValue(Package.class, pkg, attributes.getValue(Attributes.Name.IMPLEMENTATION_VERSION), "implVersion");
+                            ObfuscationReflectionHelper.setPrivateValue(Package.class, pkg, attributes.getValue(Attributes.Name.IMPLEMENTATION_VENDOR), "implVendor");
+                            ObfuscationReflectionHelper.setPrivateValue(Package.class, pkg, attributes.getValue(Attributes.Name.SPECIFICATION_TITLE), "specTitle");
+                            ObfuscationReflectionHelper.setPrivateValue(Package.class, pkg, attributes.getValue(Attributes.Name.SPECIFICATION_VERSION), "specVersion");
+                            ObfuscationReflectionHelper.setPrivateValue(Package.class, pkg, attributes.getValue(Attributes.Name.SPECIFICATION_VENDOR), "specVendor");
+                        } catch (Exception ignored) {}
+                    } finally {
+                        packageCache.add(pkg);
+                    }
+                }
+            }
         }
     }
 }
