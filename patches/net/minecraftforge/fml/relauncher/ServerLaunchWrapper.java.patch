@@ -1,11 +1,12 @@
 --- ../src-base/minecraft/net/minecraftforge/fml/relauncher/ServerLaunchWrapper.java
 +++ ../src-work/minecraft/net/minecraftforge/fml/relauncher/ServerLaunchWrapper.java
-@@ -19,21 +19,70 @@
+@@ -19,58 +19,96 @@
  
  package net.minecraftforge.fml.relauncher;
  
 +import org.magmafoundation.magma.configuration.MagmaConfig;
 +import org.magmafoundation.magma.downloads.DownloadServerFiles;
++import org.magmafoundation.magma.downloads.LibraryDownloader;
 +import org.magmafoundation.magma.downloads.MagmaUpdater;
 +
  import java.lang.reflect.Method;
@@ -23,13 +24,13 @@
      /**
       * @param args
       */
-     public static void main(String[] args)
-     {
--        new ServerLaunchWrapper().run(args);
-+      System.out.println("Starting Magma");
-+      LAUNCH_ARGS = Arrays.asList(args);
+-    public static void main(String[] args)
+-    {
++    public static void main(String[] args) {
++        System.out.println("Starting Magma");
++        LAUNCH_ARGS = Arrays.asList(args);
 +
-+        if(getJavaVersion() > 8){
++        if (getJavaVersion() > 8) {
 +            try {
 +                throw new JavaToNewException();
 +            } catch (JavaToNewException e) {
@@ -39,28 +40,32 @@
 +            }
 +        }
 +
-+      DownloadServerFiles.downloadMinecraftServer();
++        DownloadServerFiles.downloadMinecraftServer();
++        LibraryDownloader libraryDownloader = new LibraryDownloader();
++        libraryDownloader.run();
 +
-+      if(DownloadServerFiles.getLibrariesVersion()){
-+          DownloadServerFiles.downloadServerLibraries();
-+      }
-+
-+      if(!LAUNCH_ARGS.contains("-dau")) {
-+          System.out.println("Checking for new version...");
-+          System.out.println("Auto Updater currently disabled. (will be enabled in the future)");
++        if (!LAUNCH_ARGS.contains("-dau")) {
++            System.out.println("Checking for new version...");
++            System.out.println("Auto Updater currently disabled. (will be enabled in the future)");
 +//          MagmaUpdater magmaUpdater = new MagmaUpdater();
 +//          if (magmaUpdater.versionChecker() && MagmaConfig.instance.magmaAutoUpdater.getValues()) {
 +//              magmaUpdater.downloadJar();
 +//          }
-+      }
++        }
 +
-+      new ServerLaunchWrapper().run(args);
+         new ServerLaunchWrapper().run(args);
      }
  
+-    private ServerLaunchWrapper()
+-    {
 +    private static class JavaToNewException extends RuntimeException {
-+
-+    }
-+
+ 
+     }
+ 
+-    private void run(String[] args)
+-    {
+-        if (System.getProperty("log4j.configurationFile") == null)
+-        {
 +    public static int getJavaVersion() {
 +        String version = System.getProperty("java.version");
 +        if (version.startsWith("1.")) {
@@ -72,18 +77,51 @@
 +        return Integer.parseInt(version.substring(0, dotPos > -1 ? dotPos : dashPos > -1 ? dashPos : 1));
 +    }
 +
-     private ServerLaunchWrapper()
-     {
- 
-@@ -56,9 +105,9 @@
-         {
++    private ServerLaunchWrapper() {
++
++    }
++
++    private void run(String[] args) {
++        if (System.getProperty("log4j.configurationFile") == null) {
+             // Set this early so we don't need to reconfigure later
+-            System.setProperty("log4j.configurationFile", "log4j2_server.xml");
++            System.setProperty("log4j.configurationFile", "log4j2_magma.xml");
+         }
+         Class<?> launchwrapper = null;
+-        try
+-        {
+-            launchwrapper = Class.forName("net.minecraft.launchwrapper.Launch",true,getClass().getClassLoader());
+-            Class.forName("org.objectweb.asm.Type",true,getClass().getClassLoader());
+-        }
+-        catch (Exception e)
+-        {
++        try {
++            launchwrapper = Class.forName("net.minecraft.launchwrapper.Launch", true, getClass().getClassLoader());
++            Class.forName("org.objectweb.asm.Type", true, getClass().getClassLoader());
++        } catch (Exception e) {
              System.err.printf("We appear to be missing one or more essential library files.\n" +
-             		"You will need to add them to your server before FML and Forge will run successfully.");
+-            		"You will need to add them to your server before FML and Forge will run successfully.");
 -            e.printStackTrace(System.err);
 -            System.exit(1);
++                    "You will need to add them to your server before FML and Forge will run successfully.");
 +
          }
 +        beginTime = System.nanoTime();
  
-         try
-         {
+-        try
+-        {
++        try {
+             Method main = launchwrapper.getMethod("main", String[].class);
+             String[] allArgs = new String[args.length + 2];
+             allArgs[0] = "--tweakClass";
+             allArgs[1] = "net.minecraftforge.fml.common.launcher.FMLServerTweaker";
+             System.arraycopy(args, 0, allArgs, 2, args.length);
+-            main.invoke(null,(Object)allArgs);
+-        }
+-        catch (Exception e)
+-        {
++            main.invoke(null, (Object) allArgs);
++        } catch (Exception e) {
+             System.err.printf("A problem occurred running the Server launcher.");
+             e.printStackTrace(System.err);
+             System.exit(1);
