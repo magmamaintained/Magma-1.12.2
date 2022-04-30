@@ -1,6 +1,6 @@
 --- ../src-base/minecraft/net/minecraftforge/fml/relauncher/ServerLaunchWrapper.java
 +++ ../src-work/minecraft/net/minecraftforge/fml/relauncher/ServerLaunchWrapper.java
-@@ -19,58 +19,96 @@
+@@ -19,58 +19,95 @@
  
  package net.minecraftforge.fml.relauncher;
  
@@ -46,11 +46,10 @@
 +
 +        if (!LAUNCH_ARGS.contains("-dau")) {
 +            System.out.println("Checking for new version...");
-+            System.out.println("Auto Updater currently disabled. (will be enabled in the future)");
-+//          MagmaUpdater magmaUpdater = new MagmaUpdater();
-+//          if (magmaUpdater.versionChecker() && MagmaConfig.instance.magmaAutoUpdater.getValues()) {
-+//              magmaUpdater.downloadJar();
-+//          }
++            MagmaUpdater magmaUpdater = new MagmaUpdater();
++            if (magmaUpdater.versionChecker() && MagmaConfig.instance.magmaAutoUpdater.getValues()) {
++                magmaUpdater.downloadJar();
++            }
 +        }
 +
          new ServerLaunchWrapper().run(args);

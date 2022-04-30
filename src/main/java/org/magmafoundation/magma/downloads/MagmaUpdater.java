@@ -22,6 +22,8 @@ import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.channels.Channels;
@@ -50,15 +52,21 @@ public class MagmaUpdater {
     private String currentSha;
 
     public boolean versionChecker() {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new URL("https://api.magmafoundation.org/api/resources/magma/1.12/dev/latest").openStream()))) {
+        try {
+            URL url = new URL("https://api.magmafoundation.org/api/v2/1.12/latest");
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.addRequestProperty("User-Agent", "Magma");
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             JsonObject root = gson.fromJson(reader, JsonObject.class);
 
             Date created_at = Date.from(Instant.parse(root.get("created_at").getAsString()));
             String date = new SimpleDateFormat("dd-MM-yyyy").format(created_at);
             String time = new SimpleDateFormat("H:mm a").format(created_at);
 
-            newSha = root.get("tag_name").toString().substring(2, 9);
-            currentSha = Magma.class.getPackage().getImplementationVersion().split("-")[0];
+            newSha = root.get("tag_name").getAsString();
+            currentSha = Magma.class.getPackage().getImplementationVersion().split("-")[1];
 
             if (currentSha.equals(newSha)) {
                 System.out.printf("No update found, latest version: (%s) current version: (%s)%n", currentSha, newSha);
@@ -75,12 +83,16 @@ public class MagmaUpdater {
     }
 
     public void downloadJar() {
-        String url = "https://api.magmafoundation.org/api/resources/magma/1.12/dev/v"+newSha+"/download";
+        String url = "https://api.magmafoundation.org/api/v2/1.12/latest/" + newSha + "/download";
         try {
             Path path = Paths.get(MagmaUpdater.class.getProtectionDomain().getCodeSource().getLocation().toURI());
             System.out.println("Updating Magma Jar ...");
+            System.out.println("Downloading " + url + " ...");
             URL website = new URL(url);
-            ReadableByteChannel rbc = Channels.newChannel(website.openStream());
+            HttpURLConnection connection = (HttpURLConnection) website.openConnection();
+            connection.setRequestMethod("GET");
+            connection.addRequestProperty("User-Agent", "Magma");
+            ReadableByteChannel rbc = Channels.newChannel(connection.getInputStream());
             FileOutputStream fos = new FileOutputStream(path.toFile());
             fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
         } catch (IOException | URISyntaxException e) {
