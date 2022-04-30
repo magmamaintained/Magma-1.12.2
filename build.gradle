@@ -31,7 +31,7 @@ apply plugin: 'net.nemerosa.versioning'
 apply plugin: "com.github.breadmoirai.github-release"
 apply plugin: "net.minecrell.licenser"
 
-group 'magmafoundation'
+group 'org.magmafoundation'
 
 version '1.12.2-' + versioning.info.commit.substring(0, 8) // Use 8 characters for the commit hash
 
@@ -335,21 +335,25 @@ publishing {
     }
 
     repositories {
-        maven {
-            name = 'myRepo'
-            url = "file://${buildDir}/repo"
-        }
-        maven {
-            // gitlab repo
-            name = 'MagmaFoundation'
-            url = 'https://git.magmafoundation.org/api/v4/projects/7/packages/maven/'
-            credentials(HttpHeaderCredentials) {
-                name = "Job-Token"
-                value = System.getenv("CI_JOB_TOKEN")
+        if (System.getenv("CI_JOB_TOKEN") != null) {
+            maven {
+                // gitlab repo
+                name = 'MagmaFoundation'
+                url = 'https://git.magmafoundation.org/api/v4/projects/7/packages/maven/'
+                credentials(HttpHeaderCredentials) {
+                    name = "Job-Token"
+                    value = System.getenv("CI_JOB_TOKEN")
+                }
+                authentication {
+                    header(HttpHeaderAuthentication)
+                }
             }
-            authentication {
-                header(HttpHeaderAuthentication)
+        } else {
+            maven {
+                name = 'myRepo'
+                url = "file://${buildDir}/repo"
             }
         }
+
     }
 }

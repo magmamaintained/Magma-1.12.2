@@ -63,7 +63,7 @@ release:
   stage: release
   image: registry.gitlab.com/gitlab-org/release-cli:latest
   script:
-    - release-cli --server-url https://git.magmafoundation.org --job-token=$CI_JOB_TOKEN create --name "Release $CI_COMMIT_SHORT_SHA" --description "Magma Release" --tag-name "$CI_COMMIT_SHORT_SHA" --ref "$CI_COMMIT_SHORT_SHA" --assets-link "{\"url\":\"https://git.magmafoundation.org/api/v4/projects/7/packages/maven/magmafoundation/Magma/1.12.2-$CI_COMMIT_SHORT_SHA/Magma-1.12.2-$CI_COMMIT_SHORT_SHA.jar\",\"name\":\"Magma-1.12.2-$CI_COMMIT_SHORT_SHA.jar\"}"
+    - release-cli --server-url https://git.magmafoundation.org --job-token=$CI_JOB_TOKEN create --name "Magma 1.12.2-$CI_COMMIT_SHORT_SHA" --description "Magma Release" --tag-name "$CI_COMMIT_SHORT_SHA" --ref "$CI_COMMIT_SHORT_SHA" --assets-link "{\"url\":\"https://git.magmafoundation.org/api/v4/projects/7/packages/maven/org/magmafoundation/Magma/1.12.2-$CI_COMMIT_SHORT_SHA/Magma-1.12.2-$CI_COMMIT_SHORT_SHA.jar\",\"name\":\"Magma-1.12.2-$CI_COMMIT_SHORT_SHA.jar\"}"
   only:
   - master
   except:
