@@ -30,6 +30,7 @@ import java.util.zip.ZipInputStream;
 import org.bukkit.craftbukkit.v1_12_R1.Main;
 import org.magmafoundation.magma.Magma;
 import org.magmafoundation.magma.configuration.MagmaConfig;
+import org.magmafoundation.magma.utils.MD5Checksum;
 import org.yaml.snakeyaml.error.YAMLException;
 
 /**
@@ -48,17 +49,26 @@ public class DownloadServerFiles {
         String downloadLink = "https://launcher.mojang.com/v1/objects/886945bfb2b978778c3a0288fd7fab09d315b25f/server.jar";
 
         File minecraftServerJar = new File(fileName);
-        if (!minecraftServerJar.exists() && !minecraftServerJar.isDirectory()) {
-            System.out.println("Downloading Minecraft Server Jar ...");
+
+        if (minecraftServerJar.exists()) {
             try {
-                URL website = new URL(downloadLink);
-                ReadableByteChannel rbc = Channels.newChannel(website.openStream());
-                FileOutputStream fos = new FileOutputStream(fileName);
-                fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-            } catch (IOException e) {
-                e.printStackTrace();
+                if (MD5Checksum.getMD5Checksum(minecraftServerJar.getAbsolutePath()).equals("71728ed3fbd0acd1394bf3ade2649a5c")) {
+                    return;
+                }else {
+                    System.out.println("[Magma] Minecraft server jar is outdated or corrupted, re downloading...");
+                    FileDownloader.downloadFile(downloadLink, minecraftServerJar);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         }
+
+        if (!minecraftServerJar.exists()) {
+            System.out.println("[Magma] Minecraft server jar not found, downloading...");
+            FileDownloader.downloadFile(downloadLink, minecraftServerJar);
+        }
     }
+
+
 
 }

@@ -27,7 +27,7 @@
 -    public static void main(String[] args)
 -    {
 +    public static void main(String[] args) {
-+        System.out.println("Starting Magma");
++        System.out.println("[Magma] Starting Magma");
 +        LAUNCH_ARGS = Arrays.asList(args);
 +
 +        if (getJavaVersion() > 8) {
@@ -35,7 +35,7 @@
 +                throw new JavaToNewException();
 +            } catch (JavaToNewException e) {
 +                e.printStackTrace();
-+                System.out.println("Magma for 1.12 only supports Java 8. Visit our GitHub for more information.\n\nGitHub: https://github.com/magmafoundation/Magma");
++                System.out.println("[Magma] Magma for 1.12 only supports Java 8. Visit our GitHub for more information.\n\nGitHub: https://github.com/magmafoundation/Magma");
 +                return;
 +            }
 +        }
@@ -45,7 +45,7 @@
 +        libraryDownloader.run();
 +
 +        if (!LAUNCH_ARGS.contains("-dau")) {
-+            System.out.println("Checking for new version...");
++            System.out.println("[Magma] Checking for new version...");
 +            MagmaUpdater magmaUpdater = new MagmaUpdater();
 +            if (magmaUpdater.versionChecker() && MagmaConfig.instance.magmaAutoUpdater.getValues()) {
 +                magmaUpdater.downloadJar();

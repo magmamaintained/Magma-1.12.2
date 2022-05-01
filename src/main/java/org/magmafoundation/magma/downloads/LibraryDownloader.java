@@ -12,6 +12,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import org.fusesource.jansi.Ansi;
 import org.magmafoundation.magma.utils.JarLoader;
 import org.magmafoundation.magma.utils.MD5Checksum;
 
@@ -24,7 +25,7 @@ import org.magmafoundation.magma.utils.MD5Checksum;
 public class LibraryDownloader {
 
     public void run() {
-        System.out.println("Starting Library Downloader");
+        System.out.println("[Magma] Starting Library Downloader");
         JsonArray libs = parseLibraryJson(new InputStreamReader(getClass().getResourceAsStream("/magma_libs.json")));
         libs.forEach(jsonElement -> {
             String name = jsonElement.getAsJsonObject().get("name").getAsString();
@@ -47,7 +48,7 @@ public class LibraryDownloader {
 
         JsonElement librarys = gson.fromJson(reader, JsonElement.class);
         String verison = librarys.getAsJsonObject().get("version").getAsString();
-        System.out.println("Library Version: " + verison);
+        System.out.println("[Magma] Library Version: " + verison);
         JsonArray libs = librarys.getAsJsonObject().get("libraries").getAsJsonArray();
         return libs;
     }
@@ -111,24 +112,20 @@ public class LibraryDownloader {
                 return new File(fullPath);
             } else {
                 new File(folderName).mkdirs();
-                System.out.println("MD5 is Different Re Downloading Jar: " + fullPath);
+                System.out.println("[Magma] MD5 is Different Re Downloading Jar: " + fullPath);
 
-                URL website = new URL(libary.url);
-                ReadableByteChannel rbc = Channels.newChannel(website.openStream());
-                FileOutputStream fos = new FileOutputStream(fullPath);
-                fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-                return new File(fullPath);
+                File file = new File(fullPath);
+                FileDownloader.downloadFile(libary.url, file);
+                return file;
             }
         } else {
             new File(folderName).mkdirs();
 
-            System.out.println("Downloading Jar: " + fullPath);
+            System.out.println("[Magma] Downloading Jar: " + fullPath);
 
-            URL website = new URL(libary.url);
-            ReadableByteChannel rbc = Channels.newChannel(website.openStream());
-            FileOutputStream fos = new FileOutputStream(fullPath);
-            fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-            return new File(fullPath);
+            File file = new File(fullPath);
+            FileDownloader.downloadFile(libary.url, file);
+            return file;
         }
     }
 }

@@ -37,6 +37,7 @@ import java.util.Date;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import org.fusesource.jansi.Ansi;
 import org.magmafoundation.magma.Magma;
 
 /**
@@ -69,10 +70,10 @@ public class MagmaUpdater {
             currentSha = Magma.class.getPackage().getImplementationVersion().split("-")[1];
 
             if (currentSha.equals(newSha)) {
-                System.out.printf("No update found, latest version: (%s) current version: (%s)%n", currentSha, newSha);
+                System.out.printf("[Magma] No update found, latest version: (%s) current version: (%s)%n", currentSha, newSha);
                 return false;
             } else {
-                System.out.printf("The latest Magma version is (%s) but you have (%s). The latest version was built on %s at %s.%n", newSha, currentSha, date, time);
+                System.out.printf("[Magma] The latest Magma version is (%s) but you have (%s). The latest version was built on %s at %s.%n", newSha, currentSha, date, time);
                 return true;
             }
         } catch (IOException e) {
@@ -86,8 +87,8 @@ public class MagmaUpdater {
         String url = "https://api.magmafoundation.org/api/v2/1.12/latest/" + newSha + "/download";
         try {
             Path path = Paths.get(MagmaUpdater.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-            System.out.println("Updating Magma Jar ...");
-            System.out.println("Downloading " + url + " ...");
+            System.out.println("[Magma] Updating Magma Jar ...");
+            System.out.println("[Magma] Downloading " + url + " ...");
             URL website = new URL(url);
             HttpURLConnection connection = (HttpURLConnection) website.openConnection();
             connection.setRequestMethod("GET");
@@ -96,10 +97,10 @@ public class MagmaUpdater {
             FileOutputStream fos = new FileOutputStream(path.toFile());
             fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
         } catch (IOException | URISyntaxException e) {
-            System.out.println("Failed to download update! Starting old version.");
+            System.out.println("[Magma] Failed to download update! Starting old version.");
             return;
         }
-        System.out.println("Download Complete! Please restart the server.");
+        System.out.println("[Magma] Download Complete! Please restart the server.");
         System.exit(0);
     }
 

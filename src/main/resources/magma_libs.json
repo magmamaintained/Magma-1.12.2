@@ -68,8 +68,8 @@
     },
     {
       "name": "net.minecraft:launchwrapper:1.12",
-      "repo": "https://libraries.minecraft.net",
-      "md5": "934b2d91c7c5be4a49577c9e6b40e8da"
+      "repo": "https://git.magmafoundation.org/api/v4/projects/22/packages/maven",
+      "md5": "ae0a689b7ed72e377618933bb9742916"
     },
     {
       "name": "org.apache.logging.log4j:log4j-api:2.17.2",
