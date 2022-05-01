@@ -1,0 +1,29 @@
+--- ../src-base/minecraft/net/minecraft/util/SoundEvent.java
++++ ../src-work/minecraft/net/minecraft/util/SoundEvent.java
+@@ -1,8 +1,11 @@
+ package net.minecraft.util;
+ 
+ import net.minecraft.util.registry.RegistryNamespaced;
++import net.minecraftforge.fml.relauncher.ReflectionHelper;
+ import net.minecraftforge.fml.relauncher.Side;
+ import net.minecraftforge.fml.relauncher.SideOnly;
++import org.magmafoundation.magma.remapper.remappers.ReflectionMethodRemapper;
++import org.magmafoundation.magma.remapper.remappers.ReflectionRemapper;
+ 
+ public class SoundEvent extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<SoundEvent>
+ {
+@@ -21,6 +24,14 @@
+         return this.soundName;
+     }
+ 
++    @Override
++    public String toString() {
++        return "SoundEvent{" +
++                "soundName=" + soundName +
++                "soundEventId=" + soundEventId +
++                '}';
++    }
++
+     public static void registerSounds()
+     {
+         registerSound("ambient.cave");

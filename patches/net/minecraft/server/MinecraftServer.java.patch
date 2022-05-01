@@ -13,7 +13,7 @@
  import com.google.common.util.concurrent.Futures;
  import com.google.common.util.concurrent.ListenableFuture;
  import com.google.common.util.concurrent.ListenableFutureTask;
-@@ -15,93 +19,112 @@
+@@ -15,93 +19,114 @@
  import io.netty.handler.codec.base64.Base64;
  import java.awt.GraphicsEnvironment;
  import java.awt.image.BufferedImage;
@@ -113,6 +113,7 @@
  import org.apache.logging.log4j.Logger;
 +import org.bukkit.Bukkit;
 +import org.bukkit.Material;
++import org.bukkit.Sound;
 +import org.bukkit.World.Environment;
 +import org.bukkit.block.banner.PatternType;
 +import org.bukkit.craftbukkit.v1_12_R1.CraftServer;
@@ -124,6 +125,7 @@
 +import org.bukkit.craftbukkit.v1_12_R1.util.ServerShutdownThread;
 +import org.bukkit.entity.EntityType;
 +import org.bukkit.potion.PotionEffectType;
++import org.lwjgl.Sys;
 +import org.magmafoundation.magma.Magma;
 +import org.magmafoundation.magma.Metrics;
 +import org.magmafoundation.magma.Metrics.SimplePie;
@@ -160,7 +162,7 @@
      @SideOnly(Side.SERVER)
      private String hostname;
      private int serverPort = -1;
-@@ -128,7 +151,6 @@
+@@ -128,7 +153,6 @@
      private KeyPair serverKeyPair;
      private String serverOwner;
      private String folderName;
@@ -168,7 +170,7 @@
      private String worldName;
      private boolean isDemo;
      private boolean enableBonusChest;
-@@ -144,178 +166,301 @@
+@@ -144,178 +168,323 @@
      private final GameProfileRepository profileRepo;
      private final PlayerProfileCache profileCache;
      private long nanoTimeSinceStatusRefresh;
@@ -419,6 +421,45 @@
 +                    if (material.getId() < 256)
 +                        Material.addBlockMaterial(material);
 +                }
+ 
+-        if (false) { //Forge Dead code, reimplemented below
+-        for (int i = 0; i < this.worlds.length; ++i)
+-        {
+-            int j = 0;
+ 
+-            if (i == 1)
+-            {
+-                j = -1;
+-            }
++                for (Map.Entry<ResourceLocation, SoundEvent> entry : ForgeRegistries.SOUND_EVENTS.getEntries()) {
++                    ResourceLocation key = entry.getKey();
++                    if(!key.getResourceDomain().equals("minecraft")) {
++                        String soundName = key.toString().toUpperCase().replaceAll("(:|\\s)", "_").replaceAll("\\W", "");
++                        String soundNameWithOutModName = key.toString().toUpperCase().replaceAll("" + key.getResourceDomain().toUpperCase() + ":", "").replaceAll("(:|\\s)", "_").replaceAll("\\W", "");
++                        if(MagmaConfig.instance.debugPrintSounds.getValues()){
++                            MinecraftServer.LOGGER.info(String.format("Injecting new Forge sound %s (%s).", soundNameWithOutModName, soundName));
++                        }
+ 
+-            if (i == 2)
+-            {
+-                j = 1;
+-            }
++                        Sound sound = EnumHelper.addEnum(Sound.class, soundNameWithOutModName, new Class[]{}, new Object[]{});
++                        if(MagmaConfig.instance.debugPrintSounds.getValues()){
++                            if (sound != null) {
++                                MinecraftServer.LOGGER.info(String.format("Added new Enum to " + Sound.class + ": %s.", sound.name()));
++                            } else {
++                                MinecraftServer.LOGGER.info(String.format("Add sound failure %s (%s).", soundNameWithOutModName, soundName));
++                            }
++                        }
++                    }
++                }
+ 
+-            if (i == 0)
+-            {
+-                if (this.isDemo())
+-                {
+-                    this.worlds[i] = (WorldServer)(new WorldServerDemo(this, isavehandler, worldinfo, j, this.profiler)).init();
 +                for (Map.Entry<ResourceLocation, Block> entry : ForgeRegistries.BLOCKS.getEntries()) {
 +                    ResourceLocation key = entry.getKey();
 +                    Block block = entry.getValue();
@@ -433,44 +474,27 @@
 +                            }
 +                        }
 +                    }
-+                }
- 
--        if (false) { //Forge Dead code, reimplemented below
--        for (int i = 0; i < this.worlds.length; ++i)
--        {
--            int j = 0;
-+                Map<String, EntityType> NAME_MAP = ReflectionHelper.getPrivateValue(EntityType.class, null, "NAME_MAP");
-+                Map<Short, EntityType> ID_MAP = ReflectionHelper.getPrivateValue(EntityType.class, null, "ID_MAP");
- 
--            if (i == 1)
--            {
--                j = -1;
--            }
-+                for (Map.Entry<String, Class<? extends Entity>> entity : EntityRegistry.entityClassMap.entrySet()) {
-+                    String entityname = entity.getKey();
-+                    String entityType = entityname.replace("-", "_").toUpperCase();
- 
--            if (i == 2)
--            {
--                j = 1;
--            }
-+                    int typeId = GameData.getEntityRegistry().getID(EntityRegistry.getEntry(entity.getValue()));
-+                    EntityType bukkitType = EnumHelper.addEnum(EntityType.class, entityType, new Class[] { String.class, Class.class, Integer.TYPE, Boolean.TYPE }, new Object[] { entityname, CraftCustomEntity.class, typeId, false });
- 
--            if (i == 0)
--            {
--                if (this.isDemo())
--                {
--                    this.worlds[i] = (WorldServer)(new WorldServerDemo(this, isavehandler, worldinfo, j, this.profiler)).init();
-+                    NAME_MAP.put(entityname.toLowerCase(), bukkitType);
-+                    ID_MAP.put((short)typeId, bukkitType);
                  }
 -                else
 -                {
 -                    this.worlds[i] = (WorldServer)(new WorldServer(this, isavehandler, worldinfo, j, this.profiler)).init();
++
++                Map<String, EntityType> NAME_MAP = ReflectionHelper.getPrivateValue(EntityType.class, null, "NAME_MAP");
++                Map<Short, EntityType> ID_MAP = ReflectionHelper.getPrivateValue(EntityType.class, null, "ID_MAP");
++
++                for (Map.Entry<String, Class<? extends Entity>> entity : EntityRegistry.entityClassMap.entrySet()) {
++                    String entityname = entity.getKey();
++                    String entityType = entityname.replace("-", "_").toUpperCase();
++
++                    int typeId = GameData.getEntityRegistry().getID(EntityRegistry.getEntry(entity.getValue()));
++                    EntityType bukkitType = EnumHelper.addEnum(EntityType.class, entityType, new Class[] { String.class, Class.class, Integer.TYPE, Boolean.TYPE }, new Object[] { entityname, CraftCustomEntity.class, typeId, false });
++
++                    NAME_MAP.put(entityname.toLowerCase(), bukkitType);
++                    ID_MAP.put((short)typeId, bukkitType);
+                 }
 +                for (Object enchantment : Enchantment.REGISTRY) {
 +                    org.bukkit.enchantments.Enchantment.registerEnchantment(new CraftEnchantment((Enchantment) enchantment));
-                 }
++                }
 +                org.bukkit.enchantments.Enchantment.stopAcceptingRegistrations();
 +                for (Object effect : Potion.REGISTRY) {
 +                    PotionEffectType.registerPotionEffectType(new CraftPotionEffectType((Potion) effect));
@@ -567,7 +591,7 @@
          int i = 16;
          int j = 4;
          int k = 192;
-@@ -323,45 +468,43 @@
+@@ -323,45 +492,43 @@
          int i1 = 0;
          this.setUserMessage("menu.generatingTerrain");
          int j1 = 0;
@@ -637,7 +661,7 @@
          }
      }
  
-@@ -379,73 +522,80 @@
+@@ -379,73 +546,80 @@
  
      public abstract boolean shouldBroadcastConsoleToOps();
  
@@ -750,7 +774,7 @@
              {
                  if (worldserver1 != null)
                  {
-@@ -453,159 +603,214 @@
+@@ -453,159 +627,214 @@
                      worldserver1.flush();
                  }
              }
@@ -1038,7 +1062,7 @@
                  BufferedImage bufferedimage = ImageIO.read(file1);
                  Validate.validState(bufferedimage.getWidth() == 64, "Must be 64 pixels wide");
                  Validate.validState(bufferedimage.getHeight() == 64, "Must be 64 pixels high");
-@@ -613,52 +818,44 @@
+@@ -613,52 +842,44 @@
                  ByteBuf bytebuf1 = Base64.encode(bytebuf);
                  response.setFavicon("data:image/png;base64," + bytebuf1.toString(StandardCharsets.UTF_8));
                  bytebuf1.release(); // Forge: fix MC-122085
@@ -1103,7 +1127,7 @@
              this.startProfiling = false;
              this.profiler.profilingEnabled = true;
              this.profiler.clearProfiling();
-@@ -667,16 +864,15 @@
+@@ -667,16 +888,15 @@
          this.profiler.startSection("root");
          this.updateTimeLightAndEntities();
  
@@ -1125,7 +1149,7 @@
              }
  
              Collections.shuffle(Arrays.asList(agameprofile));
-@@ -684,7 +880,7 @@
+@@ -684,7 +904,7 @@
              this.statusResponse.invalidateJson();
          }
  
@@ -1134,7 +1158,7 @@
          {
              this.profiler.startSection("save");
              this.playerList.saveAllPlayerData();
-@@ -693,134 +889,165 @@
+@@ -693,134 +913,165 @@
          }
  
          this.profiler.startSection("tallying");
@@ -1369,7 +1393,7 @@
          LOGGER.warn(msg);
      }
  
-@@ -835,53 +1062,52 @@
+@@ -835,53 +1086,52 @@
          return ret;
      }
  
@@ -1449,7 +1473,7 @@
                  }
              });
          }
-@@ -889,145 +1115,115 @@
+@@ -889,145 +1139,115 @@
          return report;
      }
  
@@ -1639,7 +1663,7 @@
                      worldserver1.getWorldInfo().setDifficulty(difficulty);
                      worldserver1.setAllowedSpawnTypes(this.allowSpawnMonsters(), this.canSpawnAnimals);
                  }
-@@ -1035,80 +1231,75 @@
+@@ -1035,80 +1255,75 @@
          }
      }
  
@@ -1749,7 +1773,7 @@
                      ++l;
                  }
              }
-@@ -1117,228 +1308,193 @@
+@@ -1117,228 +1332,193 @@
          playerSnooper.addClientStat("worlds", Integer.valueOf(l));
      }
  
@@ -2032,7 +2056,7 @@
                      return entity;
                  }
              }
-@@ -1347,316 +1503,254 @@
+@@ -1347,316 +1527,254 @@
          return null;
      }
  
