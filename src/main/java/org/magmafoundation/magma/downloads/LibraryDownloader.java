@@ -1,5 +1,6 @@
 package org.magmafoundation.magma.downloads;
 
+import javax.annotation.Nullable;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -32,7 +33,12 @@ public class LibraryDownloader {
             String repo = jsonElement.getAsJsonObject().get("repo").getAsString();
             String md5 = jsonElement.getAsJsonObject().get("md5").getAsString();
 
-            Libary libary = craftLibary(name, repo, md5);
+            boolean md5_skip = false;
+            if(jsonElement.getAsJsonObject().get("md5_skip") != null) {
+                md5_skip = jsonElement.getAsJsonObject().get("md5_skip").getAsBoolean();
+            }
+
+            Libary libary = craftLibary(name, repo, md5, md5_skip);
             try {
                 File file = downloadFile(libary);
                 JarLoader.addFile(file);
@@ -53,7 +59,7 @@ public class LibraryDownloader {
         return libs;
     }
 
-    private Libary craftLibary(String fullName, String repo, String md5) {
+    private Libary craftLibary(String fullName, String repo, String md5, boolean md5_skip) {
         String groupId = fullName.split(":")[0];
         groupId = groupId.replaceAll("\\.", "/"); // Replaces all '.' with '/'
         String artifactId = fullName.split(":")[1];
@@ -64,7 +70,7 @@ public class LibraryDownloader {
                 String jarName = artifactId + "-" + version.replace("SNAPSHOT", "") + time + ".jar";
                 String folderName = groupId + "/" + artifactId + "/" + version;
                 String url = repo + "/" + folderName + "/" + jarName;
-                Libary libary = new Libary(jarName, folderName, url, md5);
+                Libary libary = new Libary(jarName, folderName, url, md5, md5_skip);
                 return libary;
             }
         } catch (Exception e) {
@@ -74,7 +80,7 @@ public class LibraryDownloader {
         String folderName = groupId + "/" + artifactId + "/" + version;
         String url = repo + "/" + folderName + "/" + jarName;
 
-        Libary libary = new Libary(jarName, folderName, url, md5);
+        Libary libary = new Libary(jarName, folderName, url, md5, md5_skip);
         return libary;
     }
 
@@ -84,22 +90,25 @@ public class LibraryDownloader {
         private final String folderName;
         private final String url;
         private final String md5sum;
+        private final boolean md5_skip;
 
-        public Libary(String jarName, String folderName, String url, String md5sum) {
+        public Libary(String jarName, String folderName, String url, String md5sum, boolean md5_skip) {
             this.jarName = jarName;
             this.folderName = folderName;
             this.url = url;
             this.md5sum = md5sum;
+            this.md5_skip = md5_skip;
         }
 
         @Override
         public String toString() {
             return "Libary{" +
-                "jarName='" + jarName + '\'' +
-                ", folderName='" + folderName + '\'' +
-                ", url='" + url + '\'' +
-                ", md5sum='" + md5sum + '\'' +
-                '}';
+                    "jarName='" + jarName + '\'' +
+                    ", folderName='" + folderName + '\'' +
+                    ", url='" + url + '\'' +
+                    ", md5sum='" + md5sum + '\'' +
+                    ", md5_skip=" + md5_skip +
+                    '}';
         }
     }
 
@@ -108,6 +117,9 @@ public class LibraryDownloader {
         String fullPath = folderName + libary.jarName;
 
         if (new File(fullPath).exists()) {
+            if (libary.md5_skip) {
+                return new File(fullPath);
+            }
             if (MD5Checksum.getMD5Checksum(fullPath).equals(libary.md5sum)) {
                 return new File(fullPath);
             } else {
