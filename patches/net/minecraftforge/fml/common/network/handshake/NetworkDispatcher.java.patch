@@ -9,7 +9,19 @@
      private ConnectionState state;
      private ConnectionType connectionType;
      private final Side side;
-@@ -320,7 +320,7 @@
+@@ -208,6 +208,11 @@
+                 if (this.player.connection != this) return;
+                 super.update();
+             }
++
++            @Override
++            public void sendPacket(Packet<?> packetIn) {
++                super.sendPacket(packetIn);
++            }
+         };
+         this.netHandler = serverHandler;
+         // NULL the play server here - we restore it further on. If not, there are packets sent before the login
+@@ -320,7 +325,7 @@
          kickWithMessage("This is modded. No modded response received. Bye!");
      }
  
@@ -18,3 +30,11 @@
      {
          FMLLog.log.error("Network Disconnect: {}", message);
          final TextComponentString TextComponentString = new TextComponentString(message);
+@@ -676,6 +681,7 @@
+         {
+             return this.data_buf;
+         }
++
+     }
+ 
+     public ConnectionType getConnectionType()
