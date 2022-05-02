@@ -279,6 +279,10 @@ task genPluginJar(type: net.minecraftforge.gradle.patcher.TaskReobfuscate, depen
 license {
     header = file("$rootDir/LICENSE-header.txt")
 
+    ext {
+        year = new Date().format("yyyy")
+    }
+
     include 'org/magmafoundation/'
 
     tasks {
