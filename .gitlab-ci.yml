@@ -33,6 +33,10 @@ test:
   - git submodule sync --recursive
   - git submodule update --init --recursive
   - cd projects && ../gradlew Magma:test
+  artifacts:
+    when: always
+    reports:
+      junit: projects/Magma/build/test-results/test/**/TEST-*.xml
   except:
     - tags
 
