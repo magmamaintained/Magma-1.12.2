@@ -787,7 +787,7 @@
 +            return;
 +        }
 +
-+        exit = event.useTravelAgent() && cause != cause.MOD ? event.getPortalTravelAgent().findOrCreate(event.getTo()) : event.getTo();
++        exit = event.useTravelAgent() && cause != cause.MOD && cause != PlayerTeleportEvent.TeleportCause.END_PORTAL ? event.getPortalTravelAgent().findOrCreate(event.getTo()) : event.getTo();
 +        if (exit == null) {
 +            return;
 +        }
