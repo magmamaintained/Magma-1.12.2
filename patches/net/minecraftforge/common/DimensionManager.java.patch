@@ -255,7 +255,7 @@
              FMLLog.log.info("Loading dimension {} ({}) ({})", id, world.getWorldInfo().getWorldName(), world.getMinecraftServer());
 +        } else {
 +            if (MagmaConfig.instance.enableAutoUnloadingDimensions.getValues()) { //Magma - Only unload dimensions if auto unloading is enabled
-+                if (MagmaConfig.instance.autoUnloadDimensions.contains(id)) { //Magma - Only unload dimensions if they are in the auto unload list
++                if (!MagmaConfig.instance.autoUnloadDimensionsWhitelist.contains(id)) { //Magma - Only unload dimensions not in the whitelist
 +                    try {
 +                        getWorld(id).saveAllChunks(true, null); //Magma - Save all chunks before unloading
 +                    } catch (MinecraftException e) {
