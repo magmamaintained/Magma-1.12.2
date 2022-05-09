@@ -2,7 +2,6 @@ image: openjdk:8-jdk
 
 stages:
 - setup
-- test
 - build
 - publish
 - release
@@ -24,19 +23,6 @@ setup:
   - git submodule sync --recursive
   - git submodule update --init --recursive
   - chmod +x gradlew && ./gradlew setup
-  except:
-    - tags
-
-test:
-  stage: test
-  script:
-  - git submodule sync --recursive
-  - git submodule update --init --recursive
-  - cd projects && ../gradlew Magma:test
-  artifacts:
-    when: always
-    reports:
-      junit: projects/Magma/build/test-results/test/**/TEST-*.xml
   except:
     - tags
 
