@@ -85,7 +85,7 @@ public class MagmaConfig extends ConfigBase {
             "Instructs the server put a maximum value on experience orbs, preventing them all from merging down into 1 single orb.");
     public final BooleanValue enableAutoUnloadingDimensions = new BooleanValue(this, "auto-unload-dimensions", true,
             "Automatically unload dimensions that are not being used");
-    public List<Integer> autoUnloadDimensions = Lists.newArrayList(13371337);
+    public List<Integer> autoUnloadDimensionsWhitelist = Lists.newArrayList(13371337);
     public final BooleanValue respawnInOtherDim = new BooleanValue(this, "respawn-in-other-dim", true, "Allows players to respawn in other dimensions");
 
     //=============================FakePlayer SETTINGS========================
@@ -187,8 +187,8 @@ public class MagmaConfig extends ConfigBase {
             version = getInt("config-version", 2);
             set("config-version", 2);
 
-            config.addDefault("forge.autoUnloadDimensions", new int[]{-1});
-            this.autoUnloadDimensions = config.getIntegerList("forge.autoUnloadDimensions");
+            config.addDefault("forge.autoUnloadDimensionsWhitelist", new int[]{-1});
+            this.autoUnloadDimensionsWhitelist = config.getIntegerList("forge.autoUnloadDimensionsWhitelist");
 
             config.options().header(header.toString());
             config.options().copyDefaults(true);
