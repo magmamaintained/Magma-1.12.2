@@ -187,8 +187,8 @@ public class MagmaConfig extends ConfigBase {
             version = getInt("config-version", 2);
             set("config-version", 2);
 
-            config.addDefault("forge.autoUnloadDimensions", new int[]{-1});
-            this.autoUnloadDimensions = config.getIntegerList("forge.autoUnloadDimensions");
+            config.addDefault("forge.autoUnloadDimensionsWhitelist", new int[]{-1});
+            this.autoUnloadDimensionsWhitelist = config.getIntegerList("forge.autoUnloadDimensionsWhitelist");
 
             config.options().header(header.toString());
             config.options().copyDefaults(true);
