@@ -19,12 +19,16 @@
 package org.magmafoundation.magma.configuration;
 
 import com.google.common.collect.Lists;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import net.minecraft.server.MinecraftServer;
 import org.apache.commons.io.FileUtils;
@@ -187,7 +191,7 @@ public class MagmaConfig extends ConfigBase {
             version = getInt("config-version", 2);
             set("config-version", 2);
 
-            config.addDefault("forge.autoUnloadDimensionsWhitelist", new int[]{-1});
+            config.addDefault("forge.autoUnloadDimensionsWhitelist", new int[]{0});
             this.autoUnloadDimensionsWhitelist = config.getIntegerList("forge.autoUnloadDimensionsWhitelist");
 
             config.options().header(header.toString());
