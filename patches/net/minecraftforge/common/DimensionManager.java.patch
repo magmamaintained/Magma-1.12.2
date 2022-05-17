@@ -426,7 +426,7 @@
              FMLLog.log.error("An error occurred trying to create an instance of WorldProvider {} ({})",
                      dim, getProviderType(dim), e);
              throw new RuntimeException(e);
-@@ -329,55 +325,50 @@
+@@ -329,55 +325,52 @@
  
      /**
       * Sets if a dimension should stay loaded.
@@ -449,7 +449,9 @@
                  && !world.provider.getDimensionType().shouldLoadSpawn()
 -                && !keepLoaded.contains(world.provider.getDimension());
 +                && !keepLoaded.contains(world.provider.getDimension())
-+                && world.getWorld().getKeepSpawnInMemory();
++                && world.getWorld().getKeepSpawnInMemory()
++                && MagmaConfig.instance.enableAutoUnloadingDimensions.getValues()
++                && !MagmaConfig.instance.autoUnloadDimensionsWhitelist.contains(world.dimension);
      }
  
      /**
@@ -494,7 +496,7 @@
                  dimension.ticksWaited++;
                  continue;
              }
-@@ -385,92 +376,65 @@
+@@ -385,92 +378,65 @@
              queueIterator.remove();
              dimension.ticksWaited = 0;
              // Don't unload the world if the status changed
@@ -603,7 +605,7 @@
                      if ((data & (1 << j)) != 0) usedIds.add(i * Integer.SIZE + j);
                  }
              }
-@@ -479,13 +443,12 @@
+@@ -479,13 +445,12 @@
  
      /**
       * Return the current root directory for the world save. Accesses getSaveHandler from the overworld
@@ -620,7 +622,7 @@
              return DimensionManager.getWorld(0).getSaveHandler().getWorldDirectory();
          }/*
          else if (MinecraftServer.getServer() != null)
-@@ -493,10 +456,111 @@
+@@ -493,10 +458,111 @@
              MinecraftServer srv = MinecraftServer.getServer();
              SaveHandler saveHandler = (SaveHandler) srv.getActiveAnvilConverter().getSaveLoader(srv.getFolderName(), false);
              return saveHandler.getWorldDirectory();
