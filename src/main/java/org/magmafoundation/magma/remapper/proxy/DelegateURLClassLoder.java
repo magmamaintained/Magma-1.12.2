@@ -26,6 +26,7 @@ package org.magmafoundation.magma.remapper.proxy;
  */
 
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -154,6 +155,16 @@ public class DelegateURLClassLoder extends URLClassLoader {
         }
     }
 
+    private void setPrivateField(Object object, String fieldName, Object value) {
+        try {
+            Field field = object.getClass().getDeclaredField(fieldName);
+            field.setAccessible(true);
+            field.set(object, value);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void fixPackage(String name, Manifest manifest, URL url) {
         int dot = name.lastIndexOf('.');
         if (dot != -1) {
@@ -174,13 +185,37 @@ public class DelegateURLClassLoder extends URLClassLoader {
                 if (attributes != null) {
                     try {
                         try {
-                            ObfuscationReflectionHelper.setPrivateValue(Package.class, pkg, attributes.getValue(Attributes.Name.IMPLEMENTATION_TITLE), "implTitle");
-                            ObfuscationReflectionHelper.setPrivateValue(Package.class, pkg, attributes.getValue(Attributes.Name.IMPLEMENTATION_VERSION), "implVersion");
-                            ObfuscationReflectionHelper.setPrivateValue(Package.class, pkg, attributes.getValue(Attributes.Name.IMPLEMENTATION_VENDOR), "implVendor");
-                            ObfuscationReflectionHelper.setPrivateValue(Package.class, pkg, attributes.getValue(Attributes.Name.SPECIFICATION_TITLE), "specTitle");
-                            ObfuscationReflectionHelper.setPrivateValue(Package.class, pkg, attributes.getValue(Attributes.Name.SPECIFICATION_VERSION), "specVersion");
-                            ObfuscationReflectionHelper.setPrivateValue(Package.class, pkg, attributes.getValue(Attributes.Name.SPECIFICATION_VENDOR), "specVendor");
-                        } catch (Exception ignored) {}
+
+                            //check if the Package class contains the field implTitle
+
+                            try {
+                                Field _e = Package.class.getDeclaredField("implTitle");
+                                ObfuscationReflectionHelper.setPrivateValue(Package.class, pkg, attributes.getValue(Attributes.Name.IMPLEMENTATION_TITLE), "implTitle");
+                                ObfuscationReflectionHelper.setPrivateValue(Package.class, pkg, attributes.getValue(Attributes.Name.IMPLEMENTATION_VERSION), "implVersion");
+                                ObfuscationReflectionHelper.setPrivateValue(Package.class, pkg, attributes.getValue(Attributes.Name.IMPLEMENTATION_VENDOR), "implVendor");
+                                ObfuscationReflectionHelper.setPrivateValue(Package.class, pkg, attributes.getValue(Attributes.Name.SPECIFICATION_TITLE), "specTitle");
+                                ObfuscationReflectionHelper.setPrivateValue(Package.class, pkg, attributes.getValue(Attributes.Name.SPECIFICATION_VERSION), "specVersion");
+                                ObfuscationReflectionHelper.setPrivateValue(Package.class, pkg, attributes.getValue(Attributes.Name.SPECIFICATION_VENDOR), "specVendor");
+                            } catch (NoSuchFieldException e) {
+
+                                Field versionInfoField = Package.class.getDeclaredField("versionInfo");
+                                versionInfoField.setAccessible(true);
+                                Object versionInfo = versionInfoField.get(pkg);
+
+                                if (versionInfo != null) {
+                                    setPrivateField(versionInfo, "implTitle", attributes.getValue(Attributes.Name.IMPLEMENTATION_TITLE));
+                                    setPrivateField(versionInfo, "implVersion", attributes.getValue(Attributes.Name.IMPLEMENTATION_VERSION));
+                                    setPrivateField(versionInfo, "implVendor", attributes.getValue(Attributes.Name.IMPLEMENTATION_VENDOR));
+                                    setPrivateField(versionInfo, "specTitle", attributes.getValue(Attributes.Name.SPECIFICATION_TITLE));
+                                    setPrivateField(versionInfo, "specVersion", attributes.getValue(Attributes.Name.SPECIFICATION_VERSION));
+                                    setPrivateField(versionInfo, "specVendor", attributes.getValue(Attributes.Name.SPECIFICATION_VENDOR));
+                                }
+
+                            }
+
+
+                        } catch (Exception ignored) {
+                        }
                     } finally {
                         packageCache.add(pkg);
                     }
