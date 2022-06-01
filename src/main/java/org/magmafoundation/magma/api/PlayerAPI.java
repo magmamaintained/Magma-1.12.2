@@ -37,6 +37,11 @@ public class PlayerAPI {
     public static Map<EntityPlayerMP, String> modList = new ConcurrentHashMap<>();
 
     /**
+     * How many mods are present if the user didn't add any mods
+     */
+    public static final int DEFAULT_MODS = 4;
+
+    /**
      * Gets the NMS Player.
      *
      * @param player - A Bukkit player.
@@ -66,14 +71,37 @@ public class PlayerAPI {
         return ServerAPI.getNMSServer().getPlayerList().canSendCommands(entityPlayer.getGameProfile());
     }
 
+    // This method has been inspired by Mohist
+    /**
+     * Gets the Player's ping.
+     *
+     * @param player - The player.
+     */
+    public static int getPing(Player player) {
+        return getNMSPlayer(player).ping;
+    }
+
     /**
      * Get player mod count.
      *
+     * @deprecated Use {@link PlayerAPI#getModSize(Player, boolean)} instead
      * @param player - The player.
      * @return loaded mod count.
      */
     public static int getModSize(Player player) {
-        return mods.get(getNMSPlayer(player)) == null ? 0 : mods.get(getNMSPlayer(player));
+        return getModSize(player, false);
+    }
+
+    // This method has been inspired by Mohist
+    /**
+     * Get player mod count.
+     *
+     * @param player - The player.
+     * @param onlyRealMods whether mods like fml/forge/... should not be counted
+     * @return loaded mod count.
+     */
+    public static int getModSize(Player player, boolean onlyRealMods) {
+        return mods.get(getNMSPlayer(player)) == null ? 0 : mods.get(getNMSPlayer(player)) - (onlyRealMods ? DEFAULT_MODS : 0);
     }
 
     /**
