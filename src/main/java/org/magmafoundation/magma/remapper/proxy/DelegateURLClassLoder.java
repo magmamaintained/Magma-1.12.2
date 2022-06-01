@@ -169,9 +169,9 @@ public class DelegateURLClassLoder extends URLClassLoader {
                 } catch (IllegalArgumentException ignored) {
                 }
             }
-            if (!packageCache.contains(pkg)) {
+            if (!packageCache.contains(pkg) && manifest != null) {
                 Attributes attributes = manifest.getMainAttributes();
-                if (attributes != null && manifest != null) {
+                if (attributes != null) {
                     try {
                         try {
                             ObfuscationReflectionHelper.setPrivateValue(Package.class, pkg, attributes.getValue(Attributes.Name.IMPLEMENTATION_TITLE), "implTitle");
