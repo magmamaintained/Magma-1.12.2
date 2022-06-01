@@ -7,7 +7,7 @@ import org.bukkit.entity.Villager;
 public class EntityAPI {
 
     /**
-     * How many mods are present if the user didn't add any mods
+     * The number of vanilla villager professions
      */
     public static final int VANILLA_PROFESSIONS = 7;
 
