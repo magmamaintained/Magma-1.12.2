@@ -171,7 +171,7 @@ public class DelegateURLClassLoder extends URLClassLoader {
             }
             if (!packageCache.contains(pkg)) {
                 Attributes attributes = manifest.getMainAttributes();
-                if (attributes != null) {
+                if (attributes != null && manifest != null) {
                     try {
                         try {
                             ObfuscationReflectionHelper.setPrivateValue(Package.class, pkg, attributes.getValue(Attributes.Name.IMPLEMENTATION_TITLE), "implTitle");
