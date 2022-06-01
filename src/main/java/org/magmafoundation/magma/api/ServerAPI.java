@@ -20,16 +20,14 @@ package org.magmafoundation.magma.api;
 
 import io.netty.util.internal.ConcurrentSet;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.oredict.OreDictionary;
+import net.minecraft.world.World;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_12_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -45,12 +43,29 @@ public class ServerAPI {
     public static Map<String, String> commands = new ConcurrentHashMap<>();
 
     /**
+     * How many mods are present if the user didn't add any mods
+     */
+    public static final int DEFAULT_MODS = 5;
+
+    /**
      * How many mods are loaded.
      *
+     * @deprecated Use {@link ServerAPI#getModSize(boolean)} instead
      * @return int - loaded mods.
      */
     public static int getModSize() {
-        return mods.get("mods") == null ? 0 : mods.get("mods");
+        return getModSize(false);
+    }
+
+    // This method has been inspired by Mohist
+    /**
+     * How many mods are loaded.
+     *
+     * @param onlyRealMods whether mods like fml/forge/... should not be counted
+     * @return int - loaded mods.
+     */
+    public static int getModSize(boolean onlyRealMods) {
+        return mods.get("mods") == null ? 0 : mods.get("mods") - (onlyRealMods ? DEFAULT_MODS : 0);
     }
 
     /**
@@ -72,6 +87,17 @@ public class ServerAPI {
         return getModList().contains(modid);
     }
 
+    // This method has been taken from Mohist
+    /**
+     * Checks if a plugin is loaded.
+     *
+     * @param pluginname name of the plugin to check.
+     * @return boolean - if it's loaded or not.
+     */
+    public static Boolean hasPlugin(String pluginname) {
+        return Bukkit.getPluginManager().getPlugin(pluginname) != null;
+    }
+
     /**
      * Gets the Minecraft Server instance.
      *
@@ -91,15 +117,25 @@ public class ServerAPI {
     }
 
     /**
-     * Gets a list of OreDict entries of a key
+     * Get oredict entries as a list of {@link ItemStack}s for a key
      *
-     * @return List of itemstacks
+     * @deprecated Use {@link OreDictAPI#getOreDictItems(String)} instead
+     * @param key Name of the oredict entry
+     * @return List of {@link ItemStack}s
      */
+    @Deprecated
     public static List<ItemStack> getOreDictItems(String key) {
-        List<ItemStack> items = new ArrayList<>();
-        for (net.minecraft.item.ItemStack itemStack: OreDictionary.getOres(key)) {
-            items.add(CraftItemStack.asBukkitCopy(itemStack));
-        }
-        return items;
+        return OreDictAPI.getOreDictItems(key);
     }
+
+    // This method has been taken from Mohist
+    /**
+     * Gets the Main NMS World
+     *
+     * @return NMS World
+     */
+    public static World getMainWorld(){
+        return getNMSServer().getEntityWorld();
+    }
+
 }

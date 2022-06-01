@@ -92,6 +92,12 @@ public final class CraftItemStack extends ItemStack {
 
     net.minecraft.item.ItemStack handle;
 
+    // Magma - Create getter for handle
+    public net.minecraft.item.ItemStack getHandle() {
+        return this.handle;
+    }
+
+
     /**
      * Mirror
      */
