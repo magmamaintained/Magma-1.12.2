@@ -355,13 +355,14 @@
              this.notifyNeighborsOfStateChange(pos, blockType, p_175722_3_);
          }
      }
-@@ -548,6 +722,17 @@
+@@ -548,6 +722,18 @@
  
              try
              {
 +                // CraftBukkit start
 +                CraftWorld world = ((WorldServer) this).getWorld();
-+                if (world != null) {
++                // Mohist - add check isBlockLoaded
++                if (world != null && isBlockLoaded(pos)) {
 +                    BlockPhysicsEvent event = new BlockPhysicsEvent(world.getBlockAt(pos.getX(), pos.getY(), pos.getZ()), CraftMagicNumbers.getId(blockIn));
 +                    this.getServer().getPluginManager().callEvent(event);
 +
@@ -373,7 +374,7 @@
                  iblockstate.neighborChanged(this, pos, blockIn, fromPos);
              }
              catch (Throwable throwable)
-@@ -586,6 +771,11 @@
+@@ -586,6 +772,11 @@
                  {
                      iblockstate.getBlock().observedNeighborChange(iblockstate, this, pos, p_190529_2_, p_190529_3_);
                  }
@@ -385,7 +386,7 @@
                  catch (Throwable throwable)
                  {
                      CrashReport crashreport = CrashReport.makeCrashReport(throwable, "Exception while updating neighbours");
-@@ -669,6 +859,41 @@
+@@ -669,6 +860,41 @@
          }
      }
  
@@ -427,7 +428,7 @@
      public int getLightFromNeighbors(BlockPos pos)
      {
          return this.getLight(pos, true);
-@@ -900,12 +1125,36 @@
+@@ -900,12 +1126,36 @@
          return this.provider.getLightBrightnessTable()[this.getLightFromNeighbors(pos)];
      }
  
@@ -465,7 +466,7 @@
          else
          {
              Chunk chunk = this.getChunkFromBlockCoords(pos);
-@@ -1181,14 +1430,72 @@
+@@ -1181,14 +1431,72 @@
  
      public boolean spawnEntity(Entity entityIn)
      {
@@ -543,7 +544,7 @@
          {
              flag = true;
          }
-@@ -1199,18 +1506,19 @@
+@@ -1199,18 +1507,19 @@
          }
          else
          {
@@ -569,7 +570,7 @@
              return true;
          }
      }
-@@ -1222,6 +1530,8 @@
+@@ -1222,6 +1531,8 @@
              ((IWorldEventListener)this.eventListeners.get(i)).onEntityAdded(entityIn);
          }
          entityIn.onAddedToWorld();
@@ -578,7 +579,7 @@
      }
  
      public void onEntityRemoved(Entity entityIn)
-@@ -1231,6 +1541,8 @@
+@@ -1231,6 +1542,8 @@
              ((IWorldEventListener)this.eventListeners.get(i)).onEntityRemoved(entityIn);
          }
          entityIn.onRemovedFromWorld();
@@ -587,7 +588,7 @@
      }
  
      public void removeEntity(Entity entityIn)
-@@ -1274,7 +1586,16 @@
+@@ -1274,7 +1587,16 @@
              this.getChunkFromChunkCoords(i, j).removeEntity(entityIn);
          }
  
@@ -605,7 +606,7 @@
          this.onEntityRemoved(entityIn);
      }
  
-@@ -1677,7 +1998,11 @@
+@@ -1677,7 +1999,11 @@
          for (int i = 0; i < this.weatherEffects.size(); ++i)
          {
              Entity entity = this.weatherEffects.get(i);
@@ -618,7 +619,7 @@
              try
              {
                  if(entity.updateBlocked) continue;
-@@ -1704,7 +2029,7 @@
+@@ -1704,7 +2030,7 @@
                      removeEntity(entity);
                  }
                  else
@@ -627,7 +628,7 @@
              }
  
              if (entity.isDead)
-@@ -1714,6 +2039,7 @@
+@@ -1714,6 +2040,7 @@
          }
  
          this.profiler.endStartSection("remove");
@@ -635,7 +636,7 @@
          this.loadedEntityList.removeAll(this.unloadedEntityList);
  
          for (int k = 0; k < this.unloadedEntityList.size(); ++k)
-@@ -1735,15 +2061,27 @@
+@@ -1735,15 +2062,27 @@
  
          this.unloadedEntityList.clear();
          this.tickPlayers();
@@ -668,7 +669,7 @@
                  if (!entity3.isDead && entity3.isPassenger(entity2))
                  {
                      continue;
-@@ -1758,12 +2096,15 @@
+@@ -1758,12 +2097,15 @@
              {
                  try
                  {
@@ -684,7 +685,7 @@
                      CrashReport crashreport1 = CrashReport.makeCrashReport(throwable1, "Ticking entity");
                      CrashReportCategory crashreportcategory1 = crashreport1.makeCategory("Entity being ticked");
                      entity2.addEntityCrashInfo(crashreportcategory1);
-@@ -1773,7 +2114,7 @@
+@@ -1773,7 +2115,7 @@
                          removeEntity(entity2);
                      }
                      else
@@ -693,7 +694,7 @@
                  }
              }
  
-@@ -1789,15 +2130,18 @@
+@@ -1789,15 +2131,18 @@
                  {
                      this.getChunkFromChunkCoords(l1, i2).removeEntity(entity2);
                  }
@@ -714,7 +715,7 @@
  
          this.processingLoadedTiles = true; //FML Move above remove to prevent CMEs
  
-@@ -1805,13 +2149,15 @@
+@@ -1805,13 +2150,15 @@
          {
              for (Object tile : tileEntitiesToBeRemoved)
              {
@@ -731,7 +732,7 @@
              this.loadedTileEntityList.removeAll(remove);
              this.tileEntitiesToBeRemoved.clear();
          }
-@@ -1834,25 +2180,28 @@
+@@ -1834,25 +2181,28 @@
                          {
                              return String.valueOf((Object)TileEntity.getKey(tileentity.getClass()));
                          });
@@ -767,7 +768,7 @@
                  }
              }
  
-@@ -1871,6 +2220,8 @@
+@@ -1871,6 +2221,8 @@
              }
          }
  
@@ -776,7 +777,7 @@
          this.processingLoadedTiles = false;
          this.profiler.endStartSection("pendingBlockEntities");
  
-@@ -1882,10 +2233,12 @@
+@@ -1882,10 +2234,12 @@
  
                  if (!tileentity1.isInvalid())
                  {
@@ -789,7 +790,7 @@
  
                      if (this.isBlockLoaded(tileentity1.getPos()))
                      {
-@@ -1893,6 +2246,12 @@
+@@ -1893,6 +2247,12 @@
                          IBlockState iblockstate = chunk.getBlockState(tileentity1.getPos());
                          chunk.addTileEntity(tileentity1.getPos(), tileentity1);
                          this.notifyBlockUpdate(tileentity1.getPos(), iblockstate, iblockstate, 3);
@@ -802,7 +803,7 @@
                      }
                  }
              }
-@@ -1900,6 +2259,8 @@
+@@ -1900,6 +2260,8 @@
              this.addedTileEntityList.clear();
          }
  
@@ -811,7 +812,7 @@
          this.profiler.endSection();
          this.profiler.endSection();
      }
-@@ -1976,6 +2337,14 @@
+@@ -1976,6 +2338,14 @@
              }
          }
  
@@ -826,7 +827,7 @@
          entityIn.lastTickPosX = entityIn.posX;
          entityIn.lastTickPosY = entityIn.posY;
          entityIn.lastTickPosZ = entityIn.posZ;
-@@ -1994,6 +2363,7 @@
+@@ -1994,6 +2364,7 @@
              {
                  if(!entityIn.updateBlocked)
                  entityIn.onUpdate();
@@ -834,7 +835,7 @@
              }
          }
  
-@@ -2399,7 +2769,11 @@
+@@ -2399,7 +2770,11 @@
  
              if (tileentity2 == null)
              {
@@ -847,7 +848,7 @@
              }
  
              if (tileentity2 == null)
-@@ -2418,7 +2792,7 @@
+@@ -2418,7 +2793,7 @@
          {
              TileEntity tileentity2 = this.addedTileEntityList.get(j2);
  
@@ -856,7 +857,7 @@
              {
                  return tileentity2;
              }
-@@ -2454,6 +2828,7 @@
+@@ -2454,6 +2829,7 @@
                      }
  
                      toInvalidate.forEach(TileEntity::invalidate);
@@ -864,7 +865,7 @@
                      this.addedTileEntityList.add(tileEntityIn);
                  }
                  else
-@@ -2662,6 +3037,13 @@
+@@ -2662,6 +3038,13 @@
                  }
  
                  this.rainingStrength = MathHelper.clamp(this.rainingStrength, 0.0F, 1.0F);
@@ -878,7 +879,7 @@
              }
          }
      }
-@@ -2849,10 +3231,11 @@
+@@ -2849,10 +3232,11 @@
          }
      }
  
@@ -894,7 +895,7 @@
              return false;
          }
          else
-@@ -3142,7 +3525,16 @@
+@@ -3142,7 +3526,16 @@
  
          for (Entity entity4 : this.loadedEntityList)
          {
@@ -912,7 +913,7 @@
              {
                  ++j2;
              }
-@@ -3157,6 +3549,9 @@
+@@ -3157,6 +3550,9 @@
          {
              if (!net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.EntityJoinWorldEvent(entity4, this)))
              {
@@ -922,7 +923,7 @@
                  loadedEntityList.add(entity4);
                  this.onEntityAdded(entity4);
              }
-@@ -3173,19 +3568,26 @@
+@@ -3173,19 +3569,26 @@
          IBlockState iblockstate1 = this.getBlockState(pos);
          AxisAlignedBB axisalignedbb = skipCollisionCheck ? null : blockIn.getDefaultState().getCollisionBoundingBox(this, pos);
  
@@ -952,7 +953,7 @@
      }
  
      public int getSeaLevel()
-@@ -3350,6 +3752,12 @@
+@@ -3350,6 +3753,12 @@
          {
              EntityPlayer entityplayer1 = this.playerEntities.get(j2);
  
@@ -965,7 +966,7 @@
              if (p_190525_9_.apply(entityplayer1))
              {
                  double d1 = entityplayer1.getDistanceSq(x, y, z);
-@@ -3595,8 +4003,19 @@
+@@ -3595,8 +4004,19 @@
  
      public void updateAllPlayersSleepingFlag()
      {
@@ -985,7 +986,7 @@
      public float getThunderStrength(float delta)
      {
          return (this.prevThunderingStrength + (this.thunderingStrength - this.prevThunderingStrength) * delta) * this.getRainStrength(delta);
-@@ -3885,7 +4304,7 @@
+@@ -3885,7 +4305,7 @@
          int j2 = x * 16 + 8 - blockpos1.getX();
          int k2 = z * 16 + 8 - blockpos1.getZ();
          int l2 = 128;
