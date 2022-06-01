@@ -486,6 +486,15 @@
          this.sleepTimer = immediately ? 0 : 100;
  
          if (setSpawn)
+@@ -1667,7 +1825,7 @@
+     @Nullable
+     public static BlockPos getBedSpawnLocation(World worldIn, BlockPos bedLocation, boolean forceSpawn)
+     {
+-        IBlockState state = worldIn.getBlockState(bedLocation);
++        IBlockState state = worldIn.getBlockState(bedLocation, true); // Mohist - Fix chunk unloading
+         Block block = state.getBlock();
+ 
+         if (!block.isBed(state, worldIn, bedLocation, null))
 @@ -1757,11 +1915,13 @@
          {
              this.spawnPos = pos;
