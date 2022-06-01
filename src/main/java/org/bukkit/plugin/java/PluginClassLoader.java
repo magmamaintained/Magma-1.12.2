@@ -234,7 +234,7 @@ public final class PluginClassLoader extends URLClassLoader {
                 } catch (IllegalArgumentException ignored) {
                 }
             }
-            if (!packageCache.contains(pkg)) {
+            if (!packageCache.contains(pkg) && manifest != null) {
                 Attributes attributes = manifest.getMainAttributes();
                 if (attributes != null) {
                     try {
