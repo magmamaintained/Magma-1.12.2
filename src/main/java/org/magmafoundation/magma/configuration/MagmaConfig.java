@@ -91,6 +91,9 @@ public class MagmaConfig extends ConfigBase {
             "Automatically unload dimensions that are not being used");
     public List<Integer> autoUnloadDimensionsWhitelist = Lists.newArrayList(13371337);
     public final BooleanValue respawnInOtherDim = new BooleanValue(this, "respawn-in-other-dim", true, "Allows players to respawn in other dimensions");
+    public final BooleanValue allowBlockLoadChunk = new BooleanValue(this, "allow-block-load-chunk", true, "Allow blocks and tile entities to load chunks");
+    public final BooleanValue forceUnloadChunks = new BooleanValue(this, "force-unload-chunks", false, "Force unloads the chunk despite the fact that minecraft marked the unloading of the chunk as canceled");
+
 
     //=============================FakePlayer SETTINGS========================
     public final StringArrayValue fakePlayerPermissions = new StringArrayValue(this, "fakeplayer.permissions", "", "A list of permissions that fake players should have");
