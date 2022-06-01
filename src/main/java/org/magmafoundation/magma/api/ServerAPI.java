@@ -41,6 +41,8 @@ public class ServerAPI {
     public static Map<String, Integer> mods = new ConcurrentHashMap<>();
     public static Set<String> modList = new ConcurrentSet<>();
     public static Map<String, String> commands = new ConcurrentHashMap<>();
+    public static Map<String, String> commandPermissions = new ConcurrentHashMap(); // Mohist
+
 
     /**
      * How many mods are present if the user didn't add any mods
