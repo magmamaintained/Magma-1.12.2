@@ -61,7 +61,7 @@
 +                            entityplayermp.connection.teleport(teleEvent.getTo());
 +                            entitylivingbase.fallDistance = 0.0F;
 +                            CraftEventFactory.entityDamage = this;
-+                            entitylivingbase.attackEntityFrom(DamageSource.FALL, 5.0F);
++                            entitylivingbase.attackEntityFrom(DamageSource.FALL, event.getAttackDamage());
 +                            CraftEventFactory.entityDamage = null;
 +                        }
 +                        // CraftBukkit end
