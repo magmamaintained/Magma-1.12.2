@@ -1671,11 +1671,13 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
     public void sendHealthUpdate() {
         // Paper start - cancellable death event
         //getHandle().connection.sendPacket(new SPacketUpdateHealth(getScaledHealth(), getHandle().getFoodStats().getFoodLevel(), getHandle().getFoodStats().getSaturationLevel()));
-        SPacketUpdateHealth packet = new SPacketUpdateHealth(getScaledHealth(), getHandle().getFoodStats().getFoodLevel(), getHandle().getFoodStats().getSaturationLevel());
-        if (this.getHandle().queueHealthUpdatePacket) {
-            this.getHandle().queuedHealthUpdatePacket = packet;
-        } else {
-            this.getHandle().connection.sendPacket(packet);
+        if (getHandle().connection != null) { // Mohist - Fix compatibility with Auto Sieve from Extra Utilities 2
+            SPacketUpdateHealth packet = new SPacketUpdateHealth(getScaledHealth(), getHandle().getFoodStats().getFoodLevel(), getHandle().getFoodStats().getSaturationLevel());
+            if (this.getHandle().queueHealthUpdatePacket) {
+                this.getHandle().queuedHealthUpdatePacket = packet;
+            } else {
+                this.getHandle().connection.sendPacket(packet);
+            }
         }
         // Paper end
     }
