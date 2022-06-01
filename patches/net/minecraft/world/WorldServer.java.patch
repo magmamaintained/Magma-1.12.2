@@ -515,6 +515,15 @@
              this.profiler.endSection();
          }
      }
+@@ -599,7 +838,7 @@
+     {
+         if (this.playerEntities.isEmpty() && getPersistentChunks().isEmpty())
+         {
+-            if (this.updateEntityTick++ >= 300)
++            if (this.updateEntityTick++ >= 300 && MinecraftServer.currentTick % 20 > 0) // Mohist - Fix TileEntity unloading
+             {
+                 return;
+             }
 @@ -611,6 +850,7 @@
  
          this.provider.onWorldUpdateEntities();
