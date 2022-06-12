@@ -1,21 +1,26 @@
 --- ../src-base/minecraft/net/minecraftforge/fml/relauncher/ServerLaunchWrapper.java
 +++ ../src-work/minecraft/net/minecraftforge/fml/relauncher/ServerLaunchWrapper.java
-@@ -19,58 +19,95 @@
+@@ -19,58 +19,113 @@
  
  package net.minecraftforge.fml.relauncher;
  
++import org.magmafoundation.magma.Magma;
++import org.magmafoundation.magma.betterui.BetterUI;
 +import org.magmafoundation.magma.configuration.MagmaConfig;
-+import org.magmafoundation.magma.downloads.DownloadServerFiles;
-+import org.magmafoundation.magma.downloads.LibraryDownloader;
 +import org.magmafoundation.magma.downloads.MagmaUpdater;
++import org.magmafoundation.magma.libs.Dependencies;
 +
++import java.io.IOException;
++import java.lang.reflect.Array;
  import java.lang.reflect.Method;
++import java.nio.file.Paths;
 +import java.util.Arrays;
 +import java.util.List;
  
 -import org.apache.logging.log4j.LogManager;
 -import org.apache.logging.log4j.core.LoggerContext;
--
++import static org.magmafoundation.magma.MagmaConstants.*;
+ 
  public class ServerLaunchWrapper {
  
 +    public static long beginTime;
@@ -26,26 +31,36 @@
       */
 -    public static void main(String[] args)
 -    {
-+    public static void main(String[] args) {
-+        System.out.println("[Magma] Starting Magma");
++    public static void main(String[] args) throws IOException {
 +        LAUNCH_ARGS = Arrays.asList(args);
++
++        if (LAUNCH_ARGS.contains("-noui")) {
++            BetterUI.setEnabled(false);
++            LAUNCH_ARGS.remove("-noui");
++        }
++        if (LAUNCH_ARGS.contains("-nologo")) {
++            BetterUI.setEnableBigLogo(false);
++            LAUNCH_ARGS.remove("-nologo");
++        }
++
++        BetterUI.printTitle(NAME, BRAND, System.getProperty("java.version") + " (" + System.getProperty("java.vendor") + ")", VERSION, BUKKIT_VERSION, FORGE_VERSION);
++
++        if (!BetterUI.checkEula(Paths.get("eula.txt")))
++            System.exit(0);
 +
 +        if (getJavaVersion() > 8) {
 +            try {
-+                throw new JavaToNewException();
-+            } catch (JavaToNewException e) {
++                throw new JavaTooNewException();
++            } catch (JavaTooNewException e) {
 +                e.printStackTrace();
-+                System.out.println("[Magma] Magma for 1.12 only supports Java 8. Visit our GitHub for more information.\n\nGitHub: https://github.com/magmafoundation/Magma");
 +                return;
 +            }
 +        }
-+
-+        DownloadServerFiles.downloadMinecraftServer();
-+        LibraryDownloader libraryDownloader = new LibraryDownloader();
-+        libraryDownloader.run();
++        
++        Dependencies.start();
 +
 +        if (!LAUNCH_ARGS.contains("-dau")) {
-+            System.out.println("[Magma] Checking for new version...");
++            System.out.println("Checking for updates...");
 +            MagmaUpdater magmaUpdater = new MagmaUpdater();
 +            if (magmaUpdater.versionChecker() && MagmaConfig.instance.magmaAutoUpdater.getValues()) {
 +                magmaUpdater.downloadJar();
@@ -57,14 +72,12 @@
  
 -    private ServerLaunchWrapper()
 -    {
-+    private static class JavaToNewException extends RuntimeException {
++    private static class JavaTooNewException extends RuntimeException {
++        public JavaTooNewException() {
++            super(Magma.getName() + " only supports Java 8. Please download the latest version of Java 8 from https://www.java.com/en/download/");
++        }
++    }
  
-     }
- 
--    private void run(String[] args)
--    {
--        if (System.getProperty("log4j.configurationFile") == null)
--        {
 +    public static int getJavaVersion() {
 +        String version = System.getProperty("java.version");
 +        if (version.startsWith("1.")) {
@@ -74,8 +87,12 @@
 +        int dotPos = version.indexOf('.');
 +        int dashPos = version.indexOf('-');
 +        return Integer.parseInt(version.substring(0, dotPos > -1 ? dotPos : dashPos > -1 ? dashPos : 1));
-+    }
-+
+     }
+ 
+-    private void run(String[] args)
+-    {
+-        if (System.getProperty("log4j.configurationFile") == null)
+-        {
 +    private ServerLaunchWrapper() {
 +
 +    }
