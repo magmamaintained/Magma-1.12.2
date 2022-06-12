@@ -22,6 +22,8 @@ import org.magmafoundation.magma.configuration.MagmaConfig;
 import org.magmafoundation.magma.modPatcher.ModPatcherManager;
 import org.magmafoundation.magma.patcher.PatcherManager;
 
+import static org.magmafoundation.magma.MagmaConstants.*;
+
 /**
  * Magma
  *
@@ -30,10 +32,6 @@ import org.magmafoundation.magma.patcher.PatcherManager;
  */
 public class Magma {
 
-    private static final String NAME = "Magma";
-    private static final String VERSION = (Magma.class.getPackage().getImplementationVersion() != null) ? Magma.class.getPackage().getImplementationVersion() : "dev-env";
-    private static final String BUKKIT_VERSION = "v1_12_R1";
-    private static final String NMS_PREFIX = "net/minecraft/server/";
     private static Magma INSTANCE = new Magma();
     private PatcherManager patcherManager;
     private ModPatcherManager modPatcherManager;
@@ -51,8 +49,13 @@ public class Magma {
     }
 
     public static String getName() {
-        if(MagmaConfig.instance.overrideServerBrand.getValues()) return MagmaConfig.instance.serverBrand.getValues();
+        if (MagmaConfig.instance.overrideServerName.getValues()) return MagmaConfig.instance.serverName.getValues();
         return NAME;
+    }
+
+    public static String getBrand() {
+        if (MagmaConfig.instance.overrideServerBrand.getValues()) return MagmaConfig.instance.serverBrand.getValues();
+        return BRAND;
     }
 
     public static String getVersion() {
@@ -61,6 +64,10 @@ public class Magma {
 
     public static String getBukkitVersion() {
         return BUKKIT_VERSION;
+    }
+
+    public static String getForgeVersion() {
+        return FORGE_VERSION;
     }
 
     public static String getNmsPrefix() {
