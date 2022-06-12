@@ -98,8 +98,11 @@ public class MagmaConfig extends ConfigBase {
     //=============================Misc SETTINGS==============================
     public final BooleanValue forgeBukkitPermissionHandlerEnable = new BooleanValue(this, "forge.bukkitPermissionHandler.enable", true, "Let's Bukkit permission plugins handle forge/modded commands");
     public final BooleanValue magmaAutoUpdater = new BooleanValue(this, "magma.auto-update", true, "Auto updates the Magma jar");
+
+    public final BooleanValue overrideServerName = new BooleanValue(this, "magma.advanced.override-name", false, "Enable overriding the name string");
+    public final StringValue serverName = new StringValue(this, "magma.advanced.override-name-string", "Spigot", "Value to use for the new name string");
     public final BooleanValue overrideServerBrand = new BooleanValue(this, "magma.advanced.override-brand", false, "Enables overriding the brand string");
-    public final StringValue serverBrand = new StringValue(this, "magma.advanced.override-brand-name", "Spigot", "Value to use for new brand string");
+    public final StringValue serverBrand = new StringValue(this, "magma.advanced.override-brand-string", "SpigotMC", "Value to use for new brand string");
     public final StringValue toolTipOverridePriority = new StringValue(this, "magma.advanced.tooltip-priority", "mod", "Mod, Plugin, None : determines what has tooltip priority");
     public final StringValue serverBrandType = new StringValue(this, "magma.advanced.server-type", "FML", "Set to FML to show forge icon or BUKKIT to show bukkit icon (FML is default)");
     public final BooleanValue forgeBukkitAccess = new BooleanValue(this, "magma.advanced.forge-bukkit-access", true, "Allows Forge mods to access Bukkit plugin classes");
@@ -116,7 +119,7 @@ public class MagmaConfig extends ConfigBase {
     private final String HEADER = "This is the main configuration file for Magma.\n" +
             "\n" +
             "Site: https://magmafoundation.org\n" +
-            "Discord: https://discord.gg/6rkqngA\n";
+            "Discord: https://discord.gg/magma\n";
 
 
     public MagmaConfig() {
