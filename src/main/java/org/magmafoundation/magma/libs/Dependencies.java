@@ -9,6 +9,7 @@ import me.tongfei.progressbar.ProgressBarBuilder;
 import me.tongfei.progressbar.ProgressBarStyle;
 import org.magmafoundation.magma.MagmaConstants;
 import org.magmafoundation.magma.utils.JarLoader;
+import org.magmafoundation.magma.utils.JarUtils;
 import org.magmafoundation.magma.utils.MD5Checksum;
 
 import java.io.*;
@@ -23,8 +24,7 @@ public class Dependencies {
 
     private static final File log = new File("logs/installer.log");
     private static FileWriter logWriter;
-
-    private static final File libraries_folder = new File(MagmaConstants.INSTALLER_LIBRARIES_FOLDER);
+    private static final File libraries_folder = new File(String.format("%s/%s/", JarUtils.getJarDir(), MagmaConstants.INSTALLER_LIBRARIES_FOLDER));
     private static File serverJar = new File(libraries_folder, "minecraft_server.1.12.2.jar");
 
     private static JsonArray libraries;
