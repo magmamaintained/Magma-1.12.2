@@ -146,7 +146,9 @@ public class Dependencies {
         String expectedMD5Hash = "71728ed3fbd0acd1394bf3ade2649a5c";
 
         File[] serverLibs = new File[] {
-                downloadDependency("https://repo1.maven.org/maven2/me/tongfei/progressbar/0.9.2/progressbar-0.9.2.jar", libraries_folder + "/me/tongfei/progressbar/0.9.2/progressbar-0.9.2.jar", "5563c8a0525c5a40f340d23ea63be2b5")
+                downloadDependency("https://repo1.maven.org/maven2/org/jline/jline/3.21.0/jline-3.21.0.jar", libraries_folder + "/org/jline/jline/3.21.0/jline-3.21.0.jar", "859778f9cdd3bd42bbaaf0f6f7fe5e6a"),
+                downloadDependency("https://repo1.maven.org/maven2/me/tongfei/progressbar/0.9.2/progressbar-0.9.2.jar", libraries_folder + "/me/tongfei/progressbar/0.9.2/progressbar-0.9.2.jar", "5563c8a0525c5a40f340d23ea63be2b5"),
+                downloadDependency("https://repo1.maven.org/maven2/com/google/code/gson/gson/2.8.7/gson-2.8.7.jar", libraries_folder + "/com/google/code/gson/gson/2.8.7/gson-2.8.7.jar", "87b5c368aecef232d401f4a159e7b9af")
         };
 
         Arrays.stream(serverLibs).parallel().forEach(file -> {
@@ -178,6 +180,9 @@ public class Dependencies {
             System.out.println("Server jar not found, downloading...");
             serverJar = downloadDependency(downloadLink, serverJar.getPath(), expectedMD5Hash);
         }
+
+        // Load the server jar
+        JarLoader.addFile(serverJar);
     }
 
     private static JsonArray parseLibraryJson(Reader reader) {
