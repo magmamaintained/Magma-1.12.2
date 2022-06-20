@@ -49,7 +49,7 @@ public class VersionCommand extends Command {
     public VersionCommand(String name) {
         super(name);
 
-        this.description = "Gets the version of the server including any pligins in use";
+        this.description = "Gets the version of the server including any plugins in use";
         this.usageMessage = "/version [plugin name]";
         this.setAliases(Arrays.asList("ver", "about"));
         this.setPermission("bukkit.command.version");
