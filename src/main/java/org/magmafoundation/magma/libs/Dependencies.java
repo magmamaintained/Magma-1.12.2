@@ -168,9 +168,11 @@ public class Dependencies {
             oldServerJar.delete();
 
         if (serverJar.exists()) {
-            if (MD5Checksum.checkMD5(serverJar, expectedMD5Hash))
+            if (MD5Checksum.checkMD5(serverJar, expectedMD5Hash)) {
+                // Load the server jar
+                JarLoader.addFile(serverJar);
                 return;
-            else {
+            } else {
                 System.out.println("Server jar checksum failed, redownloading...");
                 serverJar = downloadDependency(downloadLink, serverJar.getPath(), expectedMD5Hash);
             }
