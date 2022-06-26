@@ -1,6 +1,6 @@
 --- ../src-base/minecraft/net/minecraftforge/fml/relauncher/ServerLaunchWrapper.java
 +++ ../src-work/minecraft/net/minecraftforge/fml/relauncher/ServerLaunchWrapper.java
-@@ -19,58 +19,113 @@
+@@ -19,58 +19,103 @@
  
  package net.minecraftforge.fml.relauncher;
  
@@ -45,18 +45,14 @@
 +
 +        BetterUI.printTitle(NAME, BRAND, System.getProperty("java.version") + " (" + System.getProperty("java.vendor") + ")", VERSION, BUKKIT_VERSION, FORGE_VERSION);
 +
++        if (getJavaVersion() > 8) {
++            System.err.println("WARNING: You are running a version of Java that is not supported by Magma.\nPlease download the latest version of Java 8 (https://www.java.com/en/download/).");
++            System.exit(-1);
++        }
++
 +        if (!BetterUI.checkEula(Paths.get("eula.txt")))
 +            System.exit(0);
 +
-+        if (getJavaVersion() > 8) {
-+            try {
-+                throw new JavaTooNewException();
-+            } catch (JavaTooNewException e) {
-+                e.printStackTrace();
-+                return;
-+            }
-+        }
-+        
 +        Dependencies.start();
 +
 +        if (!LAUNCH_ARGS.contains("-dau")) {
@@ -72,18 +68,12 @@
  
 -    private ServerLaunchWrapper()
 -    {
-+    private static class JavaTooNewException extends RuntimeException {
-+        public JavaTooNewException() {
-+            super(Magma.getName() + " only supports Java 8. Please download the latest version of Java 8 from https://www.java.com/en/download/");
-+        }
-+    }
- 
 +    public static int getJavaVersion() {
 +        String version = System.getProperty("java.version");
 +        if (version.startsWith("1.")) {
 +            version = version.substring(2);
 +        }
-+
+ 
 +        int dotPos = version.indexOf('.');
 +        int dashPos = version.indexOf('-');
 +        return Integer.parseInt(version.substring(0, dotPos > -1 ? dotPos : dashPos > -1 ? dashPos : 1));
