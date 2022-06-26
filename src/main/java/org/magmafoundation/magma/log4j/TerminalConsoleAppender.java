@@ -92,7 +92,7 @@ public class TerminalConsoleAppender extends AbstractAppender {
         if (!initialized && reader == null) {
             initialized = true;
 
-            if (ENABLE_JLINE) {
+            if (ENABLE_JLINE && (org.bukkit.craftbukkit.v1_12_R1.Main.useConsole == true)) {
                 final boolean hasConsole = System.console() != null;
                 if (hasConsole) {
                     try {
