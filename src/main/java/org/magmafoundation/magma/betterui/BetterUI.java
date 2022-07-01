@@ -72,6 +72,16 @@ public class BetterUI {
         } else return true;
     }
 
+    public static void forceAcceptEULA(Path path_to_eula) throws IOException {
+        File file = path_to_eula.toFile();
+        if (file.exists())
+            file.delete();
+        file.createNewFile();
+        try (FileWriter writer = new FileWriter(file)) {
+            writer.write("eula=true");
+        }
+    }
+
     public static void setEnabled(boolean enabled) {
         BetterUI.enabled = enabled;
     }
