@@ -1,21 +1,21 @@
 --- ../src-base/minecraft/net/minecraftforge/fml/relauncher/ServerLaunchWrapper.java
 +++ ../src-work/minecraft/net/minecraftforge/fml/relauncher/ServerLaunchWrapper.java
-@@ -19,58 +19,103 @@
+@@ -19,58 +19,109 @@
  
  package net.minecraftforge.fml.relauncher;
  
-+import org.magmafoundation.magma.Magma;
 +import org.magmafoundation.magma.betterui.BetterUI;
 +import org.magmafoundation.magma.configuration.MagmaConfig;
 +import org.magmafoundation.magma.downloads.MagmaUpdater;
 +import org.magmafoundation.magma.libs.Dependencies;
 +
 +import java.io.IOException;
-+import java.lang.reflect.Array;
  import java.lang.reflect.Method;
++import java.nio.file.Path;
 +import java.nio.file.Paths;
 +import java.util.Arrays;
 +import java.util.List;
++import java.util.stream.Collectors;
  
 -import org.apache.logging.log4j.LogManager;
 -import org.apache.logging.log4j.core.LoggerContext;
@@ -32,7 +32,9 @@
 -    public static void main(String[] args)
 -    {
 +    public static void main(String[] args) throws IOException {
-+        LAUNCH_ARGS = Arrays.asList(args);
++        LAUNCH_ARGS = Arrays.stream(args).map(String::toLowerCase).collect(Collectors.toList());
++
++        Path eula = Paths.get("eula.txt");
 +
 +        if (LAUNCH_ARGS.contains("-noui")) {
 +            BetterUI.setEnabled(false);
@@ -42,6 +44,10 @@
 +            BetterUI.setEnableBigLogo(false);
 +            LAUNCH_ARGS.remove("-nologo");
 +        }
++        if (LAUNCH_ARGS.contains("-accepteula")) {
++            BetterUI.forceAcceptEULA(eula);
++            LAUNCH_ARGS.remove("-accepteula");
++        }
 +
 +        BetterUI.printTitle(NAME, BRAND, System.getProperty("java.version") + " (" + System.getProperty("java.vendor") + ")", VERSION, BUKKIT_VERSION, FORGE_VERSION);
 +
@@ -50,7 +56,7 @@
 +            System.exit(-1);
 +        }
 +
-+        if (!BetterUI.checkEula(Paths.get("eula.txt")))
++        if (!BetterUI.checkEula(eula))
 +            System.exit(0);
 +
 +        Dependencies.start();
