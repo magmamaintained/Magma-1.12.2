@@ -17,6 +17,8 @@ Magma is based on **Forge and Paper**, meaning it can run both **Craftbukkit/Spi
 
 This branch implements parts of [Mohist](https://github.com/MohistMC/Mohist).
 
+This branch implements parts of [TacoSpigot](https://github.com/TacoSpigot/TacoSpigot/)
+
 We hope to eliminate all issues with craftbukkit forge servers. In the end, we envision a seamless, low lag Magma experience with support for newer 1.12+ versions of Minecraft.
 <details>
    <summary><b>Click here to see a screenshot!</b></summary>
