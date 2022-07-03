@@ -1536,11 +1536,16 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
 
     @Override
     public int getNoDamageTicks() {
+        // TacoSpigot start - fix incorrect calculation of getNoDamageTicks
+        /*
         if (getHandle().respawnInvulnerabilityTicks > 0) {
             return Math.max(getHandle().respawnInvulnerabilityTicks, getHandle().hurtResistantTime);
         } else {
             return getHandle().hurtResistantTime;
         }
+        */
+        return Math.max(getHandle().respawnInvulnerabilityTicks, Math.max(0, getHandle().hurtResistantTime - 20 / 2)); // 20 is the default maxNoDamageTicks value (at least that's what Malcolm said, blame him)
+        // TacoSpigot end
     }
 
     @Override
