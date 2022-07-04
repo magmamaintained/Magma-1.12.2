@@ -24,7 +24,7 @@
  import net.minecraft.item.ItemElytra;
  import net.minecraft.item.ItemStack;
  import net.minecraft.item.ItemSword;
-@@ -92,6 +89,18 @@
+@@ -92,6 +89,19 @@
  import net.minecraft.world.WorldServer;
  import net.minecraftforge.fml.relauncher.Side;
  import net.minecraftforge.fml.relauncher.SideOnly;
@@ -40,10 +40,11 @@
 +import org.bukkit.event.player.PlayerVelocityEvent;
 +import org.bukkit.util.Vector;
 +import org.bukkit.craftbukkit.v1_12_R1.event.CraftEventFactory;
++import org.magmafoundation.magma.configuration.MagmaConfig;
  
  @SuppressWarnings("incomplete-switch")
  public abstract class EntityPlayer extends EntityLivingBase
-@@ -109,10 +118,11 @@
+@@ -109,10 +119,11 @@
      protected static final DataParameter<NBTTagCompound> LEFT_SHOULDER_ENTITY = EntityDataManager.<NBTTagCompound>createKey(EntityPlayer.class, DataSerializers.COMPOUND_TAG);
      protected static final DataParameter<NBTTagCompound> RIGHT_SHOULDER_ENTITY = EntityDataManager.<NBTTagCompound>createKey(EntityPlayer.class, DataSerializers.COMPOUND_TAG);
      public InventoryPlayer inventory = new InventoryPlayer(this);
@@ -57,7 +58,7 @@
      protected int flyToggleTimer;
      public float prevCameraYaw;
      public float cameraYaw;
-@@ -123,9 +133,9 @@
+@@ -123,9 +134,9 @@
      public double chasingPosX;
      public double chasingPosY;
      public double chasingPosZ;
@@ -69,10 +70,12 @@
      public float renderOffsetX;
      @SideOnly(Side.CLIENT)
      public float renderOffsetY;
-@@ -147,6 +157,12 @@
+@@ -147,6 +158,14 @@
      @Nullable
      public EntityFishHook fishEntity;
  
++    public int clientTicksSinceLastAttack; // TacoSpigot
++
 +    // CraftBukkit start
 +    public boolean fauxSleeping;
 +    public String spawnWorld = "";
@@ -82,7 +85,7 @@
      protected CooldownTracker createCooldownTracker()
      {
          return new CooldownTracker();
-@@ -162,6 +178,9 @@
+@@ -162,6 +181,9 @@
          BlockPos blockpos = worldIn.getSpawnPoint();
          this.setLocationAndAngles((double)blockpos.getX() + 0.5D, (double)(blockpos.getY() + 1), (double)blockpos.getZ() + 0.5D, 0.0F, 0.0F);
          this.unused180 = 180.0F;
@@ -92,7 +95,7 @@
      }
  
      protected void applyEntityAttributes()
-@@ -408,7 +427,7 @@
+@@ -408,7 +430,7 @@
          return SoundCategory.PLAYERS;
      }
  
@@ -101,7 +104,7 @@
      {
          return 20;
      }
-@@ -499,7 +518,8 @@
+@@ -499,7 +521,8 @@
          {
              if (this.getHealth() < this.getMaxHealth() && this.ticksExisted % 20 == 0)
              {
@@ -111,7 +114,7 @@
              }
  
              if (this.foodStats.needFood() && this.ticksExisted % 10 == 0)
-@@ -527,7 +547,7 @@
+@@ -527,7 +550,7 @@
  
          this.setAIMoveSpeed((float)iattributeinstance.getAttributeValue());
          float f = MathHelper.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
@@ -120,7 +123,7 @@
  
          if (f > 0.1F)
          {
-@@ -691,6 +711,7 @@
+@@ -691,6 +714,7 @@
      @Nullable
      public EntityItem dropItem(boolean dropAll)
      {
@@ -128,7 +131,7 @@
          ItemStack stack = inventory.getCurrentItem();
  
          if (stack.isEmpty())
-@@ -750,6 +771,30 @@
+@@ -750,6 +774,30 @@
                  entityitem.motionZ += Math.sin((double)f3) * (double)f2;
              }
  
@@ -159,7 +162,7 @@
              ItemStack itemstack = this.dropItemAndGetStack(entityitem);
  
              if (traceItem)
-@@ -893,6 +938,13 @@
+@@ -893,6 +941,13 @@
              this.wakeUpPlayer(true, true, false);
          }
  
@@ -173,7 +176,7 @@
          if (compound.hasKey("SpawnX", 99) && compound.hasKey("SpawnY", 99) && compound.hasKey("SpawnZ", 99))
          {
              this.spawnPos = new BlockPos(compound.getInteger("SpawnX"), compound.getInteger("SpawnY"), compound.getInteger("SpawnZ"));
-@@ -987,6 +1039,7 @@
+@@ -987,6 +1042,7 @@
          {
              compound.setTag("ShoulderEntityRight", this.getRightShoulderEntity());
          }
@@ -181,7 +184,7 @@
      }
  
      public boolean attackEntityFrom(DamageSource source, float amount)
-@@ -1015,13 +1068,13 @@
+@@ -1015,13 +1071,13 @@
                      this.wakeUpPlayer(true, true, false);
                  }
  
@@ -197,7 +200,7 @@
                      }
  
                      if (this.world.getDifficulty() == EnumDifficulty.EASY)
-@@ -1035,7 +1088,14 @@
+@@ -1035,7 +1091,14 @@
                      }
                  }
  
@@ -213,7 +216,7 @@
              }
          }
      }
-@@ -1052,17 +1112,29 @@
+@@ -1052,17 +1115,29 @@
  
      public boolean canAttackPlayer(EntityPlayer other)
      {
@@ -252,7 +255,7 @@
      }
  
      protected void damageArmor(float damage)
-@@ -1113,8 +1185,11 @@
+@@ -1113,8 +1188,11 @@
          return (float)i / (float)this.inventory.armorInventory.size();
      }
  
@@ -266,7 +269,7 @@
          if (!this.isEntityInvulnerable(damageSrc))
          {
              damageAmount = net.minecraftforge.common.ForgeHooks.onLivingHurt(this, damageSrc, damageAmount);
-@@ -1140,8 +1215,15 @@
+@@ -1140,8 +1218,15 @@
                  }
              }
          }
@@ -282,7 +285,7 @@
      public void openEditSign(TileEntitySign signTile)
      {
      }
-@@ -1317,8 +1399,17 @@
+@@ -1317,8 +1402,17 @@
  
                          if (j > 0 && !targetEntity.isBurning())
                          {
@@ -302,7 +305,7 @@
                          }
                      }
  
-@@ -1353,8 +1444,10 @@
+@@ -1353,8 +1447,10 @@
                              {
                                  if (entitylivingbase != this && entitylivingbase != targetEntity && !this.isOnSameTeam(entitylivingbase) && this.getDistanceSq(entitylivingbase) < 9.0D)
                                  {
@@ -315,7 +318,7 @@
                                  }
                              }
  
-@@ -1364,11 +1457,28 @@
+@@ -1364,11 +1460,28 @@
  
                          if (targetEntity instanceof EntityPlayerMP && targetEntity.velocityChanged)
                          {
@@ -349,7 +352,7 @@
                          }
  
                          if (flag2)
-@@ -1434,7 +1544,15 @@
+@@ -1434,7 +1547,15 @@
  
                              if (j > 0)
                              {
@@ -366,7 +369,7 @@
                              }
  
                              if (this.world instanceof WorldServer && f5 > 2.0F)
-@@ -1454,6 +1572,11 @@
+@@ -1454,6 +1575,11 @@
                          {
                              targetEntity.extinguish();
                          }
@@ -378,7 +381,7 @@
                      }
                  }
              }
-@@ -1527,9 +1650,13 @@
+@@ -1527,9 +1653,13 @@
          return this.gameProfile;
      }
  
@@ -394,7 +397,7 @@
          if (ret != null) return ret;
          final IBlockState state = this.world.isBlockLoaded(bedLocation) ? this.world.getBlockState(bedLocation) : null;
          final boolean isBed = state != null && state.getBlock().isBed(state, this.world, bedLocation, this);
-@@ -1539,31 +1666,31 @@
+@@ -1539,31 +1669,31 @@
          {
              if (this.isPlayerSleeping() || !this.isEntityAlive())
              {
@@ -432,7 +435,7 @@
              }
          }
  
-@@ -1572,6 +1699,20 @@
+@@ -1572,6 +1702,20 @@
              this.dismountRidingEntity();
          }
  
@@ -453,7 +456,7 @@
          this.spawnShoulderEntities();
          this.setSize(0.2F, 0.2F);
  
-@@ -1598,7 +1739,7 @@
+@@ -1598,7 +1742,7 @@
              this.world.updateAllPlayersSleepingFlag();
          }
  
@@ -462,7 +465,7 @@
      }
  
      private boolean bedInRange(BlockPos p_190774_1_, EnumFacing p_190774_2_)
-@@ -1651,6 +1792,23 @@
+@@ -1651,6 +1795,23 @@
              this.world.updateAllPlayersSleepingFlag();
          }
  
@@ -486,7 +489,7 @@
          this.sleepTimer = immediately ? 0 : 100;
  
          if (setSpawn)
-@@ -1667,7 +1825,7 @@
+@@ -1667,7 +1828,7 @@
      @Nullable
      public static BlockPos getBedSpawnLocation(World worldIn, BlockPos bedLocation, boolean forceSpawn)
      {
@@ -495,7 +498,7 @@
          Block block = state.getBlock();
  
          if (!block.isBed(state, worldIn, bedLocation, null))
-@@ -1757,11 +1915,13 @@
+@@ -1757,11 +1918,13 @@
          {
              this.spawnPos = pos;
              this.spawnForced = forced;
@@ -509,7 +512,7 @@
          }
      }
  
-@@ -1820,7 +1980,12 @@
+@@ -1820,7 +1983,12 @@
              this.motionY = d3 * 0.6D;
              this.jumpMovementFactor = f;
              this.fallDistance = 0.0F;
@@ -523,7 +526,7 @@
          }
          else
          {
-@@ -2225,10 +2390,16 @@
+@@ -2225,10 +2393,16 @@
  
      protected void spawnShoulderEntities()
      {
@@ -544,7 +547,7 @@
      }
  
      private void spawnShoulderEntity(@Nullable NBTTagCompound p_192026_1_)
-@@ -2247,6 +2418,23 @@
+@@ -2247,6 +2421,23 @@
          }
      }
  
@@ -568,7 +571,7 @@
      @SideOnly(Side.CLIENT)
      public boolean isInvisibleToPlayer(EntityPlayer player)
      {
-@@ -2481,7 +2669,7 @@
+@@ -2481,7 +2672,7 @@
          return (NBTTagCompound)this.dataManager.get(LEFT_SHOULDER_ENTITY);
      }
  
@@ -577,7 +580,7 @@
      {
          this.dataManager.set(LEFT_SHOULDER_ENTITY, tag);
      }
-@@ -2491,7 +2679,7 @@
+@@ -2491,7 +2682,7 @@
          return (NBTTagCompound)this.dataManager.get(RIGHT_SHOULDER_ENTITY);
      }
  
@@ -586,7 +589,35 @@
      {
          this.dataManager.set(RIGHT_SHOULDER_ENTITY, tag);
      }
-@@ -2531,7 +2719,7 @@
+@@ -2503,12 +2694,26 @@
+ 
+     public float getCooledAttackStrength(float adjustTicks)
+     {
+-        return MathHelper.clamp(((float)this.ticksSinceLastSwing + adjustTicks) / this.getCooldownPeriod(), 0.0F, 1.0F);
++        // TacoSpigot start - use both client and server ticks
++        if (MagmaConfig.instance.tacoBetterPvP.getValues()) {
++            return MathHelper.clamp(
++                    (float) (Math.max(
++                            this.ticksSinceLastSwing,
++                            this.clientTicksSinceLastAttack
++                    ) + adjustTicks) / this.getCooldownPeriod(),
++                    0.0F,
++                    1.0F
++            );
++        } else {
++            return MathHelper.clamp(((float)this.ticksSinceLastSwing + adjustTicks) / this.getCooldownPeriod(), 0.0F, 1.0F);
++        }
++        // TacoSpigot end
+     }
+ 
+     public void resetCooldown()
+     {
+         this.ticksSinceLastSwing = 0;
++        this.clientTicksSinceLastAttack = 0; // TacoSpigot
+     }
+ 
+     public CooldownTracker getCooldownTracker()
+@@ -2531,7 +2736,7 @@
  
      public boolean canUseCommandBlock()
      {
@@ -595,7 +626,7 @@
      }
  
      /**
-@@ -2671,7 +2859,7 @@
+@@ -2671,7 +2876,7 @@
      @SuppressWarnings("unchecked")
      @Override
      @Nullable
@@ -604,7 +635,7 @@
      {
          if (capability == net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
          {
-@@ -2683,7 +2871,7 @@
+@@ -2683,7 +2888,7 @@
      }
  
      @Override
@@ -613,7 +644,7 @@
      {
          return capability == net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
      }
-@@ -2702,7 +2890,7 @@
+@@ -2702,7 +2907,7 @@
          SYSTEM(1, "options.chat.visibility.system"),
          HIDDEN(2, "options.chat.visibility.hidden");
  
@@ -622,7 +653,7 @@
          private final int chatVisibility;
          private final String resourceKey;
  
-@@ -2732,7 +2920,7 @@
+@@ -2732,7 +2937,7 @@
  
          static
          {
@@ -631,7 +662,7 @@
              {
                  ID_LOOKUP[entityplayer$enumchatvisibility.chatVisibility] = entityplayer$enumchatvisibility;
              }
-@@ -2763,4 +2951,11 @@
+@@ -2763,4 +2968,11 @@
          OTHER_PROBLEM,
          NOT_SAFE;
      }
