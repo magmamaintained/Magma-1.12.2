@@ -83,6 +83,7 @@ public class MagmaConfig extends ConfigBase {
     public final StringValue serverBrandType = new StringValue(this, "magma.advanced.server-type", "FML", "Set to FML to show forge icon or BUKKIT to show bukkit icon (FML is default)");
 
     // OTHER
+    public final BooleanValue forgeBukkitPermissionHandlerEnable = new BooleanValue(this, "magma.advanced.enable-bukkit-permission-handler", true, "Let's Bukkit permission plugins handle forge/modded commands");
     public final BooleanValue forgeBukkitAccess = new BooleanValue(this, "magma.advanced.forge-bukkit-access", true, "Allows Forge mods to access Bukkit plugin classes");
     public final StringValue toolTipOverridePriority = new StringValue(this, "magma.advanced.tooltip-priority", "mod", "Mod, Plugin, None : determines what has tooltip priority");
     public final BooleanValue magmaAutoUpdater = new BooleanValue(this, "magma.update.auto-update", true, "Auto updates the Magma jar (Requires check-for-updates to be enabled)");
@@ -91,7 +92,8 @@ public class MagmaConfig extends ConfigBase {
     // BUKKIT/SPIGOT/TACO/...
     public final IntValue maxPotionEffectAmount = new IntValue(this, "bukkit.max-potion-effect-amount", 1024, "Maximum amount of possible potion effects (Bukkit's default is 300)");
     public final BooleanValue enableReloadCommand = new BooleanValue(this, "bukkit.enable-reload", false, "Enables the reload command (not recommended)");
-    public final BooleanValue forgeBukkitPermissionHandlerEnable = new BooleanValue(this, "magma.advanced.enable-bukkit-permission-handler", true, "Let's Bukkit permission plugins handle forge/modded commands");
+    public final BooleanValue tacoFixNoDamageTicks = new BooleanValue(this, "bukkit.taco.fix-no-damage-ticks", true, "Applies Taco's fix for getNoDamageTicks");
+    public final BooleanValue tacoFireArrowCollideEvent = new BooleanValue(this, "bukkit.taco.fire-arrow-collide-event", true, "Toggles the triggering of Taco's ArrowCollideEvent");
 
     // MESSAGES
     public final StringValue fmlRequiredMessage = new StringValue(this, "magma.messages.fml.fml-required", "&cThis Server is running Magma. Forge and additional mods are required in order to connect to this server.", "FML required kick message");
