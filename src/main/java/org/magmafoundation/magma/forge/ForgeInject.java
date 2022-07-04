@@ -55,7 +55,7 @@ import org.magmafoundation.magma.entity.CraftCustomEntity;
  */
 public class ForgeInject {
 
-    private static final BooleanValue magmaDebugPrint = MagmaConfig.instance.debugPrintBukkitMatterials;
+    private static final BooleanValue magmaDebugPrint = MagmaConfig.instance.debugPrintBukkitMaterials;
 
 
     public static void injectForge() {
