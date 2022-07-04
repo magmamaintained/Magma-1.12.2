@@ -115,6 +115,7 @@ import org.bukkit.scoreboard.Scoreboard;
 
 import javax.annotation.Nullable;
 
+import org.magmafoundation.magma.configuration.MagmaConfig;
 import org.magmafoundation.magma.entity.CraftFakePlayer;
 import org.spigotmc.AsyncCatcher;
 import org.spigotmc.SpigotConfig;
@@ -1537,14 +1538,15 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
     @Override
     public int getNoDamageTicks() {
         // TacoSpigot start - fix incorrect calculation of getNoDamageTicks
-        /*
-        if (getHandle().respawnInvulnerabilityTicks > 0) {
-            return Math.max(getHandle().respawnInvulnerabilityTicks, getHandle().hurtResistantTime);
+        if (!MagmaConfig.instance.tacoFixNoDamageTicks.getValues()) { // Magma - Add config option to disable this fix
+            if (getHandle().respawnInvulnerabilityTicks > 0) {
+                return Math.max(getHandle().respawnInvulnerabilityTicks, getHandle().hurtResistantTime);
+            } else {
+                return getHandle().hurtResistantTime;
+            }
         } else {
-            return getHandle().hurtResistantTime;
+            return Math.max(getHandle().respawnInvulnerabilityTicks, Math.max(0, getHandle().hurtResistantTime - 20 / 2)); // 20 is the default maxNoDamageTicks value (at least that's what Malcolm said, blame him)
         }
-        */
-        return Math.max(getHandle().respawnInvulnerabilityTicks, Math.max(0, getHandle().hurtResistantTime - 20 / 2)); // 20 is the default maxNoDamageTicks value (at least that's what Malcolm said, blame him)
         // TacoSpigot end
     }
 
