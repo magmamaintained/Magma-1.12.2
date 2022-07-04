@@ -92,9 +92,9 @@ public class MagmaConfig extends ConfigBase {
     // BUKKIT/SPIGOT/TACO/...
     public final IntValue maxPotionEffectAmount = new IntValue(this, "bukkit.max-potion-effect-amount", 1024, "Maximum amount of possible potion effects (Bukkit's default is 300)");
     public final BooleanValue enableReloadCommand = new BooleanValue(this, "bukkit.enable-reload", false, "Enables the reload command (not recommended)");
-    public final BooleanValue tacoFixNoDamageTicks = new BooleanValue(this, "bukkit.taco.fix-no-damage-ticks", true, "Applies Taco's fix for getNoDamageTicks");
+    public final BooleanValue tacoFixNoDamageTicks = new BooleanValue(this, "bukkit.taco.fix-no-damage-ticks", false, "Applies Taco's fix for getNoDamageTicks");
     public final BooleanValue tacoFireArrowCollideEvent = new BooleanValue(this, "bukkit.taco.fire-arrow-collide-event", true, "Toggles the triggering of Taco's ArrowCollideEvent");
-    public final BooleanValue tacoBetterPvP = new BooleanValue(this, "bukkit.taco.better-pvp", true, "Applies Taco's fix for better PvP");
+    public final BooleanValue tacoBetterPvP = new BooleanValue(this, "bukkit.taco.better-pvp", false, "Applies Taco's fix for better PvP");
 
     // MESSAGES
     public final StringValue fmlRequiredMessage = new StringValue(this, "magma.messages.fml.fml-required", "&cThis Server is running Magma. Forge and additional mods are required in order to connect to this server.", "FML required kick message");
