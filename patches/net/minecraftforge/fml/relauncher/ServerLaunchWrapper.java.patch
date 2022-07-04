@@ -4,14 +4,12 @@
  
  package net.minecraftforge.fml.relauncher;
  
-+import org.magmafoundation.magma.Magma;
 +import org.magmafoundation.magma.betterui.BetterUI;
 +import org.magmafoundation.magma.configuration.MagmaConfig;
 +import org.magmafoundation.magma.downloads.MagmaUpdater;
 +import org.magmafoundation.magma.libs.Dependencies;
 +
 +import java.io.IOException;
-+import java.lang.reflect.Array;
  import java.lang.reflect.Method;
 +import java.nio.file.Paths;
 +import java.util.Arrays;
@@ -55,12 +53,14 @@
 +
 +        Dependencies.start();
 +
-+        if (!LAUNCH_ARGS.contains("-dau")) {
++        if (!LAUNCH_ARGS.contains("-dau") && MagmaConfig.instance.checkForUpdates.getValues()) {
 +            System.out.println("Checking for updates...");
 +            MagmaUpdater magmaUpdater = new MagmaUpdater();
 +            if (magmaUpdater.versionChecker() && MagmaConfig.instance.magmaAutoUpdater.getValues()) {
 +                magmaUpdater.downloadJar();
 +            }
++        } else {
++            System.out.println("Update check disabled.");
 +        }
 +
          new ServerLaunchWrapper().run(args);
