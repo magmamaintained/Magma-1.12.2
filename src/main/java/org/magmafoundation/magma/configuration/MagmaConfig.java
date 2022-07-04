@@ -53,50 +53,29 @@ public class MagmaConfig extends ConfigBase {
     public static MagmaConfig instance = new MagmaConfig();
 
     //============================Debug======================================
-    public final BooleanValue debugPrintBukkitMatterials = new BooleanValue(this, "debug.debugPrintBukkitMatterials", false, "Prints the Forge Bukkit Materials");
-    public final BooleanValue debugPrintBukkitBannerPatterns = new BooleanValue(this, "debug.debugPrintBukkitBannerPatterns", false, "Prints the Forge Bukkit Banner Patterns");
-    public final BooleanValue debugPrintCommandNode = new BooleanValue(this, "debug.debugPrintCommandNode", false, "Prints out all Command Nodes for permissions");
-    public final BooleanValue debugPrintBiomes = new BooleanValue(this, "debug.debugPrintBiomes", false, "Prints out all registered biomes");
-    public final BooleanValue debugPrintSounds = new BooleanValue(this, "debug.debugPrintSounds", false, "Prints out all registered sounds");
-
-    //============================Console======================================
-
-    public final StringValue highlightLevelError = new StringValue(this, "console.colour.level.error", "c", "The colour for the error level");
-    public final StringValue highlightLevelWarning = new StringValue(this, "console.colour.level.warning", "e", "The colour for the warning level");
-    public final StringValue highlightLevelInfo = new StringValue(this, "console.colour.level.info", "2", "The colour for the info level");
-    public final StringValue highlightLevelFatal = new StringValue(this, "console.colour.level.fatal", "e", "The colour for the fatal level");
-    public final StringValue highlightLevelTrace = new StringValue(this, "console.colour.level.trace", "e", "The colour for the trace level");
-
-    public final StringValue highlightMessageError = new StringValue(this, "console.colour.message.error", "c", "The colour for the error message");
-    public final StringValue highlightMessageWarning = new StringValue(this, "console.colour.message.warning", "e", "The colour for the warning message");
-    public final StringValue highlightMessageInfo = new StringValue(this, "console.colour.message.info", "2", "The colour for the info message");
-    public final StringValue highlightMessageFatal = new StringValue(this, "console.colour.message.fatal", "e", "The colour for the fatal message");
-    public final StringValue highlightMessageTrace = new StringValue(this, "console.colour.message.trace", "e", "The colour for the trace message");
-
-    public final StringValue highlightTimeError = new StringValue(this, "console.colour.time.error", "c", "The colour for the error time");
-    public final StringValue highlightTimeWarning = new StringValue(this, "console.colour.time.warning", "e", "The colour for the warning time");
-    public final StringValue highlightTimeInfo = new StringValue(this, "console.colour.time.info", "2", "The colour for the info time");
-    public final StringValue highlightTimeFatal = new StringValue(this, "console.colour.time.fatal", "e", "The colour for the fatal time");
-    public final StringValue highlightTimeTrace = new StringValue(this, "console.colour.time.trace", "e", "The colour for the trace time");
+    public final BooleanValue debugPrintBukkitMaterials = new BooleanValue(this, "debug.print-bukkit-materials", false, "Prints the Forge Bukkit Materials");
+    public final BooleanValue debugPrintBukkitBannerPatterns = new BooleanValue(this, "debug.print-bukkit-banner-patterns", false, "Prints the Forge Bukkit Banner Patterns");
+    public final BooleanValue debugPrintCommandNode = new BooleanValue(this, "debug.print-command-node", false, "Prints out all Command Nodes for permissions");
+    public final BooleanValue debugPrintBiomes = new BooleanValue(this, "debug.print-biome-names", false, "Prints out all registered biomes");
+    public final BooleanValue debugPrintSounds = new BooleanValue(this, "debug.print-sound-names", false, "Prints out all registered sounds");
 
     //============================Black List Mods=============================
-    public final BooleanValue blacklistedModsEnable = new BooleanValue(this, "forge.blacklistedmods.enabled", false, "Enable blacklisting of mods");
-    public final StringArrayValue blacklistedMods = new StringArrayValue(this, "forge.blacklistedmods.list", "", "A list of mods to blacklist");
-    public final StringValue blacklistedModsKickMessage = new StringValue(this, "forge.blacklistedmods.kickmessage", "Please Remove Blacklisted Mods", "Mod Blacklist kick message");
+    public final BooleanValue blacklistedModsEnable = new BooleanValue(this, "magma.mod-blacklist.enabled", false, "Enable blacklisting of mods");
+    public final StringArrayValue blacklistedMods = new StringArrayValue(this, "magma.mod-blacklist.list", "", "A list of mods to blacklist");
 
     //=============================WORLD SETTINGS=============================
-    public final IntValue expMergeMaxValue = new IntValue(this, "experience-merge-max-value", -1,
+    public final IntValue expMergeMaxValue = new IntValue(this, "world.experience-merge-max-value", -1,
             "Instructs the server put a maximum value on experience orbs, preventing them all from merging down into 1 single orb.");
-    public final BooleanValue enableAutoUnloadingDimensions = new BooleanValue(this, "auto-unload-dimensions", true,
+    public final BooleanValue enableAutoUnloadingDimensions = new BooleanValue(this, "world.dimensions.auto-unload-dimensions", true,
             "Automatically unload dimensions that are not being used");
     public List<Integer> autoUnloadDimensionsWhitelist = Lists.newArrayList(13371337);
-    public final BooleanValue respawnInOtherDim = new BooleanValue(this, "respawn-in-other-dim", true, "Allows players to respawn in other dimensions");
-    public final BooleanValue allowBlockLoadChunk = new BooleanValue(this, "allow-block-load-chunk", true, "Allow blocks and tile entities to load chunks");
-    public final BooleanValue forceUnloadChunks = new BooleanValue(this, "force-unload-chunks", false, "Force unloads the chunk despite the fact that minecraft marked the unloading of the chunk as canceled");
+    public final BooleanValue respawnInOtherDim = new BooleanValue(this, "world.dimensions.respawn-in-other-dim", true, "Allows players to respawn in other dimensions");
+    public final BooleanValue allowBlockLoadChunk = new BooleanValue(this, "world.loading.allow-block-load-chunk", true, "Allow blocks and tile entities to load chunks");
+    public final BooleanValue forceUnloadChunks = new BooleanValue(this, "world.loading.force-unload-chunks", false, "Force unloads the chunk despite the fact that minecraft marked the unloading of the chunk as canceled");
 
 
     //=============================FakePlayer SETTINGS========================
-    public final StringArrayValue fakePlayerPermissions = new StringArrayValue(this, "fakeplayer.permissions", "", "A list of permissions that fake players should have");
+    public final StringArrayValue fakePlayerPermissions = new StringArrayValue(this, "magma.advanced.fakeplayer.permissions", "", "A list of permissions that fake players should have");
 
     //=============================Misc SETTINGS==============================
     public final BooleanValue forgeBukkitPermissionHandlerEnable = new BooleanValue(this, "forge.bukkitPermissionHandler.enable", true, "Let's Bukkit permission plugins handle forge/modded commands");
@@ -106,8 +85,8 @@ public class MagmaConfig extends ConfigBase {
     public final StringValue serverName = new StringValue(this, "magma.advanced.override-name-string", "Spigot", "Value to use for the new name string");
     public final BooleanValue overrideServerBrand = new BooleanValue(this, "magma.advanced.override-brand", false, "Enables overriding the brand string");
     public final StringValue serverBrand = new StringValue(this, "magma.advanced.override-brand-string", "SpigotMC", "Value to use for new brand string");
-    public final StringValue toolTipOverridePriority = new StringValue(this, "magma.advanced.tooltip-priority", "mod", "Mod, Plugin, None : determines what has tooltip priority");
     public final StringValue serverBrandType = new StringValue(this, "magma.advanced.server-type", "FML", "Set to FML to show forge icon or BUKKIT to show bukkit icon (FML is default)");
+    public final StringValue toolTipOverridePriority = new StringValue(this, "magma.advanced.tooltip-priority", "mod", "Mod, Plugin, None : determines what has tooltip priority");
     public final BooleanValue forgeBukkitAccess = new BooleanValue(this, "magma.advanced.forge-bukkit-access", true, "Allows Forge mods to access Bukkit plugin classes");
 
     //=============================Bukkit/Spigot SETTINGS==============================
@@ -118,8 +97,9 @@ public class MagmaConfig extends ConfigBase {
     public final StringValue fmlRequiredMessage = new StringValue(this, "magma.messages.fml.fml-required", "&cThis Server is running Magma. Forge and additional mods are required in order to connect to this server.", "FML required kick message");
     public final StringValue missingModsMessage = new StringValue(this, "magma.messages.fml.missing-mods", "&cYou are missing the following mods:", "Missing Mods kick message");
     public final StringValue serverStillStartingMessage = new StringValue(this, "magma.messages.fml.server-still-starting", "&cServer is still starting! Please wait before reconnecting.", "Server still starting kick message");
+    public final StringValue blacklistedModsKickMessage = new StringValue(this, "magma.messages.blacklist-kick-message", "Please Remove Blacklisted Mods", "Mod Blacklist kick message");
 
-    private final String HEADER = "This is the main configuration file for Magma.\n" +
+    public static final String HEADER = "This is the main configuration file for Magma.\n" +
             "\n" +
             "Site: https://magmafoundation.org\n" +
             "Discord: https://discord.gg/magma\n";
