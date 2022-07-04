@@ -1,7 +1,5 @@
 package org.magmafoundation.magma;
 
-import org.magmafoundation.magma.configuration.MagmaConfig;
-
 import java.util.Objects;
 
 public class MagmaConstants {
