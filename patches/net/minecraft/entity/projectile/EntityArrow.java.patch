@@ -8,7 +8,7 @@
  import net.minecraft.entity.monster.EntityEnderman;
  import net.minecraft.entity.player.EntityPlayer;
  import net.minecraft.entity.player.EntityPlayerMP;
-@@ -36,6 +37,14 @@
+@@ -36,6 +37,15 @@
  import net.minecraft.world.World;
  import net.minecraftforge.fml.relauncher.Side;
  import net.minecraftforge.fml.relauncher.SideOnly;
@@ -20,10 +20,11 @@
 +import org.bukkit.event.player.PlayerPickupArrowEvent;
 +import org.bukkit.craftbukkit.v1_12_R1.entity.CraftItem;
 +import org.bukkit.craftbukkit.v1_12_R1.event.CraftEventFactory;
++import org.magmafoundation.magma.configuration.MagmaConfig;
  
  public abstract class EntityArrow extends Entity implements IProjectile
  {
-@@ -47,21 +56,33 @@
+@@ -47,21 +57,33 @@
          }
      });
      private static final DataParameter<Byte> CRITICAL = EntityDataManager.<Byte>createKey(EntityArrow.class, DataSerializers.BYTE);
@@ -63,7 +64,7 @@
      public EntityArrow(World worldIn)
      {
          super(worldIn);
-@@ -83,6 +104,7 @@
+@@ -83,6 +105,7 @@
      {
          this(worldIn, shooter.posX, shooter.posY + (double)shooter.getEyeHeight() - 0.10000000149011612D, shooter.posZ);
          this.shootingEntity = shooter;
@@ -71,7 +72,7 @@
  
          if (shooter instanceof EntityPlayer)
          {
-@@ -222,7 +244,7 @@
+@@ -222,7 +245,7 @@
              {
                  ++this.ticksInGround;
  
@@ -80,12 +81,12 @@
                  {
                      this.setDead();
                  }
-@@ -262,6 +284,15 @@
+@@ -262,6 +285,15 @@
                  }
              }
  
 +            // TacoSpigot start - fire collide event
-+            if (raytraceresult != null && raytraceresult.entityHit != null) {
++            if (MagmaConfig.instance.tacoFireArrowCollideEvent.getValues() && raytraceresult != null && raytraceresult.entityHit != null) { // Magma - add config entry for firing the event
 +                ArrowCollideEvent event = new ArrowCollideEvent((Arrow) getBukkitEntity(), raytraceresult.entityHit.getBukkitEntity());
 +                this.world.getServer().getPluginManager().callEvent(event);
 +                if (event.isCancelled())
@@ -96,7 +97,7 @@
              if (raytraceresult != null && !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, raytraceresult))
              {
                  this.onHit(raytraceresult);
-@@ -339,7 +370,7 @@
+@@ -339,7 +371,7 @@
      protected void onHit(RayTraceResult raytraceResultIn)
      {
          Entity entity = raytraceResultIn.entityHit;
@@ -105,7 +106,7 @@
          if (entity != null)
          {
              float f = MathHelper.sqrt(this.motionX * this.motionX + this.motionY * this.motionY + this.motionZ * this.motionZ);
-@@ -363,7 +394,12 @@
+@@ -363,7 +395,12 @@
  
              if (this.isBurning() && !(entity instanceof EntityEnderman))
              {
@@ -119,7 +120,7 @@
              }
  
              if (entity.attackEntityFrom(damagesource, (float)i))
-@@ -570,9 +606,20 @@
+@@ -570,9 +607,20 @@
      {
          if (!this.world.isRemote && this.inGround && this.arrowShake <= 0)
          {
@@ -142,7 +143,7 @@
              {
                  flag = false;
              }
-@@ -655,7 +702,13 @@
+@@ -655,7 +703,13 @@
  
          if (EnchantmentHelper.getMaxEnchantmentLevel(Enchantments.FLAME, p_190547_1_) > 0)
          {
