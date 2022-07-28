@@ -956,8 +956,9 @@
  
 -    public void applyServerIconToResponse(ServerStatusResponse response)
 -    {
+-        File file1 = this.getFile("server-icon.png");
 +    public void applyServerIconToResponse(ServerStatusResponse response) {
-         File file1 = this.getFile("server-icon.png");
++        File file1 = this.getFile(MagmaConfig.instance.serverIconFile.getValues());
  
 -        if (!file1.exists())
 -        {
