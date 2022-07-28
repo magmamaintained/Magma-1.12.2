@@ -818,7 +818,7 @@ public final class CraftServer implements Server {
     private void loadIcon() {
         icon = new CraftIconCache(null);
         try {
-            final File file = new File(new File("."), "server-icon.png");
+            final File file = new File(new File("."), MagmaConfig.instance.serverIconFile.getValues());
             if (file.isFile()) {
                 icon = loadServerIcon0(file);
             }

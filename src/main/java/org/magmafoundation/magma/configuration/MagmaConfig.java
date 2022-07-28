@@ -81,6 +81,7 @@ public class MagmaConfig extends ConfigBase {
     public final BooleanValue overrideServerBrand = new BooleanValue(this, "magma.advanced.override-brand", false, "Enables overriding the brand string");
     public final StringValue serverBrand = new StringValue(this, "magma.advanced.override-brand-string", "SpigotMC", "Value to use for new brand string");
     public final StringValue serverBrandType = new StringValue(this, "magma.advanced.server-type", "FML", "Set to FML to show forge icon or BUKKIT to show bukkit icon (FML is default)");
+    public final StringValue serverIconFile = new StringValue(this, "magma.advanced.server-icon-file", "server-icon.png", "The name of your server icon file");
 
     // OTHER
     public final BooleanValue forgeBukkitPermissionHandlerEnable = new BooleanValue(this, "magma.advanced.enable-bukkit-permission-handler", true, "Let's Bukkit permission plugins handle forge/modded commands");
