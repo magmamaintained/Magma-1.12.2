@@ -78,9 +78,9 @@
 +
 +                            if(Arrays.toString(exception.getStackTrace()).contains("shadows.fastbench.net")){
 +                                LOGGER.warn("Failed to handle packet for {}", networkmanager.getRemoteAddress(), "Fast Workbench Exception");
-+                                LOGGER.warn("[MagmaSanityChecker] You have been detected to be using Fastworkbench! There is a special config needed in order to use it with Magma. That config can be found on the discord: https://discord.gg/zdXjMNk in the #incompatible-mods channel.");
++                                LOGGER.warn("A FastWorkbench related crash has been detected. Please enable the 'fastbench-fix' in the magma.yml or set 'Disable Recipe Book' to false in the fastbench.cfg config.");
 +                                this.fastWorkBenchCrash = true;
-+                                textcomponentstring = "FastWorkbench Exception. Please use Magma's config for FastWorkbench!";
++                                textcomponentstring = "A FastWorkbench related crash has been detected.\nPlease enable the 'fastbench-fix' in the magma.yml or set 'Disable Recipe Book' to false in the fastbench.cfg server config.";
 +                            } else {
 +                                LOGGER.warn("Failed to handle packet for {}", networkmanager.getRemoteAddress(), exception);
 +                            }
