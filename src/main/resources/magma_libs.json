@@ -113,11 +113,6 @@
       "md5": "eeacff7cadb9b49e4c3cc6d2f4246088"
     },
     {
-      "name": "org.bodil.openjdk:nashorn:0.1.0.2013070801",
-      "repo": "https://repo.clojars.org",
-      "md5": "fff8b2541f9386eb30c78a20497273e1"
-    },
-    {
       "name": "org.reflections:reflections:0.9.10",
       "repo": "https://repo.maven.apache.org/maven2",
       "md5": "8291cb0fd9d0a1ac61e78f6234bcf51e"
