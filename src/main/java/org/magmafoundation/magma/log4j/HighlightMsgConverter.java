@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.pattern.*;
 import org.apache.logging.log4j.util.PerformanceSensitive;
-import org.magmafoundation.magma.configuration.MagmaConfig;
+import org.magmafoundation.magma.configuration.ConsoleConfig;
 
 @Plugin(name = "highlightMsg", category = PatternConverter.CATEGORY)
 @ConverterKeys({"highlightMsg"})
@@ -77,27 +77,27 @@ public class HighlightMsgConverter extends LogEventPatternConverter {
     }
 
     public static String getError() {
-        String colour = MagmaConfig.instance.highlightMessageError.getValues();
+        String colour = ConsoleConfig.instance.highlightMessageError.getValues();
         return getColor(colour, "\u001B[31;1m");
     }
 
     public static String getWarn() {
-        String colour = MagmaConfig.instance.highlightMessageWarning.getValues();
+        String colour = ConsoleConfig.instance.highlightMessageWarning.getValues();
         return getColor(colour, "\u001B[33;1m");
     }
 
     public static String getInfo() {
-        String colour = MagmaConfig.instance.highlightMessageInfo.getValues();
+        String colour = ConsoleConfig.instance.highlightMessageInfo.getValues();
         return getColor(colour, "\u001B[32;22m");
     }
 
     public static String getFatal() {
-        String colour = MagmaConfig.instance.highlightMessageFatal.getValues();
+        String colour = ConsoleConfig.instance.highlightMessageFatal.getValues();
         return getColor(colour, "\u001B[31;1m");
     }
 
     public static String getTrace() {
-        String colour = MagmaConfig.instance.highlightMessageTrace.getValues();
+        String colour = ConsoleConfig.instance.highlightMessageTrace.getValues();
         return getColor(colour, "\u001B[31;1m");
     }
 

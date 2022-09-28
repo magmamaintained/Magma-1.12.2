@@ -61,12 +61,14 @@
 +
 +        Dependencies.start();
 +
-+        if (!LAUNCH_ARGS.contains("-dau")) {
++        if (!LAUNCH_ARGS.contains("-dau") && MagmaConfig.instance.checkForUpdates.getValues()) {
 +            System.out.println("Checking for updates...");
 +            MagmaUpdater magmaUpdater = new MagmaUpdater();
 +            if (magmaUpdater.versionChecker() && MagmaConfig.instance.magmaAutoUpdater.getValues()) {
 +                magmaUpdater.downloadJar();
 +            }
++        } else {
++            System.out.println("Update check disabled.");
 +        }
 +
          new ServerLaunchWrapper().run(args);

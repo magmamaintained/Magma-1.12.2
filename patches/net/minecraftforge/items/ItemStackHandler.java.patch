@@ -1,0 +1,14 @@
+--- ../src-base/minecraft/net/minecraftforge/items/ItemStackHandler.java
++++ ../src-work/minecraft/net/minecraftforge/items/ItemStackHandler.java
+@@ -32,6 +32,11 @@
+ {
+     protected NonNullList<ItemStack> stacks;
+ 
++    // Magma - Create getter for stacks
++    public NonNullList<ItemStack> getStacks() {
++        return this.stacks;
++    }
++
+     public ItemStackHandler()
+     {
+         this(1);
