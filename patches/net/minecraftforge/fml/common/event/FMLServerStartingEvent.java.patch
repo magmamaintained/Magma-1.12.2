@@ -14,7 +14,7 @@
  
  /**
   * Called after {@link FMLServerAboutToStartEvent} and before {@link FMLServerStartedEvent}.
-@@ -56,6 +59,12 @@
+@@ -56,6 +59,13 @@
      public void registerServerCommand(ICommand command)
      {
          CommandHandler ch = (CommandHandler) getServer().getCommandManager();
@@ -23,6 +23,7 @@
 +            String per = modid + ".command." + command.getName();
 +            ((CommandBase) command).permissionNode = per;
 +            ServerAPI.commands.put(command.getName(),  modid);
++            ServerAPI.commandPermissions.put(command.getName(), per); // Mohist
 +        }
          ch.registerCommand(command);
      }
