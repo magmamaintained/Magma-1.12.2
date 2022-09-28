@@ -7,7 +7,7 @@
  import java.util.Random;
  import javax.annotation.Nullable;
  import net.minecraft.entity.Entity;
-@@ -23,14 +24,34 @@
+@@ -23,14 +24,33 @@
  import net.minecraft.world.storage.loot.ILootContainer;
  import net.minecraft.world.storage.loot.LootContext;
  import net.minecraft.world.storage.loot.LootTable;
@@ -15,7 +15,6 @@
 +import org.bukkit.craftbukkit.v1_12_R1.entity.CraftHumanEntity;
 +import org.bukkit.entity.HumanEntity;
 +import org.bukkit.inventory.InventoryHolder;
-+import org.magmafoundation.magma.inventory.CraftCustomInventory;
  
  public abstract class EntityMinecartContainer extends EntityMinecart implements ILockableContainer, ILootContainer
  {
@@ -43,7 +42,7 @@
      public EntityMinecartContainer(World worldIn)
      {
          super(worldIn);
-@@ -41,6 +62,27 @@
+@@ -41,6 +61,27 @@
          super(worldIn, x, y, z);
      }
  
@@ -55,7 +54,7 @@
 +    public InventoryHolder getOwner() {
 +        org.bukkit.entity.Entity cart = getBukkitEntity();
 +        if(cart instanceof InventoryHolder) return (InventoryHolder) cart;
-+        return new CraftCustomInventory(this); // Mohist - Custom Inventory
++        return null;
 +    }
 +
 +    public void setMaxStackSize(int size) {
@@ -71,7 +70,7 @@
      public void killMinecart(DamageSource source)
      {
          super.killMinecart(source);
-@@ -134,7 +176,7 @@
+@@ -134,7 +175,7 @@
  
      public int getInventoryStackLimit()
      {

@@ -115,7 +115,6 @@ import org.bukkit.scoreboard.Scoreboard;
 
 import javax.annotation.Nullable;
 
-import org.magmafoundation.magma.configuration.MagmaConfig;
 import org.magmafoundation.magma.entity.CraftFakePlayer;
 import org.spigotmc.AsyncCatcher;
 import org.spigotmc.SpigotConfig;
@@ -1537,17 +1536,11 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
 
     @Override
     public int getNoDamageTicks() {
-        // TacoSpigot start - fix incorrect calculation of getNoDamageTicks
-        if (!MagmaConfig.instance.tacoFixNoDamageTicks.getValues()) { // Magma - Add config option to disable this fix
-            if (getHandle().respawnInvulnerabilityTicks > 0) {
-                return Math.max(getHandle().respawnInvulnerabilityTicks, getHandle().hurtResistantTime);
-            } else {
-                return getHandle().hurtResistantTime;
-            }
+        if (getHandle().respawnInvulnerabilityTicks > 0) {
+            return Math.max(getHandle().respawnInvulnerabilityTicks, getHandle().hurtResistantTime);
         } else {
-            return Math.max(getHandle().respawnInvulnerabilityTicks, Math.max(0, getHandle().hurtResistantTime - 20 / 2)); // 20 is the default maxNoDamageTicks value (at least that's what Malcolm said, blame him)
+            return getHandle().hurtResistantTime;
         }
-        // TacoSpigot end
     }
 
     @Override
@@ -1678,13 +1671,11 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
     public void sendHealthUpdate() {
         // Paper start - cancellable death event
         //getHandle().connection.sendPacket(new SPacketUpdateHealth(getScaledHealth(), getHandle().getFoodStats().getFoodLevel(), getHandle().getFoodStats().getSaturationLevel()));
-        if (getHandle().connection != null) { // Mohist - Fix compatibility with Auto Sieve from Extra Utilities 2
-            SPacketUpdateHealth packet = new SPacketUpdateHealth(getScaledHealth(), getHandle().getFoodStats().getFoodLevel(), getHandle().getFoodStats().getSaturationLevel());
-            if (this.getHandle().queueHealthUpdatePacket) {
-                this.getHandle().queuedHealthUpdatePacket = packet;
-            } else {
-                this.getHandle().connection.sendPacket(packet);
-            }
+        SPacketUpdateHealth packet = new SPacketUpdateHealth(getScaledHealth(), getHandle().getFoodStats().getFoodLevel(), getHandle().getFoodStats().getSaturationLevel());
+        if (this.getHandle().queueHealthUpdatePacket) {
+            this.getHandle().queuedHealthUpdatePacket = packet;
+        } else {
+            this.getHandle().connection.sendPacket(packet);
         }
         // Paper end
     }

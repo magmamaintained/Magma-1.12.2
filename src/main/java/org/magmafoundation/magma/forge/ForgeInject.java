@@ -23,7 +23,6 @@ import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.potion.Potion;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.BannerPattern;
@@ -41,8 +40,6 @@ import org.bukkit.craftbukkit.v1_12_R1.enchantments.CraftEnchantment;
 import org.bukkit.craftbukkit.v1_12_R1.potion.CraftPotionEffectType;
 import org.bukkit.entity.EntityType;
 import org.bukkit.potion.PotionEffectType;
-import org.magmafoundation.magma.api.BlockAPI;
-import org.magmafoundation.magma.api.ItemAPI;
 import org.magmafoundation.magma.configuration.MagmaConfig;
 import org.magmafoundation.magma.configuration.value.values.BooleanValue;
 import org.magmafoundation.magma.entity.CraftCustomEntity;
@@ -55,7 +52,7 @@ import org.magmafoundation.magma.entity.CraftCustomEntity;
  */
 public class ForgeInject {
 
-    private static final BooleanValue magmaDebugPrint = MagmaConfig.instance.debugPrintBukkitMaterials;
+    private static final BooleanValue magmaDebugPrint = MagmaConfig.instance.debugPrintBukkitMatterials;
 
 
     public static void injectForge() {
@@ -72,25 +69,10 @@ public class ForgeInject {
     private static void addForgeItems() {
         for (Map.Entry<ResourceLocation, Item> entry : ForgeRegistries.ITEMS.getEntries()) {
             ResourceLocation key = entry.getKey();
-            ItemAPI.vanilla_item.add(key); // Mohist - Implement ItemAPI
             Item item = entry.getValue();
             if (!key.getResourceDomain().equals("minecraft")) {
                 String materialName = key.toString().toUpperCase().replaceAll("(:|\\s)", "_").replaceAll("\\W", "");
                 Material material = Material.addMaterial(EnumHelper.addEnum(Material.class, materialName, new Class[]{Integer.TYPE, Integer.TYPE, Material.MaterialType.class}, new Object[]{Item.getIdFromItem(item), item.getItemStackLimit(), Material.MaterialType.MOD_ITEM}));
-                // Mohist start - Implement ItemAPI
-                if (material != null) {
-                    String[] res = key.toString().split(":");
-                    String modid = res[0].toUpperCase().replaceAll("(:|\\s)", "_").replaceAll("\\W", "");
-                    int id = Item.getIdFromItem(item);
-                    ItemAPI.MODNAME_MAP.put(material.name(), modid); // <bukkit_name, modid>
-                    ItemAPI.MODID_MAP.put(id, modid); // <bukkit_id, modid>
-                    if (item instanceof ItemBlock) {
-                        Block block = ((ItemBlock) item).getBlock();
-                        int bid = Block.getIdFromBlock(block);
-                        ItemAPI.ITEM_BLOCK.put(id, bid);
-                    }
-                }
-                // Mohist end - Implement ItemAPI
                 if (magmaDebugPrint.getValues()) {
                     if (material != null) {
                         MinecraftServer.LOGGER.info(String.format("Injected new Forge item material %s with ID %d.", material.name(), material.getId()));
@@ -109,20 +91,10 @@ public class ForgeInject {
         }
         for (Map.Entry<ResourceLocation, Block> entry : ForgeRegistries.BLOCKS.getEntries()) {
             ResourceLocation key = entry.getKey();
-            BlockAPI.vanilla_block.add(key); // Mohist - Implement BlockAPI
             Block block = entry.getValue();
             if (!key.getResourceDomain().equals("minecraft")) {
                 String materialName = key.toString().toUpperCase().replaceAll("(:|\\s)", "_").replaceAll("\\W", "");
                 Material material = Material.addBlockMaterial(EnumHelper.addEnum(Material.class, materialName, new Class[]{Integer.TYPE, Material.MaterialType.class}, new Object[]{Block.getIdFromBlock(block), Material.MaterialType.MOD_BLOCK}));
-                // Mohist Start - Implement ItemAPI
-                if (material != null) {
-                    String[] res = key.toString().split(":");
-                    String modid = res[0].toUpperCase().replaceAll("(:|\\s)", "_").replaceAll("\\W", "");
-                    int id = Block.getIdFromBlock(block);
-                    ItemAPI.MODNAME_MAP.put(material.name(), modid); // <bukkit_name, modid>
-                    ItemAPI.MODID_MAP.put(id, modid); // <bukkit_id, modid>
-                }
-                // Mohist End - Implement ItemAPI
                 if (magmaDebugPrint.getValues()) {
                     if (material != null) {
                         MinecraftServer.LOGGER.info(String.format("Injected new Forge block material %s with ID %d.", material.name(), material.getId()));
