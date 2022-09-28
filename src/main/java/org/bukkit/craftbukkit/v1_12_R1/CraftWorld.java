@@ -1788,11 +1788,6 @@ public class CraftWorld implements World {
 
             // Already unloading?
             if (cps.droppedChunksSet.contains(ChunkPos.asLong(chunk.x, chunk.z))) {
-                // Mohist start - Fix chunk unloading
-                if (!chunk.unloadQueued) {
-                    chunk.unloadQueued = true;
-                }
-                // Mohist end - Fix chunk unloading
                 continue;
             }
 
