@@ -12,7 +12,7 @@
  
  public class BlockGrass extends Block implements IGrowable
  {
-@@ -38,30 +43,58 @@
+@@ -38,30 +43,66 @@
      {
          if (!worldIn.isRemote)
          {
@@ -30,7 +30,11 @@
 +                worldIn.getServer().getPluginManager().callEvent(event);
 +
 +                if (!event.isCancelled()) {
-+                    blockState.update(true);
++                    // Magma start - Fix Aqua Acrobatics Mixin inject issue (re-add old method but use bukkit event blockstate instead of hardcoded DIRT)
++                    IBlockState state1 = CraftMagicNumbers.getBlock(blockState.getType()).getStateFromMeta(blockState.getRawData());
++                    worldIn.setBlockState(pos, state1);
++                    //blockState.update(true);
++                    // Magma end
 +                }
              }
              else
@@ -73,12 +77,16 @@
 +                            worldIn.getServer().getPluginManager().callEvent(event);
 +
 +                            if (!event.isCancelled()) {
-+                                blockState.update(true);
++                                // Magma start - Fix Aqua Acrobatics Mixin inject issue (re-add old method but use bukkit event blockstate instead of hardcoded GRASS)
++                                IBlockState state1 = CraftMagicNumbers.getBlock(blockState.getType()).getStateFromMeta(blockState.getRawData());
++                                worldIn.setBlockState(pos, state1);
++                                //blockState.update(true);
++                                // Magma end
 +                            }
                          }
                      }
                  }
-@@ -109,7 +142,8 @@
+@@ -109,7 +150,8 @@
  
                              if (Blocks.TALLGRASS.canBlockStay(worldIn, blockpos1, iblockstate1))
                              {
