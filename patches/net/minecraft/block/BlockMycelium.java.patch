@@ -11,7 +11,7 @@
  
  public class BlockMycelium extends Block
  {
-@@ -42,7 +46,17 @@
+@@ -42,7 +46,21 @@
              if (!worldIn.isAreaLoaded(pos, 2)) return; // Forge: prevent loading unloaded chunks when checking neighbor's light and spreading
              if (worldIn.getLightFromNeighbors(pos.up()) < 4 && worldIn.getBlockState(pos.up()).getLightOpacity(worldIn, pos.up()) > 2)
              {
@@ -25,12 +25,16 @@
 +                worldIn.getServer().getPluginManager().callEvent(event);
 +
 +                if (!event.isCancelled()) {
-+                    blockState.update(true);
++                    // Magma start - Fix Aqua Acrobatics Mixin inject issue (re-add old method but use bukkit event blockstate instead of hardcoded DIRT)
++                    IBlockState state1 = CraftMagicNumbers.getBlock(blockState.getType()).getStateFromMeta(blockState.getRawData());
++                    worldIn.setBlockState(pos, state1);
++                    //blockState.update(true);
++                    // Magma end
 +                }
              }
              else
              {
-@@ -56,7 +70,17 @@
+@@ -56,7 +74,21 @@
  
                          if (iblockstate.getBlock() == Blocks.DIRT && iblockstate.getValue(BlockDirt.VARIANT) == BlockDirt.DirtType.DIRT && worldIn.getLightFromNeighbors(blockpos.up()) >= 4 && iblockstate1.getLightOpacity(worldIn, blockpos.up()) <= 2)
                          {
@@ -44,7 +48,11 @@
 +                            worldIn.getServer().getPluginManager().callEvent(event);
 +
 +                            if (!event.isCancelled()) {
-+                                blockState.update(true);
++                                // Magma start - Fix Aqua Acrobatics Mixin inject issue (re-add old method but use bukkit event blockstate instead of hardcoded this.getDefaultState)
++                                IBlockState state1 = CraftMagicNumbers.getBlock(blockState.getType()).getStateFromMeta(blockState.getRawData());
++                                worldIn.setBlockState(pos, state1);
++                                //blockState.update(true);
++                                // Magma end
 +                            }
                          }
                      }
