@@ -28,7 +28,7 @@
 +                    // Magma start - Fix Aqua Acrobatics Mixin inject issue (re-add old method but use bukkit event blockstate instead of hardcoded DIRT)
 +                    IBlockState state1 = CraftMagicNumbers.getBlock(blockState.getType()).getStateFromMeta(blockState.getRawData());
 +                    worldIn.setBlockState(pos, state1);
-+                    //blockState.update(true);
++                    blockState.update(true);
 +                    // Magma end
 +                }
              }
@@ -51,7 +51,7 @@
 +                                // Magma start - Fix Aqua Acrobatics Mixin inject issue (re-add old method but use bukkit event blockstate instead of hardcoded this.getDefaultState)
 +                                IBlockState state1 = CraftMagicNumbers.getBlock(blockState.getType()).getStateFromMeta(blockState.getRawData());
 +                                worldIn.setBlockState(pos, state1);
-+                                //blockState.update(true);
++                                blockState.update(true);
 +                                // Magma end
 +                            }
                          }
