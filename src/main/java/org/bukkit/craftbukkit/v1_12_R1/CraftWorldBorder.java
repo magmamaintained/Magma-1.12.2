@@ -28,7 +28,7 @@ public class CraftWorldBorder implements WorldBorder {
 
     @Override
     public double getSize() {
-        return this.handle.getSize();
+        return this.handle.getDiameter();
     }
 
     @Override
