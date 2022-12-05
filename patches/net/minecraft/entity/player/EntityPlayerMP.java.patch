@@ -800,7 +800,7 @@
 +        if ("".equals(commandName)) {
 +            return getBukkitEntity().isOp();
 +        }
-+        return getBukkitEntity().hasPermission("minecraft.command." + commandName);
++        return getBukkitEntity().hasPermission("minecraft.command." + commandName) || getBukkitEntity().hasPermission(commandName);
  
 -                if (userlistopsentry != null)
 -                {
