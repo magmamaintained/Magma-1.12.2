@@ -348,7 +348,7 @@ publishing {
                 name = 'MagmaFoundation'
                 url = 'https://git.magmafoundation.org/api/v4/projects/7/packages/maven/'
                 credentials(HttpHeaderCredentials) {
-                    name = "Job-Token"
+                    name = "Private-Token"
                     value = System.getenv("CI_JOB_TOKEN")
                 }
                 authentication {
