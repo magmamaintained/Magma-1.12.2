@@ -3,7 +3,7 @@
 
 [![Forge](https://img.shields.io/badge/Minecraft%20Forge-1.12.2%20--%202860-orange.svg?style=flat)](https://files.minecraftforge.net/net/minecraftforge/forge/index_1.12.2.html)
 [![Spigot](https://img.shields.io/badge/Paper/Spigot-1.12.2-yellow.svg)](https://github.com/PaperMC/Paper/tree/ver/1.12.2)
-[![Build Status](https://git.magmafoundation.org/magmafoundation/Magma/badges/master/pipeline.svg)](https://git.magmafoundation.org/magmafoundation/Magma/)
+![TeamCity build status](https://teamcity.magmafoundation.org/app/rest/builds/buildType:id:MagmaFoundation_Magma_Build/statusIcon.svg)
 [![Discord](https://img.shields.io/discord/612695539729039411.svg?logo=discord&logoWidth=18&colorB=7289DA)](https://discord.gg/magma)
 
 <a href="https://bstats.org/plugin/bukkit/Magma/5445"> <img src="https://bstats.org/signatures/bukkit/magma.svg" alt="Stats" width="800"> </a>
