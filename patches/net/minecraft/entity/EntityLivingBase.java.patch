@@ -821,7 +821,7 @@
 +            if (ede.isCancelled()) {
 +                return false;
 +            }
-+            f = (float) ede.getFinalDamage();
++            f = ForgeHooks.onLivingDamage(this, damagesource, (float) ede.getFinalDamage()); // Magma - Add Forge LivingDamageEvent
 +
 +            if (nulldmg) return true; // Preclude any stupidity with null head items
 +
