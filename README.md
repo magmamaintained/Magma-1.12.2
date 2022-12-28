@@ -6,7 +6,7 @@
 ![TeamCity build status](https://teamcity.magmafoundation.org/app/rest/builds/buildType:id:MagmaFoundation_Magma_Build/statusIcon.svg)
 [![Discord](https://img.shields.io/discord/612695539729039411.svg?logo=discord&logoWidth=18&colorB=7289DA)](https://discord.gg/magma)
 
-<a href="https://bstats.org/plugin/bukkit/Magma/5445"> <img src="https://bstats.org/signatures/bukkit/magma.svg" alt="Stats" width="800"> </a>
+<a href="https://bstats.org/plugin/server-implementation/Magma/17219"> <img src="https://bstats.org/signatures/server-implementation/Magma.svg" alt="Stats" width="800"> </a>
 </div>
 
 ## ❓ About
