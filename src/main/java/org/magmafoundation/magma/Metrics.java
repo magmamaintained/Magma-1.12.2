@@ -31,6 +31,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.magmafoundation.magma.api.ServerAPI;
 
 /**
  * bStats collects some data for plugin authors.
@@ -98,6 +99,23 @@ public class Metrics {
         logFailedRequests = config.getBoolean("logFailedRequests", false);
         logSentData = config.getBoolean("logSentData", false);
         logResponseStatusText = config.getBoolean("logResponseStatusText", false);
+
+        addCustomChart(new Metrics.SimplePie("minecraft_version", () -> {
+            String version = Bukkit.getVersion();
+            version = version.substring(version.indexOf("MC: ") + 4, version.length() - 1);
+            return version;
+        }));
+        addCustomChart(new Metrics.SimplePie("number_of_mods", () -> String.valueOf(ServerAPI.getModSize()))); // Report how many mods are running // MAGMA TODO: Add Server API
+        addCustomChart(new Metrics.SingleLineChart("players", () -> Bukkit.getOnlinePlayers().size()));
+        addCustomChart(new Metrics.SimplePie("online_mode", () -> Bukkit.getOnlineMode() ?  "online": "offline"));
+        addCustomChart(new Metrics.SimplePie("server_version", Magma::getVersion));
+        addCustomChart(new Metrics.DrilldownPie("java_version", () -> {
+            Map<String, Map<String, Integer>> map = new HashMap<>();
+            Map<String, Integer> entry = new HashMap<>();
+            entry.put(System.getProperty("java.version"), 1);
+            map.put(System.getProperty("java.vendor"), entry);
+            return map;
+        }));
 
         startSubmitting();
     }
@@ -232,14 +250,6 @@ public class Metrics {
      * @return The server specific data.
      */
     private JSONObject getServerData() {
-        // Minecraft specific data
-        int playerAmount = Bukkit.getOnlinePlayers().size(); // Just use the new method if the Reflection failed
-        int onlineMode = Bukkit.getOnlineMode() ? 1 : 0;
-        String bukkitVersion = Bukkit.getVersion();
-        String bukkitName = Bukkit.getName();
-
-        // OS/Java specific data
-        String javaVersion = System.getProperty("java.version");
         String osName = System.getProperty("os.name");
         String osArch = System.getProperty("os.arch");
         String osVersion = System.getProperty("os.version");
@@ -248,13 +258,6 @@ public class Metrics {
         JSONObject data = new JSONObject();
 
         data.put("serverUUID", serverUUID);
-
-        data.put("playerAmount", playerAmount);
-        data.put("onlineMode", onlineMode);
-        data.put("bukkitVersion", bukkitVersion);
-        data.put("bukkitName", bukkitName);
-
-        data.put("javaVersion", javaVersion);
         data.put("osName", osName);
         data.put("osArch", osArch);
         data.put("osVersion", osVersion);
