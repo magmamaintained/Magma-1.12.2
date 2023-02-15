@@ -1,15 +1,16 @@
 --- ../src-base/minecraft/net/minecraftforge/event/world/BlockEvent.java
 +++ ../src-work/minecraft/net/minecraftforge/event/world/BlockEvent.java
-@@ -19,29 +19,37 @@
+@@ -19,29 +19,40 @@
  
  package net.minecraftforge.event.world;
  
 -import java.util.EnumSet;
 -import java.util.List;
--
 +import com.google.common.collect.ImmutableList;
 +import java.util.ArrayList;
 +import java.util.stream.Collectors;
+ 
++import net.minecraft.block.BlockDoublePlant;
  import net.minecraft.block.BlockPortal;
  import net.minecraft.block.state.IBlockState;
 -import net.minecraft.enchantment.EnchantmentHelper;
@@ -18,6 +19,7 @@
 -import net.minecraft.init.Enchantments;
 +import net.minecraft.entity.player.EntityPlayerMP;
  import net.minecraft.item.ItemStack;
++import net.minecraft.network.play.server.SPacketBlockChange;
 +import net.minecraft.tileentity.TileEntity;
 +import net.minecraft.util.EnumFacing;
  import net.minecraft.util.EnumHand;
@@ -47,7 +49,7 @@
  
  public class BlockEvent extends Event
  {
-@@ -99,6 +107,17 @@
+@@ -99,6 +110,23 @@
              this.drops = drops;
              this.isSilkTouching = isSilkTouching;
              this.harvester = harvester;
@@ -57,6 +59,12 @@
 +            org.bukkit.event.block.BlockBreakEvent bukkitEvent = CraftEventFactory.callBlockBreakEvent(world, pos, state, (EntityPlayerMP) harvester);
 +
 +            if(bukkitEvent.isCancelled()){
++                // Magma start
++                if (state.getBlock() instanceof BlockDoublePlant) {
++                    BlockPos otherHalfPos = state.getValue(BlockDoublePlant.HALF) == BlockDoublePlant.EnumBlockHalf.UPPER ? pos.down() : pos.up();
++                    ((EntityPlayerMP) harvester).connection.sendPacket(new SPacketBlockChange(world, otherHalfPos));
++                }
++                // Magma end
 +                this.setCanceled(true);
 +            } else if(!bukkitEvent.isDropItems()) {
 +                this.drops.clear();
@@ -65,7 +73,7 @@
          }
  
          public int getFortuneLevel() { return fortuneLevel; }
-@@ -125,16 +144,17 @@
+@@ -125,16 +153,23 @@
              super(world, pos, state);
              this.player = player;
  
@@ -77,6 +85,12 @@
 +            org.bukkit.event.block.BlockBreakEvent bukkitEvent = CraftEventFactory.callBlockBreakEvent(world, pos, state, (EntityPlayerMP) player);
 +
 +            if(bukkitEvent.isCancelled()){
++                // Magma start
++                if (state.getBlock() instanceof BlockDoublePlant) {
++                    BlockPos otherHalfPos = state.getValue(BlockDoublePlant.HALF) == BlockDoublePlant.EnumBlockHalf.UPPER ? pos.down() : pos.up();
++                    ((EntityPlayerMP) player).connection.sendPacket(new SPacketBlockChange(world, otherHalfPos));
++                }
++                // Magma end
 +                this.setCanceled(true);
              }
              else
@@ -89,7 +103,7 @@
          }
  
          public EntityPlayer getPlayer()
-@@ -204,8 +224,7 @@
+@@ -204,8 +239,7 @@
       */
      @Cancelable
      @Deprecated // Remove in 1.13
@@ -99,7 +113,7 @@
          private final EntityPlayer player;
          private final EnumHand hand;
  
-@@ -213,17 +232,33 @@
+@@ -213,17 +247,33 @@
              super(blockSnapshot, placedAgainst, player);
              this.player = player;
              this.hand = hand;
@@ -138,7 +152,7 @@
      }
  
      /**
-@@ -275,6 +310,12 @@
+@@ -275,6 +325,12 @@
          public MultiPlaceEvent(@Nonnull List<BlockSnapshot> blockSnapshots, @Nonnull IBlockState placedAgainst, @Nonnull EntityPlayer player, @Nonnull EnumHand hand) {
              super(blockSnapshots.get(0), placedAgainst, player, hand);
              this.blockSnapshots = ImmutableList.copyOf(blockSnapshots);

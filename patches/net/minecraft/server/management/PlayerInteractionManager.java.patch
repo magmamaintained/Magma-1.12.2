@@ -53,7 +53,7 @@
  
          if (this.receivedFinishDiggingPacket)
          {
-@@ -137,6 +140,19 @@
+@@ -137,6 +140,26 @@
  
      public void onBlockClicked(BlockPos pos, EnumFacing side)
      {
@@ -67,13 +67,20 @@
 +            if (tileentity != null) {
 +                this.player.connection.sendPacket(tileentity.getUpdatePacket());
 +            }
++            // Magma start
++            IBlockState state = this.world.getBlockState(pos);
++            if (state.getBlock() instanceof BlockDoublePlant) {
++                BlockPos otherHalfPos = state.getValue(BlockDoublePlant.HALF) == BlockDoublePlant.EnumBlockHalf.UPPER ? pos.down() : pos.up();
++                this.player.connection.sendPacket(new SPacketBlockChange(this.world, otherHalfPos));
++            }
++            // Magma end
 +            return;
 +        }
 +        // CraftBukkit end
          double reachDist = player.getEntityAttribute(EntityPlayer.REACH_DISTANCE).getAttributeValue();
          net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock event = net.minecraftforge.common.ForgeHooks.onLeftClickBlock(player, pos, side, net.minecraftforge.common.ForgeHooks.rayTraceEyeHitVec(player, reachDist + 1));
          if (event.isCanceled())
-@@ -185,11 +201,24 @@
+@@ -185,11 +208,24 @@
              this.initialDamage = this.curblockDamage;
              float f = 1.0F;
  
@@ -100,7 +107,7 @@
                      this.world.extinguishFire((EntityPlayer)null, pos, side);
                  }
                  else
-@@ -200,6 +229,26 @@
+@@ -200,6 +236,26 @@
                  }
                  f = iblockstate.getPlayerRelativeBlockHardness(this.player, this.player.world, pos);
              }
@@ -127,7 +134,7 @@
              if (event.getUseItem() == net.minecraftforge.fml.common.eventhandler.Event.Result.DENY)
              {
                  if (f >= 1.0F)
-@@ -221,6 +270,7 @@
+@@ -221,6 +277,7 @@
                  this.destroyPos = pos;
                  int i = (int)(f * 10.0F);
                  this.world.sendBlockBreakProgress(this.player.getEntityId(), pos, i);
@@ -135,7 +142,7 @@
                  this.durabilityRemainingOnBlock = i;
              }
          }
-@@ -230,6 +280,7 @@
+@@ -230,6 +287,7 @@
      {
          if (pos.equals(this.destroyPos))
          {
@@ -143,7 +150,7 @@
              int i = this.curblockDamage - this.initialDamage;
              IBlockState iblockstate = this.world.getBlockState(pos);
  
-@@ -251,6 +302,15 @@
+@@ -251,6 +309,21 @@
                      this.initialBlockDamage = this.initialDamage;
                  }
              }
@@ -156,10 +163,16 @@
 +            if (tileentity != null) {
 +                this.player.connection.sendPacket(tileentity.getUpdatePacket());
 +            }
++            // Magma start
++            IBlockState state = this.world.getBlockState(pos);
++            if (state.getBlock() instanceof BlockDoor && state.getValue(BlockDoor.HALF) == BlockDoor.EnumDoorHalf.LOWER) {
++                this.player.connection.sendPacket(new SPacketBlockChange(this.world, pos.up()));
++            }
++            // Magma end
          }
      }
  
-@@ -331,7 +391,7 @@
+@@ -331,7 +404,7 @@
                  // Drop experience
                  if (!this.isCreative() && flag1 && exp > 0)
                  {
@@ -168,7 +181,7 @@
                  }
                  return flag1;
              }
-@@ -396,9 +456,58 @@
+@@ -396,9 +469,58 @@
          }
      }
  
@@ -228,7 +241,7 @@
          {
              TileEntity tileentity = worldIn.getTileEntity(pos);
  
-@@ -460,7 +569,7 @@
+@@ -460,7 +582,7 @@
              {
                  return EnumActionResult.PASS;
              }
@@ -237,7 +250,7 @@
              {
                  if (stack.getItem() instanceof ItemBlock && !player.canUseCommandBlock())
                  {
-@@ -496,6 +605,8 @@
+@@ -496,6 +618,8 @@
              }
          }
      }
