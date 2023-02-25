@@ -298,7 +298,7 @@
                  continue;
              }
              tmp.add(entry.getValue());
-@@ -240,58 +234,68 @@
+@@ -240,58 +234,72 @@
          server.worlds = tmp.toArray(new WorldServer[0]);
      }
  
@@ -346,7 +346,11 @@
 +        if (mcServer instanceof DedicatedServer) {
 +            worldSettings.setGeneratorOptions(((DedicatedServer) mcServer).getStringProperty("generator-settings", ""));
 +        }
-+        WorldInfo worldInfo = new WorldInfo(worldSettings, name);
++        WorldInfo worldInfo = saveHandler.loadWorldInfo();
++        if (worldInfo == null)
++            worldInfo = new WorldInfo(worldSettings, name);
++        worldInfo.checkName(name);
++        worldInfo.setDimension(dim);
 +        WorldServer world = (dim == 0 ? overworld : (WorldServer) (new WorldServerMulti(mcServer, saveHandler, dim, overworld, mcServer.profiler, worldInfo, env, generator).init()));
 +        world.initialize(worldSettings);
 +        mcServer.getPlayerList().setPlayerManager(mcServer.worldServerList.toArray(new WorldServer[mcServer.worldServerList.size()]));
@@ -391,7 +395,7 @@
          init();
      }
  
-@@ -299,28 +303,20 @@
+@@ -299,28 +307,20 @@
       * Not public API: used internally to get dimensions that should load at
       * server startup
       */
@@ -426,7 +430,7 @@
              FMLLog.log.error("An error occurred trying to create an instance of WorldProvider {} ({})",
                      dim, getProviderType(dim), e);
              throw new RuntimeException(e);
-@@ -329,55 +325,52 @@
+@@ -329,55 +329,52 @@
  
      /**
       * Sets if a dimension should stay loaded.
@@ -496,7 +500,7 @@
                  dimension.ticksWaited++;
                  continue;
              }
-@@ -385,92 +378,65 @@
+@@ -385,92 +382,65 @@
              queueIterator.remove();
              dimension.ticksWaited = 0;
              // Don't unload the world if the status changed
@@ -605,7 +609,7 @@
                      if ((data & (1 << j)) != 0) usedIds.add(i * Integer.SIZE + j);
                  }
              }
-@@ -479,13 +445,12 @@
+@@ -479,13 +449,12 @@
  
      /**
       * Return the current root directory for the world save. Accesses getSaveHandler from the overworld
@@ -622,7 +626,7 @@
              return DimensionManager.getWorld(0).getSaveHandler().getWorldDirectory();
          }/*
          else if (MinecraftServer.getServer() != null)
-@@ -493,10 +458,111 @@
+@@ -493,10 +462,111 @@
              MinecraftServer srv = MinecraftServer.getServer();
              SaveHandler saveHandler = (SaveHandler) srv.getActiveAnvilConverter().getSaveLoader(srv.getFolderName(), false);
              return saveHandler.getWorldDirectory();
