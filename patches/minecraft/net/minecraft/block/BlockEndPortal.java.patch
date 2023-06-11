@@ -1,0 +1,29 @@
+--- ../src-base/minecraft/net/minecraft/block/BlockEndPortal.java
++++ ../src-work/minecraft/net/minecraft/block/BlockEndPortal.java
+@@ -17,8 +17,10 @@
+ import net.minecraft.util.math.BlockPos;
+ import net.minecraft.world.IBlockAccess;
+ import net.minecraft.world.World;
++import net.minecraftforge.common.DimensionManager;
+ import net.minecraftforge.fml.relauncher.Side;
+ import net.minecraftforge.fml.relauncher.SideOnly;
++import org.bukkit.event.entity.EntityPortalEnterEvent;
+ 
+ public class BlockEndPortal extends BlockContainer
+ {
+@@ -69,7 +71,13 @@
+     {
+         if (!p_180634_1_.field_72995_K && !p_180634_4_.func_184218_aH() && !p_180634_4_.func_184207_aI() && p_180634_4_.func_184222_aU() && p_180634_4_.func_174813_aQ().func_72326_a(p_180634_3_.func_185900_c(p_180634_1_, p_180634_2_).func_186670_a(p_180634_2_)))
+         {
+-            p_180634_4_.func_184204_a(1);
++            EntityPortalEnterEvent event = new EntityPortalEnterEvent(p_180634_4_.getBukkitEntity(), new org.bukkit.Location(p_180634_1_.getWorld(), p_180634_2_.func_177958_n(), p_180634_2_.func_177956_o(), p_180634_2_.func_177952_p()));
++            p_180634_1_.getServer().getPluginManager().callEvent(event);
++            //Magma start - fix dimension
++            int dimension = 1 - p_180634_4_.field_71093_bK;
++            if(dimension <= -1 || dimension >= DimensionManager.getRegisteredDimensions().size()) dimension = 0;
++            p_180634_4_.func_184204_a(dimension);
++            //Magma end
+\ No newline at end of file
+         }
+     }
+ 

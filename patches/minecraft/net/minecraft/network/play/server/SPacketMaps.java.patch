@@ -1,0 +1,28 @@
+--- ../src-base/minecraft/net/minecraft/network/play/server/SPacketMaps.java
++++ ../src-work/minecraft/net/minecraft/network/play/server/SPacketMaps.java
+@@ -2,6 +2,7 @@
+ 
+ import java.io.IOException;
+ import java.util.Collection;
++import java.util.UUID;
+ import net.minecraft.network.Packet;
+ import net.minecraft.network.PacketBuffer;
+ import net.minecraft.network.play.INetHandlerPlayClient;
+@@ -9,6 +10,7 @@
+ import net.minecraft.world.storage.MapDecoration;
+ import net.minecraftforge.fml.relauncher.Side;
+ import net.minecraftforge.fml.relauncher.SideOnly;
++import org.apache.commons.io.Charsets;
+ 
+ public class SPacketMaps implements Packet<INetHandlerPlayClient>
+ {
+@@ -117,7 +119,7 @@
+         for (int i = 0; i < this.field_179740_c.length; ++i)
+         {
+             MapDecoration mapdecoration = this.field_179740_c[i];
+-            p_179734_1_.field_76203_h.put("icon-" + i, mapdecoration);
++            p_179734_1_.field_76203_h.put(UUID.nameUUIDFromBytes(("icon-" + i).getBytes(Charsets.UTF_8)), mapdecoration); // Spigot
+\ No newline at end of file
+         }
+ 
+         for (int j = 0; j < this.field_179735_f; ++j)
