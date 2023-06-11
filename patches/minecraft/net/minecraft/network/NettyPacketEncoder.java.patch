@@ -1,0 +1,38 @@
+--- ../src-base/minecraft/net/minecraft/network/NettyPacketEncoder.java
++++ ../src-work/minecraft/net/minecraft/network/NettyPacketEncoder.java
+@@ -4,6 +4,8 @@
+ import io.netty.channel.ChannelHandlerContext;
+ import io.netty.handler.codec.MessageToByteEncoder;
+ import java.io.IOException;
++
++import net.minecraft.network.login.server.SPacketLoginSuccess;
+ import org.apache.logging.log4j.LogManager;
+ import org.apache.logging.log4j.Logger;
+ import org.apache.logging.log4j.Marker;
+@@ -37,12 +39,15 @@
+                 field_150798_a.debug(field_150797_b, "OUT: [{}:{}] {}", p_encode_1_.channel().attr(NetworkManager.field_150739_c).get(), integer, p_encode_2_.getClass().getName());
+             }
+ 
+-            if (integer == null)
++            if (integer == null && !(p_encode_2_ instanceof SPacketLoginSuccess))
+             {
+                 throw new IOException("Can't serialize unregistered packet");
+             }
+             else
+             {
++                //Forcibly updates the packet id when it's a SPacketLoginSuccess because sometimes it's not looked up properly
++                if(p_encode_2_ instanceof SPacketLoginSuccess) integer = 2;
++
+                 PacketBuffer packetbuffer = new PacketBuffer(p_encode_3_);
+                 packetbuffer.func_150787_b(integer.intValue());
+ 
+@@ -52,7 +57,7 @@
+                 }
+                 catch (Throwable throwable)
+                 {
+-                    field_150798_a.error(throwable);
++                    throw throwable; // Forge: throw this instead of logging it, to prevent corrupt packets from being sent to the client where they are much harder to debug.
+\ No newline at end of file
+                 }
+             }
+         }

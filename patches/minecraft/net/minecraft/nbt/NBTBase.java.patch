@@ -1,0 +1,65 @@
+--- ../src-base/minecraft/net/minecraft/nbt/NBTBase.java
++++ ../src-work/minecraft/net/minecraft/nbt/NBTBase.java
+@@ -8,7 +8,7 @@
+ {
+     public static final String[] field_82578_b = new String[] {"END", "BYTE", "SHORT", "INT", "LONG", "FLOAT", "DOUBLE", "BYTE[]", "STRING", "LIST", "COMPOUND", "INT[]", "LONG[]"};
+ 
+-    abstract void func_74734_a(DataOutput p_74734_1_) throws IOException;
++    public abstract void func_74734_a(DataOutput p_74734_1_) throws IOException;
+ 
+     abstract void func_152446_a(DataInput p_152446_1_, int p_152446_2_, NBTSizeTracker p_152446_3_) throws IOException;
+ 
+@@ -88,6 +88,52 @@
+         }
+     }
+ 
++    public boolean isEnd() {
++        return func_74732_a() == 0;
++    }
++
++    public boolean isByte() {
++        return func_74732_a() == 1;
++    }
++
++    public boolean isShort() {
++        return func_74732_a() == 2;
++    }
++    public boolean isInt() {
++        return func_74732_a() == 3;
++    }
++    public boolean isLong() {
++        return func_74732_a() == 4;
++    }
++    public boolean isFloat() {
++        return func_74732_a() == 5;
++    }
++    public boolean isDouble() {
++        return func_74732_a() == 6;
++    }
++    public boolean isByteArray() {
++        return func_74732_a() == 7;
++    }
++    public boolean isString() {
++        return func_74732_a() == 8;
++    }
++    public boolean isList() {
++        return func_74732_a() == 9;
++    }
++    public boolean isCompound() {
++        return func_74732_a() == 10;
++    }
++    public boolean isIntArr() {
++        return func_74732_a() == 11;
++    }
++    public boolean isLongArr() {
++        return func_74732_a() == 12;
++    }
++    public boolean isNumber() {
++        int id = func_74732_a();
++        return id >= 1 && id <= 6;
++    }
++
+\ No newline at end of file
+     public abstract NBTBase func_74737_b();
+ 
+     public boolean func_82582_d()

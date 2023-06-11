@@ -1,0 +1,63 @@
+--- ../src-base/minecraft/net/minecraft/advancements/Advancement.java
++++ ../src-work/minecraft/net/minecraft/advancements/Advancement.java
+@@ -21,6 +21,7 @@
+ import net.minecraftforge.fml.relauncher.Side;
+ import net.minecraftforge.fml.relauncher.SideOnly;
+ import org.apache.commons.lang3.ArrayUtils;
++import org.bukkit.craftbukkit.v1_12_R1.advancement.CraftAdvancement;
+ 
+ public class Advancement
+ {
+@@ -32,6 +33,7 @@
+     private final String[][] field_192081_f;
+     private final Set<Advancement> field_192082_g = Sets.<Advancement>newLinkedHashSet();
+     private final ITextComponent field_193125_h;
++    public final org.bukkit.advancement.Advancement bukkit = new CraftAdvancement(this); // CraftBukkit
+ 
+     public Advancement(ResourceLocation p_i47472_1_, @Nullable Advancement p_i47472_2_, @Nullable DisplayInfo p_i47472_3_, AdvancementRewards p_i47472_4_, Map<String, Criterion> p_i47472_5_, String[][] p_i47472_6_)
+     {
+@@ -68,9 +70,9 @@
+         }
+     }
+ 
+-    public Advancement.Builder func_192075_a()
++    public Builder func_192075_a()
+     {
+-        return new Advancement.Builder(this.field_192076_a == null ? null : this.field_192076_a.func_192067_g(), this.field_192077_b, this.field_192078_c, this.field_192080_e, this.field_192081_f);
++        return new Builder(this.field_192076_a == null ? null : this.field_192076_a.func_192067_g(), this.field_192077_b, this.field_192078_c, this.field_192080_e, this.field_192081_f);
+     }
+ 
+     @Nullable
+@@ -230,7 +232,7 @@
+                 return "Task Advancement{parentId=" + this.field_192061_a + ", display=" + this.field_192063_c + ", rewards=" + this.field_192064_d + ", criteria=" + this.field_192065_e + ", requirements=" + Arrays.deepToString(this.field_192066_f) + '}';
+             }
+ 
+-            public static Advancement.Builder func_192059_a(JsonObject p_192059_0_, JsonDeserializationContext p_192059_1_)
++            public static Builder func_192059_a(JsonObject p_192059_0_, JsonDeserializationContext p_192059_1_)
+             {
+                 ResourceLocation resourcelocation = p_192059_0_.has("parent") ? new ResourceLocation(JsonUtils.func_151200_h(p_192059_0_, "parent")) : null;
+                 DisplayInfo displayinfo = p_192059_0_.has("display") ? DisplayInfo.func_192294_a(JsonUtils.func_152754_s(p_192059_0_, "display"), p_192059_1_) : null;
+@@ -303,11 +305,11 @@
+                         }
+                     }
+ 
+-                    return new Advancement.Builder(resourcelocation, displayinfo, advancementrewards, map, astring);
++                    return new Builder(resourcelocation, displayinfo, advancementrewards, map, astring);
+                 }
+             }
+ 
+-            public static Advancement.Builder func_192060_b(PacketBuffer p_192060_0_) throws IOException
++            public static Builder func_192060_b(PacketBuffer p_192060_0_) throws IOException
+             {
+                 ResourceLocation resourcelocation = p_192060_0_.readBoolean() ? p_192060_0_.func_192575_l() : null;
+                 DisplayInfo displayinfo = p_192060_0_.readBoolean() ? DisplayInfo.func_192295_b(p_192060_0_) : null;
+@@ -324,7 +326,7 @@
+                     }
+                 }
+ 
+-                return new Advancement.Builder(resourcelocation, displayinfo, AdvancementRewards.field_192114_a, map, astring);
++                return new Builder(resourcelocation, displayinfo, AdvancementRewards.field_192114_a, map, astring);
+\ No newline at end of file
+             }
+         }
+ }

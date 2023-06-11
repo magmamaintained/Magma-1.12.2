@@ -1,0 +1,58 @@
+--- ../src-base/minecraft/net/minecraft/server/management/PlayerProfileCache.java
++++ ../src-work/minecraft/net/minecraft/server/management/PlayerProfileCache.java
+@@ -45,9 +45,9 @@
+ {
+     public static final SimpleDateFormat field_152659_a = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
+     private static boolean field_187322_c;
+-    private final Map<String, PlayerProfileCache.ProfileEntry> field_152661_c = Maps.<String, PlayerProfileCache.ProfileEntry>newHashMap();
+-    private final Map<UUID, PlayerProfileCache.ProfileEntry> field_152662_d = Maps.<UUID, PlayerProfileCache.ProfileEntry>newHashMap();
+-    private final Deque<GameProfile> field_152663_e = Lists.<GameProfile>newLinkedList();
++    private final Map<String, ProfileEntry> field_152661_c = Maps.<String, ProfileEntry>newHashMap();
++    private final Map<UUID, ProfileEntry> field_152662_d = Maps.<UUID, ProfileEntry>newHashMap();
++    private final Deque<GameProfile> field_152663_e = new java.util.concurrent.LinkedBlockingDeque<>();
+     private final GameProfileRepository field_187323_g;
+     protected final Gson field_152660_b;
+     private final File field_152665_g;
+@@ -93,8 +93,7 @@
+         };
+         p_187319_0_.findProfilesByNames(new String[] {p_187319_1_}, Agent.MINECRAFT, profilelookupcallback);
+ 
+-        if (!func_187321_d() && agameprofile[0] == null)
+-        {
++        if (!func_187321_d() && agameprofile[0] == null && !org.apache.commons.lang3.StringUtils.isBlank(p_187319_1_)) { // Paper - Don't lookup a profile with a blank name
+             UUID uuid = EntityPlayer.func_146094_a(new GameProfile((UUID)null, p_187319_1_));
+             GameProfile gameprofile = new GameProfile(uuid, p_187319_1_);
+             profilelookupcallback.onProfileLookupSucceeded(gameprofile);
+@@ -143,7 +142,7 @@
+         this.field_152661_c.put(p_152651_1_.getName().toLowerCase(Locale.ROOT), playerprofilecache$profileentry);
+         this.field_152662_d.put(uuid, playerprofilecache$profileentry);
+         this.field_152663_e.addFirst(p_152651_1_);
+-        this.func_152658_c();
++        if(!org.spigotmc.SpigotConfig.saveUserCacheOnStopOnly) this.func_152658_c(); // Spigot - skip saving if disabled
+     }
+ 
+     @Nullable
+@@ -177,7 +176,7 @@
+             }
+         }
+ 
+-        this.func_152658_c();
++        if(!org.spigotmc.SpigotConfig.saveUserCacheOnStopOnly) this.func_152658_c(); // Spigot - skip saving if disabled
+         return playerprofilecache$profileentry == null ? null : playerprofilecache$profileentry.func_152668_a();
+     }
+ 
+@@ -187,6 +186,13 @@
+         return (String[])list.toArray(new String[list.size()]);
+     }
+ 
++    // Paper start
++    @Nullable public GameProfile getProfileIfCached(String name) {
++        ProfileEntry entry = this.field_152661_c.get(name.toLowerCase(Locale.ROOT));
++        return entry == null ? null : entry.field_152672_b;
++    }
++    // Paper end
++
+\ No newline at end of file
+     @Nullable
+     public GameProfile func_152652_a(UUID p_152652_1_)
+     {

@@ -1,0 +1,12 @@
+--- ../src-base/minecraft/net/minecraft/nbt/NBTTagInt.java
++++ ../src-work/minecraft/net/minecraft/nbt/NBTTagInt.java
+@@ -17,7 +17,7 @@
+         this.field_74748_a = p_i45133_1_;
+     }
+ 
+-    void func_74734_a(DataOutput p_74734_1_) throws IOException
++    public void func_74734_a(DataOutput p_74734_1_) throws IOException
+\ No newline at end of file
+     {
+         p_74734_1_.writeInt(this.field_74748_a);
+     }
