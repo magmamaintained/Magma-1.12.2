@@ -1,0 +1,12 @@
+--- ../src-base/minecraft/net/minecraft/nbt/NBTTagEnd.java
++++ ../src-work/minecraft/net/minecraft/nbt/NBTTagEnd.java
+@@ -11,7 +11,7 @@
+         p_152446_3_.func_152450_a(64L);
+     }
+ 
+-    void func_74734_a(DataOutput p_74734_1_) throws IOException
++    public void func_74734_a(DataOutput p_74734_1_) throws IOException
+\ No newline at end of file
+     {
+     }
+ 

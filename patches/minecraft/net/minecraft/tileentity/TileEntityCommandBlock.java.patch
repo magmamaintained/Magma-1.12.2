@@ -1,0 +1,30 @@
+--- ../src-base/minecraft/net/minecraft/tileentity/TileEntityCommandBlock.java
++++ ../src-work/minecraft/net/minecraft/tileentity/TileEntityCommandBlock.java
+@@ -16,6 +16,7 @@
+ import net.minecraft.world.World;
+ import net.minecraftforge.fml.relauncher.Side;
+ import net.minecraftforge.fml.relauncher.SideOnly;
++import org.bukkit.craftbukkit.v1_12_R1.command.CraftBlockCommandSender;
+ 
+ public class TileEntityCommandBlock extends TileEntity
+ {
+@@ -25,6 +26,9 @@
+     private boolean field_184262_h;
+     private final CommandBlockBaseLogic field_145994_a = new CommandBlockBaseLogic()
+     {
++        {
++            sender = new CraftBlockCommandSender(this);
++        }
+         public BlockPos func_180425_c()
+         {
+             return TileEntityCommandBlock.this.field_174879_c;
+@@ -134,7 +138,7 @@
+         boolean flag = this.field_184260_f;
+         this.field_184260_f = p_184253_1_;
+ 
+-        if (!flag && p_184253_1_ && !this.field_184259_a && this.field_145850_b != null && this.func_184251_i() != TileEntityCommandBlock.Mode.SEQUENCE)
++        if (!flag && p_184253_1_ && !this.field_184259_a && this.field_145850_b != null && this.func_184251_i() != Mode.SEQUENCE)
+\ No newline at end of file
+         {
+             Block block = this.func_145838_q();
+ 

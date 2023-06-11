@@ -1,0 +1,19 @@
+--- ../src-base/minecraft/net/minecraft/block/BlockDaylightDetector.java
++++ ../src-work/minecraft/net/minecraft/block/BlockDaylightDetector.java
+@@ -24,6 +24,7 @@
+ import net.minecraft.world.EnumSkyBlock;
+ import net.minecraft.world.IBlockAccess;
+ import net.minecraft.world.World;
++import org.bukkit.craftbukkit.v1_12_R1.event.CraftEventFactory;
+ 
+ public class BlockDaylightDetector extends BlockContainer
+ {
+@@ -76,6 +77,7 @@
+ 
+             if (((Integer)iblockstate.func_177229_b(field_176436_a)).intValue() != i)
+             {
++                i = CraftEventFactory.callRedstoneChange(p_180677_1_, p_180677_2_.func_177958_n(), p_180677_2_.func_177956_o(), p_180677_2_.func_177952_p(), iblockstate.func_177229_b(field_176436_a), i).getNewCurrent();
+\ No newline at end of file
+                 p_180677_1_.func_180501_a(p_180677_2_, iblockstate.func_177226_a(field_176436_a, Integer.valueOf(i)), 3);
+             }
+         }

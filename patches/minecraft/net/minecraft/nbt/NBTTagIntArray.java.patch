@@ -1,0 +1,12 @@
+--- ../src-base/minecraft/net/minecraft/nbt/NBTTagIntArray.java
++++ ../src-work/minecraft/net/minecraft/nbt/NBTTagIntArray.java
+@@ -37,7 +37,7 @@
+         return aint;
+     }
+ 
+-    void func_74734_a(DataOutput p_74734_1_) throws IOException
++    public void func_74734_a(DataOutput p_74734_1_) throws IOException
+\ No newline at end of file
+     {
+         p_74734_1_.writeInt(this.field_74749_a.length);
+ 
