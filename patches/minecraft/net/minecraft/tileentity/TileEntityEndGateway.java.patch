@@ -1,0 +1,77 @@
+--- ../src-base/minecraft/net/minecraft/tileentity/TileEntityEndGateway.java
++++ ../src-work/minecraft/net/minecraft/tileentity/TileEntityEndGateway.java
+@@ -3,8 +3,11 @@
+ import java.util.List;
+ import java.util.Random;
+ import javax.annotation.Nullable;
++
++import com.destroystokyo.paper.MCUtil;
+ import net.minecraft.block.state.IBlockState;
+ import net.minecraft.entity.Entity;
++import net.minecraft.entity.player.EntityPlayerMP;
+ import net.minecraft.init.Blocks;
+ import net.minecraft.nbt.NBTTagCompound;
+ import net.minecraft.nbt.NBTUtil;
+@@ -24,14 +27,19 @@
+ import net.minecraftforge.fml.relauncher.SideOnly;
+ import org.apache.logging.log4j.LogManager;
+ import org.apache.logging.log4j.Logger;
++import org.bukkit.Bukkit;
++import org.bukkit.Location;
++import org.bukkit.craftbukkit.v1_12_R1.block.CraftEndGateway;
++import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
++import org.bukkit.event.player.PlayerTeleportEvent;
+ 
+ public class TileEntityEndGateway extends TileEntityEndPortal implements ITickable
+ {
+     private static final Logger field_184314_a = LogManager.getLogger();
+     private long field_184315_f;
+     private int field_184316_g;
+-    private BlockPos field_184317_h;
+-    private boolean field_184318_i;
++    public BlockPos field_184317_h;
++    public boolean field_184318_i;
+ 
+     public NBTTagCompound func_189515_b(NBTTagCompound p_189515_1_)
+     {
+@@ -171,7 +179,38 @@
+             if (this.field_184317_h != null)
+             {
+                 BlockPos blockpos = this.field_184318_i ? this.field_184317_h : this.func_184303_j();
+-                p_184306_1_.func_70634_a((double)blockpos.func_177958_n() + 0.5D, (double)blockpos.func_177956_o() + 0.5D, (double)blockpos.func_177952_p() + 0.5D);
++                if (p_184306_1_ instanceof EntityPlayerMP) {
++                    CraftPlayer player = (CraftPlayer) p_184306_1_.getBukkitEntity();
++                    Location location = new Location(field_145850_b.getWorld(), (double) blockpos.func_177958_n() + 0.5D, (double) blockpos.func_177956_o() + 0.5D, (double) blockpos.func_177952_p() + 0.5D);
++                    location.setPitch(player.getLocation().getPitch());
++                    location.setYaw(player.getLocation().getYaw());
++
++                    PlayerTeleportEvent teleEvent = new PlayerTeleportEvent(player, player.getLocation(), location, PlayerTeleportEvent.TeleportCause.END_GATEWAY);
++                    Bukkit.getPluginManager().callEvent(teleEvent);
++                    if (teleEvent.isCancelled()) {
++                        return;
++                    }
++
++                    ((EntityPlayerMP) p_184306_1_).field_71135_a.teleport(teleEvent.getTo());
++                    this.func_184300_h(); // CraftBukkit - call at end of method
++                    return;
++                }
++                if (p_184306_1_ instanceof EntityPlayerMP) {
++                    // Paper start - EntityTeleportEndGatewayEvent - replicated from above
++                    CraftPlayer player = (CraftPlayer) p_184306_1_.getBukkitEntity();
++                    Location location = new Location(field_145850_b.getWorld(), (double) blockpos.func_177958_n() + 0.5D, (double) blockpos.func_177956_o() + 0.5D, (double) blockpos.func_177952_p() + 0.5D);
++                    location.setPitch(player.getLocation().getPitch());
++                    location.setYaw(player.getLocation().getYaw());
++
++                    com.destroystokyo.paper.event.entity.EntityTeleportEndGatewayEvent event = new com.destroystokyo.paper.event.entity.EntityTeleportEndGatewayEvent(player, player.getLocation(),
++                        location, new CraftEndGateway(MCUtil.toLocation(field_145850_b, this.func_174877_v()).getBlock()));
++                    if (!event.callEvent()) {
++                        return;
++                    }
++
++                    p_184306_1_.func_70634_a(event.getTo().getX(), event.getTo().getY(), event.getTo().getZ());
++                    // Paper end - EntityTeleportEndGatewayEvent
++                }
+\ No newline at end of file
+             }
+ 
+             this.func_184300_h();

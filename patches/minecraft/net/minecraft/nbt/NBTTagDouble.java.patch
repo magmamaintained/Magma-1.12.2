@@ -1,0 +1,12 @@
+--- ../src-base/minecraft/net/minecraft/nbt/NBTTagDouble.java
++++ ../src-work/minecraft/net/minecraft/nbt/NBTTagDouble.java
+@@ -18,7 +18,7 @@
+         this.field_74755_a = p_i45130_1_;
+     }
+ 
+-    void func_74734_a(DataOutput p_74734_1_) throws IOException
++    public void func_74734_a(DataOutput p_74734_1_) throws IOException
+\ No newline at end of file
+     {
+         p_74734_1_.writeDouble(this.field_74755_a);
+     }

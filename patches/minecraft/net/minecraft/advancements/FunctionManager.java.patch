@@ -1,0 +1,106 @@
+--- ../src-base/minecraft/net/minecraft/advancements/FunctionManager.java
++++ ../src-work/minecraft/net/minecraft/advancements/FunctionManager.java
+@@ -18,6 +18,7 @@
+ import org.apache.commons.io.FilenameUtils;
+ import org.apache.logging.log4j.LogManager;
+ import org.apache.logging.log4j.Logger;
++import org.bukkit.craftbukkit.v1_12_R1.command.CraftFunctionCommandSender;
+ 
+ public class FunctionManager implements ITickable
+ {
+@@ -27,18 +28,26 @@
+     private final Map<ResourceLocation, FunctionObject> field_193070_d = Maps.<ResourceLocation, FunctionObject>newHashMap();
+     private String field_193071_e = "-";
+     private FunctionObject field_193072_f;
+-    private final ArrayDeque<FunctionManager.QueuedCommand> field_194020_g = new ArrayDeque<FunctionManager.QueuedCommand>();
++    private final ArrayDeque<QueuedCommand> field_194020_g = new ArrayDeque<QueuedCommand>();
+     private boolean field_194021_h = false;
+-    private final ICommandSender field_193073_g = new ICommandSender()
+-    {
++    private final ICommandSender field_193073_g = new CustomFunctionListener();
++
++    public class CustomFunctionListener implements ICommandSender {
++
++        public org.bukkit.command.CommandSender sender = new CraftFunctionCommandSender(this);
+         public String func_70005_c_()
+         {
+             return FunctionManager.this.field_193071_e;
+         }
+-        public boolean func_70003_b(int p_70003_1_, String p_70003_2_)
++        public boolean func_70003_b(int permLevel, String commandName)
+         {
+-            return p_70003_1_ <= 2;
++            return permLevel <= 2;
+         }
++
++        public boolean canUseCommand(int permLevel, String commandName, String perm)
++        {
++            return permLevel <= 2;
++        }
+         public World func_130014_f_()
+         {
+             return FunctionManager.this.field_193069_c.field_71305_c[0];
+@@ -101,7 +110,7 @@
+         {
+             if (this.field_194020_g.size() < i)
+             {
+-                this.field_194020_g.addFirst(new FunctionManager.QueuedCommand(this, p_194019_2_, new FunctionObject.FunctionEntry(p_194019_1_)));
++                this.field_194020_g.addFirst(new QueuedCommand(this, p_194019_2_, new FunctionObject.FunctionEntry(p_194019_1_)));
+             }
+ 
+             return 0;
+@@ -118,7 +127,7 @@
+ 
+                 for (int k = afunctionobject$entry.length - 1; k >= 0; --k)
+                 {
+-                    this.field_194020_g.push(new FunctionManager.QueuedCommand(this, p_194019_2_, afunctionobject$entry[k]));
++                    this.field_194020_g.push(new QueuedCommand(this, p_194019_2_, afunctionobject$entry[k]));
+                 }
+ 
+                 while (true)
+@@ -192,26 +201,26 @@
+     }
+ 
+     public static class QueuedCommand
++    {
++        private final FunctionManager field_194223_a;
++        private final ICommandSender field_194224_b;
++        private final FunctionObject.Entry field_194225_c;
++
++        public QueuedCommand(FunctionManager p_i47603_1_, ICommandSender p_i47603_2_, FunctionObject.Entry p_i47603_3_)
+         {
+-            private final FunctionManager field_194223_a;
+-            private final ICommandSender field_194224_b;
+-            private final FunctionObject.Entry field_194225_c;
++            this.field_194223_a = p_i47603_1_;
++            this.field_194224_b = p_i47603_2_;
++            this.field_194225_c = p_i47603_3_;
++        }
+ 
+-            public QueuedCommand(FunctionManager p_i47603_1_, ICommandSender p_i47603_2_, FunctionObject.Entry p_i47603_3_)
+-            {
+-                this.field_194223_a = p_i47603_1_;
+-                this.field_194224_b = p_i47603_2_;
+-                this.field_194225_c = p_i47603_3_;
+-            }
++        public void func_194222_a(ArrayDeque<QueuedCommand> p_194222_1_, int p_194222_2_)
++        {
++            this.field_194225_c.func_194145_a(this.field_194223_a, this.field_194224_b, p_194222_1_, p_194222_2_);
++        }
+ 
+-            public void func_194222_a(ArrayDeque<FunctionManager.QueuedCommand> p_194222_1_, int p_194222_2_)
+-            {
+-                this.field_194225_c.func_194145_a(this.field_194223_a, this.field_194224_b, p_194222_1_, p_194222_2_);
+-            }
+-
+-            public String toString()
+-            {
+-                return this.field_194225_c.toString();
+-            }
++        public String toString()
++        {
++            return this.field_194225_c.toString();
+         }
++    }
+\ No newline at end of file
+ }

@@ -1,0 +1,40 @@
+--- ../src-base/minecraft/net/minecraft/inventory/ContainerHorseChest.java
++++ ../src-work/minecraft/net/minecraft/inventory/ContainerHorseChest.java
+@@ -1,19 +1,35 @@
+ package net.minecraft.inventory;
+ 
++import net.minecraft.entity.passive.AbstractHorse;
++import net.minecraft.entity.passive.EntityAnimal;
+ import net.minecraft.util.text.ITextComponent;
+ import net.minecraftforge.fml.relauncher.Side;
+ import net.minecraftforge.fml.relauncher.SideOnly;
+ 
+ public class ContainerHorseChest extends InventoryBasic
+ {
++    private EntityAnimal entityAnimal;
++
++    // Magma - Ice and Fire #6
+     public ContainerHorseChest(String p_i47268_1_, int p_i47268_2_)
+     {
+-        super(p_i47268_1_, false, p_i47268_2_);
++        super(p_i47268_1_, false, p_i47268_2_, null);
+     }
+ 
++    public ContainerHorseChest(String inventoryTitle, int slotCount, AbstractHorse owner)
++    {
++        super(inventoryTitle, false, slotCount, (org.bukkit.entity.AbstractHorse) owner.getBukkitEntity());
++        this.entityAnimal = owner;
++    }
++
+     @SideOnly(Side.CLIENT)
+     public ContainerHorseChest(ITextComponent p_i47269_1_, int p_i47269_2_)
+     {
+         super(p_i47269_1_, p_i47269_2_);
+     }
++
++    public EntityAnimal getAnimal()
++    {
++        return this.entityAnimal;
++    }
+\ No newline at end of file
+ }

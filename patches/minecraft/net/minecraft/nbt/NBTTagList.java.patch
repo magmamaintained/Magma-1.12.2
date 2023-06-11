@@ -1,0 +1,48 @@
+--- ../src-base/minecraft/net/minecraft/nbt/NBTTagList.java
++++ ../src-work/minecraft/net/minecraft/nbt/NBTTagList.java
+@@ -4,18 +4,25 @@
+ import java.io.DataInput;
+ import java.io.DataOutput;
+ import java.io.IOException;
++import java.util.ArrayList;
+ import java.util.List;
+ import java.util.Objects;
+ import org.apache.logging.log4j.LogManager;
+ import org.apache.logging.log4j.Logger;
+ 
+-public class NBTTagList extends NBTBase
++public class NBTTagList extends NBTBase implements java.lang.Iterable<NBTBase>
+ {
+     private static final Logger field_179239_b = LogManager.getLogger();
+-    private List<NBTBase> field_74747_a = Lists.<NBTBase>newArrayList();
++    public List<NBTBase> field_74747_a = Lists.newArrayList(); // Paper
++    // Paper start
++    public void sort(java.util.Comparator<? extends NBTBase> comparator) {
++        //noinspection unchecked
++        java.util.Collections.sort(field_74747_a, (java.util.Comparator<NBTBase>) comparator);
++    }
++    // Paper end
+     private byte field_74746_b = 0;
+ 
+-    void func_74734_a(DataOutput p_74734_1_) throws IOException
++    public void func_74734_a(DataOutput p_74734_1_) throws IOException
+     {
+         if (this.field_74747_a.isEmpty())
+         {
+@@ -249,7 +256,8 @@
+     {
+         NBTTagList nbttaglist = new NBTTagList();
+         nbttaglist.field_74746_b = this.field_74746_b;
+-
++        if ( nbttaglist.field_74747_a instanceof ArrayList) // Magma, ensure we dont create arrays to then delete them
++            ((ArrayList<NBTBase>)nbttaglist.field_74747_a).ensureCapacity(this.field_74747_a.size());
+         for (NBTBase nbtbase : this.field_74747_a)
+         {
+             NBTBase nbtbase1 = nbtbase.func_74737_b();
+@@ -281,4 +289,5 @@
+     {
+         return this.field_74746_b;
+     }
++    @Override public java.util.Iterator<NBTBase> iterator() {return field_74747_a.iterator();}
+\ No newline at end of file
+ }

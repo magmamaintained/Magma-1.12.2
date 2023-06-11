@@ -1,0 +1,64 @@
+--- ../src-base/minecraft/net/minecraft/block/BlockDropper.java
++++ ../src-work/minecraft/net/minecraft/block/BlockDropper.java
+@@ -3,6 +3,7 @@
+ import net.minecraft.dispenser.BehaviorDefaultDispenseItem;
+ import net.minecraft.dispenser.IBehaviorDispenseItem;
+ import net.minecraft.inventory.IInventory;
++import net.minecraft.inventory.InventoryLargeChest;
+ import net.minecraft.item.ItemStack;
+ import net.minecraft.tileentity.TileEntity;
+ import net.minecraft.tileentity.TileEntityDispenser;
+@@ -11,6 +12,9 @@
+ import net.minecraft.util.EnumFacing;
+ import net.minecraft.util.math.BlockPos;
+ import net.minecraft.world.World;
++import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftInventoryDoubleChest;
++import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
++import org.bukkit.event.inventory.InventoryMoveItemEvent;
+ 
+ public class BlockDropper extends BlockDispenser
+ {
+@@ -26,7 +30,7 @@
+         return new TileEntityDropper();
+     }
+ 
+-    protected void func_176439_d(World p_176439_1_, BlockPos p_176439_2_)
++    public void func_176439_d(World p_176439_1_, BlockPos p_176439_2_)
+     {
+         BlockSourceImpl blocksourceimpl = new BlockSourceImpl(p_176439_1_, p_176439_2_);
+         TileEntityDispenser tileentitydispenser = (TileEntityDispenser)blocksourceimpl.func_150835_j();
+@@ -43,7 +47,7 @@
+             {
+                 ItemStack itemstack = tileentitydispenser.func_70301_a(i);
+ 
+-                if (!itemstack.func_190926_b())
++                if (!itemstack.func_190926_b() && net.minecraftforge.items.VanillaInventoryCodeHooks.dropperInsertHook(p_176439_1_, p_176439_2_, tileentitydispenser, i, itemstack))
+                 {
+                     EnumFacing enumfacing = (EnumFacing)p_176439_1_.func_180495_p(p_176439_2_).func_177229_b(field_176441_a);
+                     BlockPos blockpos = p_176439_2_.func_177972_a(enumfacing);
+@@ -56,9 +60,22 @@
+                     }
+                     else
+                     {
+-                        itemstack1 = TileEntityHopper.func_174918_a(tileentitydispenser, iinventory, itemstack.func_77946_l().func_77979_a(1), enumfacing.func_176734_d());
++                        CraftItemStack oitemstack = CraftItemStack.asCraftMirror(itemstack.func_77946_l().func_77979_a(1));
++                        org.bukkit.inventory.Inventory destinationInventory;
++                        // Have to special case large chests as they work oddly
++                        if (iinventory instanceof InventoryLargeChest) {
++                            destinationInventory = new CraftInventoryDoubleChest((InventoryLargeChest) iinventory);
++                        } else {
++                            destinationInventory = iinventory.getOwner().getInventory();
++                        }
+ 
+-                        if (itemstack1.func_190926_b())
++                        InventoryMoveItemEvent event = new InventoryMoveItemEvent(tileentitydispenser.getOwner().getInventory(), oitemstack.clone(), destinationInventory, true);
++                        p_176439_1_.getServer().getPluginManager().callEvent(event);
++                        if (event.isCancelled()) {
++                            return;
++                        }
++                        itemstack1 = TileEntityHopper.func_174918_a(tileentitydispenser, iinventory, CraftItemStack.asNMSCopy(event.getItem()), enumfacing.func_176734_d());
++                        if (event.getItem().equals(oitemstack) && itemstack1.func_190926_b())
+\ No newline at end of file
+                         {
+                             itemstack1 = itemstack.func_77946_l();
+                             itemstack1.func_190918_g(1);

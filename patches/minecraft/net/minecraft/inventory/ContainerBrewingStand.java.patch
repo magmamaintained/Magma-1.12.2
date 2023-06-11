@@ -1,0 +1,76 @@
+--- ../src-base/minecraft/net/minecraft/inventory/ContainerBrewingStand.java
++++ ../src-work/minecraft/net/minecraft/inventory/ContainerBrewingStand.java
+@@ -12,6 +12,9 @@
+ import net.minecraft.potion.PotionUtils;
+ import net.minecraftforge.fml.relauncher.Side;
+ import net.minecraftforge.fml.relauncher.SideOnly;
++import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftInventoryBrewer;
++import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftInventoryView;
++import org.bukkit.inventory.PlayerInventory;
+ 
+ public class ContainerBrewingStand extends Container
+ {
+@@ -20,8 +23,14 @@
+     private int field_184998_g;
+     private int field_184999_h;
+ 
++    // CraftBukkit start
++    private CraftInventoryView bukkitEntity = null;
++    private InventoryPlayer player;
++    // CraftBukkit end
++
+     public ContainerBrewingStand(InventoryPlayer p_i45802_1_, IInventory p_i45802_2_)
+     {
++        player = p_i45802_1_; // CraftBukkit
+         this.field_75188_e = p_i45802_2_;
+         this.func_75146_a(new ContainerBrewingStand.Potion(p_i45802_2_, 0, 56, 51));
+         this.func_75146_a(new ContainerBrewingStand.Potion(p_i45802_2_, 1, 79, 58));
+@@ -80,6 +89,7 @@
+ 
+     public boolean func_75145_c(EntityPlayer p_75145_1_)
+     {
++        if (!this.checkReachable) return true; // CraftBukkit
+         return this.field_75188_e.func_70300_a(p_75145_1_);
+     }
+ 
+@@ -197,7 +207,7 @@
+ 
+             public boolean func_75214_a(ItemStack p_75214_1_)
+             {
+-                return PotionHelper.func_185205_a(p_75214_1_);
++                return net.minecraftforge.common.brewing.BrewingRecipeRegistry.isValidIngredient(p_75214_1_);
+             }
+ 
+             public int func_75219_a()
+@@ -229,6 +239,7 @@
+ 
+                 if (p_190901_1_ instanceof EntityPlayerMP)
+                 {
++                    net.minecraftforge.event.ForgeEventFactory.onPlayerBrewedPotion(p_190901_1_, p_190901_2_);
+                     CriteriaTriggers.field_192130_j.func_192173_a((EntityPlayerMP)p_190901_1_, potiontype);
+                 }
+ 
+@@ -238,8 +249,20 @@
+ 
+             public static boolean func_75243_a_(ItemStack p_75243_0_)
+             {
+-                Item item = p_75243_0_.func_77973_b();
+-                return item == Items.field_151068_bn || item == Items.field_185155_bH || item == Items.field_185156_bI || item == Items.field_151069_bo;
++                return net.minecraftforge.common.brewing.BrewingRecipeRegistry.isValidInput(p_75243_0_);
+             }
+         }
++
++    // CraftBukkit start
++    @Override
++    public CraftInventoryView getBukkitView() {
++        if (bukkitEntity != null) {
++            return bukkitEntity;
++        }
++
++        CraftInventoryBrewer inventory = new CraftInventoryBrewer(this.field_75188_e);
++        bukkitEntity = new CraftInventoryView(this.player.field_70458_d.getBukkitEntity(), inventory, this);
++        return bukkitEntity;
++    }
++    // CraftBukkit end
+\ No newline at end of file
+ }

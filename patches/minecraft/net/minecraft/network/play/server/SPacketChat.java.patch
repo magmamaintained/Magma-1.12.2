@@ -1,0 +1,26 @@
+--- ../src-base/minecraft/net/minecraft/network/play/server/SPacketChat.java
++++ ../src-work/minecraft/net/minecraft/network/play/server/SPacketChat.java
+@@ -12,6 +12,7 @@
+ public class SPacketChat implements Packet<INetHandlerPlayClient>
+ {
+     private ITextComponent field_148919_a;
++    public net.md_5.bungee.api.chat.BaseComponent[] components; // Spigot
+     private ChatType field_179842_b;
+ 
+     public SPacketChat()
+@@ -37,7 +38,13 @@
+ 
+     public void func_148840_b(PacketBuffer p_148840_1_) throws IOException
+     {
+-        p_148840_1_.func_179256_a(this.field_148919_a);
++        // Spigot start
++        if (components != null) {
++            p_148840_1_.func_180714_a(net.md_5.bungee.chat.ComponentSerializer.toString(components));
++        } else {
++            p_148840_1_.func_179256_a(this.field_148919_a);
++        }
++        // Spigot end
+\ No newline at end of file
+         p_148840_1_.writeByte(this.field_179842_b.func_192583_a());
+     }
+ 

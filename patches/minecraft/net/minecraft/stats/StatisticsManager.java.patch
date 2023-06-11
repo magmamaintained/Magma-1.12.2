@@ -1,0 +1,22 @@
+--- ../src-base/minecraft/net/minecraft/stats/StatisticsManager.java
++++ ../src-work/minecraft/net/minecraft/stats/StatisticsManager.java
+@@ -4,6 +4,7 @@
+ import java.util.Map;
+ import net.minecraft.entity.player.EntityPlayer;
+ import net.minecraft.util.TupleIntJsonSerializable;
++import org.bukkit.craftbukkit.v1_12_R1.event.CraftEventFactory;
+ 
+ public class StatisticsManager
+ {
+@@ -11,6 +12,10 @@
+ 
+     public void func_150871_b(EntityPlayer p_150871_1_, StatBase p_150871_2_, int p_150871_3_)
+     {
++        org.bukkit.event.Cancellable cancellable = CraftEventFactory.handleStatisticsIncrease(p_150871_1_, p_150871_2_, this.func_77444_a(p_150871_2_), p_150871_3_);
++        if (cancellable != null && cancellable.isCancelled()) {
++            return;
++        }
+\ No newline at end of file
+         this.func_150873_a(p_150871_1_, p_150871_2_, this.func_77444_a(p_150871_2_) + p_150871_3_);
+     }
+ 
