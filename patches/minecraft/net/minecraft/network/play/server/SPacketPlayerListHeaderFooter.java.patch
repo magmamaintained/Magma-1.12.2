@@ -1,0 +1,87 @@
+--- ../src-base/minecraft/net/minecraft/network/play/server/SPacketPlayerListHeaderFooter.java
++++ ../src-work/minecraft/net/minecraft/network/play/server/SPacketPlayerListHeaderFooter.java
+@@ -1,44 +1,55 @@
+ package net.minecraft.network.play.server;
+ 
+ import java.io.IOException;
++
+ import net.minecraft.network.Packet;
+ import net.minecraft.network.PacketBuffer;
+ import net.minecraft.network.play.INetHandlerPlayClient;
+ import net.minecraft.util.text.ITextComponent;
++
++import net.md_5.bungee.api.chat.BaseComponent;
++import net.md_5.bungee.chat.ComponentSerializer;
+ import net.minecraftforge.fml.relauncher.Side;
+ import net.minecraftforge.fml.relauncher.SideOnly;
+ 
+-public class SPacketPlayerListHeaderFooter implements Packet<INetHandlerPlayClient>
+-{
+-    private ITextComponent field_179703_a;
+-    private ITextComponent field_179702_b;
++public class SPacketPlayerListHeaderFooter implements Packet<INetHandlerPlayClient> {
+ 
+-    public void func_148837_a(PacketBuffer p_148837_1_) throws IOException
+-    {
+-        this.field_179703_a = p_148837_1_.func_179258_d();
+-        this.field_179702_b = p_148837_1_.func_179258_d();
+-    }
++	public BaseComponent[] header_paper, footer_paper; // Paper
+ 
+-    public void func_148840_b(PacketBuffer p_148840_1_) throws IOException
+-    {
+-        p_148840_1_.func_179256_a(this.field_179703_a);
+-        p_148840_1_.func_179256_a(this.field_179702_b);
+-    }
++	private ITextComponent field_179703_a;
++	private ITextComponent field_179702_b;
+ 
+-    public void func_148833_a(INetHandlerPlayClient p_148833_1_)
+-    {
+-        p_148833_1_.func_175096_a(this);
+-    }
++	public void func_148837_a(PacketBuffer p_148837_1_) throws IOException {
++		this.field_179703_a = p_148837_1_.func_179258_d();
++		this.field_179702_b = p_148837_1_.func_179258_d();
++	}
+ 
+-    @SideOnly(Side.CLIENT)
+-    public ITextComponent func_179700_a()
+-    {
+-        return this.field_179703_a;
+-    }
++	public void func_148840_b(PacketBuffer p_148840_1_) throws IOException {
++		// Paper start
++		if (header_paper != null) {
++			p_148840_1_.func_180714_a(ComponentSerializer.toString(this.header_paper));
++		} else {
++			p_148840_1_.func_179256_a(this.field_179703_a);
++		}
++		if (footer_paper != null) {
++			p_148840_1_.func_180714_a(ComponentSerializer.toString(this.footer_paper));
++		} else {
++			p_148840_1_.func_179256_a(this.field_179702_b);
++		}
++		// Paper end
++	}
+ 
+-    @SideOnly(Side.CLIENT)
+-    public ITextComponent func_179701_b()
+-    {
+-        return this.field_179702_b;
+-    }
++	public void func_148833_a(INetHandlerPlayClient p_148833_1_) {
++		p_148833_1_.func_175096_a(this);
++	}
++
++	@SideOnly(Side.CLIENT)
++	public ITextComponent func_179700_a() {
++		return this.field_179703_a;
++	}
++
++	@SideOnly(Side.CLIENT)
++	public ITextComponent func_179701_b() {
++		return this.field_179702_b;
++	}
+\ No newline at end of file
+ }
