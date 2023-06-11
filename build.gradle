@@ -706,6 +706,7 @@ project(':forge') {
 
     universalJar {
         classifier = "server"
+        baseName = "Magma"
         from(extraTxts)
         dependsOn(deobfDataLzma)
         from(deobfDataLzma.output){
@@ -715,6 +716,7 @@ project(':forge') {
         from(genRuntimeBinPatches.output) {
             rename{'binpatches.pack.lzma'}
         }
+
         doFirst {
             def classpath = new StringBuilder()
             def artifacts = getArtifacts(project, project.configurations.installer, false)
