@@ -1,0 +1,21 @@
+--- ../src-base/minecraft/net/minecraft/entity/projectile/EntityEvokerFangs.java
++++ ../src-work/minecraft/net/minecraft/entity/projectile/EntityEvokerFangs.java
+@@ -12,6 +12,7 @@
+ import net.minecraft.world.WorldServer;
+ import net.minecraftforge.fml.relauncher.Side;
+ import net.minecraftforge.fml.relauncher.SideOnly;
++import org.bukkit.craftbukkit.v1_12_R1.event.CraftEventFactory;
+ 
+ public class EntityEvokerFangs extends Entity
+ {
+@@ -136,7 +137,9 @@
+         {
+             if (entitylivingbase == null)
+             {
++                CraftEventFactory.entityDamage = this;
+                 p_190551_1_.func_70097_a(DamageSource.field_76376_m, 6.0F);
++                CraftEventFactory.entityDamage = null;
+\ No newline at end of file
+             }
+             else
+             {

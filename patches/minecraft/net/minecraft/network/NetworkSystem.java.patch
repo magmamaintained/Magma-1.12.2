@@ -1,0 +1,152 @@
+--- ../src-base/minecraft/net/minecraft/network/NetworkSystem.java
++++ ../src-work/minecraft/net/minecraft/network/NetworkSystem.java
+@@ -24,9 +24,8 @@
+ import java.io.IOException;
+ import java.net.InetAddress;
+ import java.net.SocketAddress;
+-import java.util.Collections;
+-import java.util.Iterator;
+-import java.util.List;
++import java.util.*;
++import java.util.concurrent.ConcurrentHashMap;
+ import net.minecraft.client.network.NetHandlerHandshakeMemory;
+ import net.minecraft.crash.CrashReport;
+ import net.minecraft.crash.CrashReportCategory;
+@@ -44,26 +43,27 @@
+ 
+ public class NetworkSystem
+ {
++    public static boolean fastWorkBenchCrash = false;
+     private static final Logger field_151275_b = LogManager.getLogger();
+     public static final LazyLoadBase<NioEventLoopGroup> field_151276_c = new LazyLoadBase<NioEventLoopGroup>()
+     {
+         protected NioEventLoopGroup func_179280_b()
+         {
+-            return new NioEventLoopGroup(0, (new ThreadFactoryBuilder()).setNameFormat("Netty Server IO #%d").setDaemon(true).build());
++            return new NioEventLoopGroup(0, (new ThreadFactoryBuilder()).setNameFormat("Netty Server IO #%d").setDaemon(true).setThreadFactory(net.minecraftforge.fml.common.thread.SidedThreadGroups.SERVER).build());
+         }
+     };
+     public static final LazyLoadBase<EpollEventLoopGroup> field_181141_b = new LazyLoadBase<EpollEventLoopGroup>()
+     {
+         protected EpollEventLoopGroup func_179280_b()
+         {
+-            return new EpollEventLoopGroup(0, (new ThreadFactoryBuilder()).setNameFormat("Netty Epoll Server IO #%d").setDaemon(true).build());
++            return new EpollEventLoopGroup(0, (new ThreadFactoryBuilder()).setNameFormat("Netty Epoll Server IO #%d").setDaemon(true).setThreadFactory(net.minecraftforge.fml.common.thread.SidedThreadGroups.SERVER).build());
+         }
+     };
+     public static final LazyLoadBase<LocalEventLoopGroup> field_180232_b = new LazyLoadBase<LocalEventLoopGroup>()
+     {
+         protected LocalEventLoopGroup func_179280_b()
+         {
+-            return new LocalEventLoopGroup(0, (new ThreadFactoryBuilder()).setNameFormat("Netty Local Server IO #%d").setDaemon(true).build());
++            return new LocalEventLoopGroup(0, (new ThreadFactoryBuilder()).setNameFormat("Netty Local Server IO #%d").setDaemon(true).setThreadFactory(net.minecraftforge.fml.common.thread.SidedThreadGroups.CLIENT).build());
+         }
+     };
+     private final MinecraftServer field_151273_d;
+@@ -71,6 +71,9 @@
+     private final List<ChannelFuture> field_151274_e = Collections.<ChannelFuture>synchronizedList(Lists.newArrayList());
+     private final List<NetworkManager> field_151272_f = Collections.<NetworkManager>synchronizedList(Lists.newArrayList());
+ 
++    private boolean processing = false; // Thermos (Robotia) -- syncy time!
++    private final Set stack = Collections.newSetFromMap(new ConcurrentHashMap<>());
++
+     public NetworkSystem(MinecraftServer p_i45292_1_)
+     {
+         this.field_151273_d = p_i45292_1_;
+@@ -79,6 +82,7 @@
+ 
+     public void func_151265_a(InetAddress p_151265_1_, int p_151265_2_) throws IOException
+     {
++        if (p_151265_1_ instanceof java.net.Inet6Address) System.setProperty("java.net.preferIPv4Stack", "false");
+         synchronized (this.field_151274_e)
+         {
+             Class <? extends ServerSocketChannel > oclass;
+@@ -110,9 +114,10 @@
+                         ;
+                     }
+ 
+-                    p_initChannel_1_.pipeline().addLast("timeout", new ReadTimeoutHandler(30)).addLast("legacy_query", new LegacyPingHandler(NetworkSystem.this)).addLast("splitter", new NettyVarint21FrameDecoder()).addLast("decoder", new NettyPacketDecoder(EnumPacketDirection.SERVERBOUND)).addLast("prepender", new NettyVarint21FrameEncoder()).addLast("encoder", new NettyPacketEncoder(EnumPacketDirection.CLIENTBOUND));
++                    p_initChannel_1_.pipeline().addLast("timeout", new ReadTimeoutHandler(net.minecraftforge.fml.common.network.internal.FMLNetworkHandler.READ_TIMEOUT)).addLast("legacy_query", new LegacyPingHandler(NetworkSystem.this)).addLast("splitter", new NettyVarint21FrameDecoder()).addLast("decoder", new NettyPacketDecoder(EnumPacketDirection.SERVERBOUND)).addLast("prepender", new NettyVarint21FrameEncoder()).addLast("encoder", new NettyPacketEncoder(EnumPacketDirection.CLIENTBOUND));
+                     NetworkManager networkmanager = new NetworkManager(EnumPacketDirection.SERVERBOUND);
+-                    NetworkSystem.this.field_151272_f.add(networkmanager);
++                    if (processing) { stack.add(networkmanager); } // Thermos (Robotia) -- syncy time
++                    else { NetworkSystem.this.field_151272_f.add(networkmanager); }
+                     p_initChannel_1_.pipeline().addLast("packet_handler", networkmanager);
+                     networkmanager.func_150719_a(new NetHandlerHandshakeTCP(NetworkSystem.this.field_151273_d, networkmanager));
+                 }
+@@ -133,7 +138,8 @@
+                 {
+                     NetworkManager networkmanager = new NetworkManager(EnumPacketDirection.SERVERBOUND);
+                     networkmanager.func_150719_a(new NetHandlerHandshakeMemory(NetworkSystem.this.field_151273_d, networkmanager));
+-                    NetworkSystem.this.field_151272_f.add(networkmanager);
++                    if (processing) { stack.add(networkmanager); } // Thermos (Robotia) -- syncy time
++                    else { NetworkSystem.this.field_151272_f.add(networkmanager); }
+                     p_initChannel_1_.pipeline().addLast("packet_handler", networkmanager);
+                 }
+             }).group(field_151276_c.func_179281_c()).localAddress(LocalAddress.ANY)).bind().syncUninterruptibly();
+@@ -162,8 +168,16 @@
+ 
+     public void func_151269_c()
+     {
++        this.processing = true; // Thermos (Robotia)
+         synchronized (this.field_151272_f)
+         {
++            // Spigot Start
++            // This prevents players from 'gaming' the server, and strategically relogging to increase their position in the tick order
++            if (org.spigotmc.SpigotConfig.playerShuffle > 0 && MinecraftServer.currentTick % org.spigotmc.SpigotConfig.playerShuffle == 0)
++            {
++                Collections.shuffle(this.field_151272_f);
++            }
++            // Spigot End
+             Iterator<NetworkManager> iterator = this.field_151272_f.iterator();
+ 
+             while (iterator.hasNext())
+@@ -194,13 +208,24 @@
+                                 throw new ReportedException(crashreport);
+                             }
+ 
+-                            field_151275_b.warn("Failed to handle packet for {}", networkmanager.func_74430_c(), exception);
+-                            final TextComponentString textcomponentstring = new TextComponentString("Internal server error");
+-                            networkmanager.func_179288_a(new SPacketDisconnect(textcomponentstring), new GenericFutureListener < Future <? super Void >> ()
++                            String textcomponentstring = "Internal server error";
++
++                            if(Arrays.toString(exception.getStackTrace()).contains("shadows.fastbench.net")){
++                                field_151275_b.warn("Failed to handle packet for {}", networkmanager.func_74430_c(), "Fast Workbench Exception");
++                                field_151275_b.warn("A FastWorkbench related crash has been detected. Please enable the 'fastbench-fix' in the magma.yml or set 'Disable Recipe Book' to false in the fastbench.cfg config.");
++                                this.fastWorkBenchCrash = true;
++                                textcomponentstring = "A FastWorkbench related crash has been detected.\nPlease enable the 'fastbench-fix' in the magma.yml or set 'Disable Recipe Book' to false in the fastbench.cfg server config.";
++                            } else {
++                                field_151275_b.warn("Failed to handle packet for {}", networkmanager.func_74430_c(), exception);
++                            }
++
++                            final TextComponentString tcs = new TextComponentString(textcomponentstring);
++
++                            networkmanager.func_179288_a(new SPacketDisconnect(tcs), new GenericFutureListener < Future <? super Void >> ()
+                             {
+                                 public void operationComplete(Future <? super Void > p_operationComplete_1_) throws Exception
+                                 {
+-                                    networkmanager.func_150718_a(textcomponentstring);
++                                    networkmanager.func_150718_a(tcs);
+                                 }
+                             });
+                             networkmanager.func_150721_g();
+@@ -208,12 +233,18 @@
+                     }
+                     else
+                     {
++                        // Spigot Start - Fix a race condition where a NetworkManager could be unregistered just before connection.
++                        if (networkmanager.preparing) continue;
++                        // Spigot End
+                         iterator.remove();
+                         networkmanager.func_179293_l();
+                     }
+                 }
+             }
+         }
++        this.processing = false;
++        this.field_151272_f.addAll(stack);
++        stack.clear();
+\ No newline at end of file
+     }
+ 
+     public MinecraftServer func_151267_d()
