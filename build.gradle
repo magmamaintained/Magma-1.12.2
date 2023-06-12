@@ -904,7 +904,7 @@ project(':forge') {
 
     publishing {
         publications {
-            mavenJava(MavenPublication) {
+            maven(MavenPublication) {
                 artifact file("projects/forge/build/libs/${project.name}-${project.version}-server.jar").canonicalPath
 
                 pom {
