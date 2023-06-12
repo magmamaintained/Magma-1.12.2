@@ -1060,19 +1060,21 @@ def getClasspath(project, libs, artifact) {
     return ret
 }
 
-task ciWriteBuildNumber << {
-    def file = file('src/main/java/net/minecraftforge/common/ForgeVersion.java');
-    def outfile = '';
-    def ln = '\n';
+task ciWriteBuildNumber {
+    doLast {
+        def file = file('src/main/java/net/minecraftforge/common/ForgeVersion.java');
+        def outfile = '';
+        def ln = '\n';
 
-    file.eachLine{ String s ->
-        if (s.matches('^    public static final int buildVersion    = [\\d]+;\$'))
-            s = "    public static final int buildVersion    = ${project(':forge').BUILD_NUMBER};"
-        if (s.matches('^    public static final String mcVersion = "[^\\"]+";'))
-            s = "    public static final String mcVersion = \"${MC_VERSION}\";"
-        outfile += (s+ln);
+        file.eachLine{ String s ->
+            if (s.matches('^    public static final int buildVersion    = [\\d]+;\$'))
+                s = "    public static final int buildVersion    = ${project(':forge').BUILD_NUMBER};"
+            if (s.matches('^    public static final String mcVersion = "[^\\"]+";'))
+                s = "    public static final String mcVersion = \"${MC_VERSION}\";"
+            outfile += (s+ln);
+        }
+        file.write(outfile);
     }
-    file.write(outfile);
 }
 
 //evaluationDependsOnChildren()
