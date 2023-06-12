@@ -709,8 +709,11 @@ project(':forge') {
     }
 
     universalJar {
-        classifier = "server"
-        baseName = "Magma"
+        archiveClassifier = 'server'
+        archiveExtension = 'jar'
+        archiveBaseName = 'magma'
+        archiveVersion = MAGMA_VERSION
+
         from(extraTxts)
         dependsOn(deobfDataLzma)
         from(deobfDataLzma.output){
