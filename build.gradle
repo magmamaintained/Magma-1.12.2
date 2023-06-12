@@ -9,6 +9,7 @@ buildscript {
         classpath 'net.minecraftforge.gradle:ForgeGradle:3.+'
         classpath 'org.ow2.asm:asm:7.1'
         classpath 'org.ow2.asm:asm-tree:7.1'
+        classpath "gradle.plugin.net.nemerosa:versioning:2.14.0"
         classpath 'com.github.jponge:lzma-java:1.3' //Needed to compress deobf data
     }
 }
@@ -47,6 +48,7 @@ plugins {
     id 'org.ajoberstar.grgit' version '3.1.1'
     id 'de.undercouch.download' version '3.3.0'
     id 'com.github.ben-manes.versions' version '0.22.0'
+    id 'net.nemerosa.versioning' version '2.14.0'
 }
 apply plugin: 'eclipse'
 
@@ -68,6 +70,8 @@ ext {
             repo: 'https://maven.minecraftforge.net/',
             args: ['--input', '{input}', '--output', '{output}']
     ]
+    MAGMA_VERSION = "1.12.2-" + versioning.info.commit.substring(0, 8) // Use 8 characters for the commit hash
+
 }
 
 project(':mcp') {
@@ -249,7 +253,7 @@ project(':forge') {
         return "${MC_VERSION}-${tag}".toString() //Bake the response instead of making it dynamic
     }
 
-    version = getVersion()
+    version = MAGMA_VERSION
 
     patcher {
         exc = file("$rootDir/src/main/resources/forge.exc")
@@ -900,21 +904,21 @@ project(':forge') {
 
     publishing {
         publications {
-            maven(MavenPublication) {
-                artifact file("projects/forge/build/libs/${project.name}-${project.version}-server.jar").canonicalPath
+            mavenJava(MavenPublication) {
+                artifact installerJar
+                artifact universalJar
 
                 pom {
-                    groupId = project.group
-                    version = project.version
-                    artifactId = project.name
-                    name = project.name
-                    packaging = 'jar'
+                    name = 'Magma'
+                    groupId = 'org.magmafoundation'
+                    artifactId = 'Magma'
                     description = 'Minecraft Forge Hybrid server implementing the Spigot/Bukkit API (Cauldron for 1.12)'
-                    url = 'https://github.com/MinecraftForge/MinecraftForge'
+                    url = 'https://git.magmafoundation.org/magmafoundation/Magma'
+                    version = MAGMA_VERSION
 
                     scm {
                         url = 'https://git.magmafoundation.org/magmafoundation/Magma'
-                        connection = 'scm:git:git://git.magmafoundation.org:2224/magmafoundation/Magma.git'
+                        connection = 'scm:git:git://git.magmafoundation.org/magmafoundation/Magma.git'
                         developerConnection = 'scm:git:git@git.magmafoundation.org:2224/magmafoundation/Magma.git'
                     }
 
@@ -925,7 +929,7 @@ project(':forge') {
 
                     licenses {
                         license {
-                            name = 'Magma Public License'
+                            name = 'LGPL 3.0'
                             url = 'https://git.magmafoundation.org/magmafoundation/Magma/-/raw/master/LICENSE'
                             distribution = 'repo'
                         }
@@ -940,13 +944,12 @@ project(':forge') {
                 }
             }
         }
-
         repositories {
             if (System.getenv("CI_JOB_TOKEN") != null) {
                 maven {
                     // gitlab repo
                     name = 'MagmaFoundation'
-                    url = 'https://git.magmafoundation.org/api/v4/projects/7/packages/maven/'
+                    url = 'https://git.magmafoundation.org/api/v4/projects/5/packages/maven/'
                     credentials(HttpHeaderCredentials) {
                         name = "Private-Token"
                         value = System.getenv("CI_JOB_TOKEN")
@@ -961,10 +964,13 @@ project(':forge') {
                     url = "file://${buildDir}/repo"
                 }
             }
-
         }
+
     }
+
 }
+
+
 
 
 def dateToIso8601(date) {
