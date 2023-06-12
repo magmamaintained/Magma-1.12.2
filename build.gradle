@@ -711,7 +711,7 @@ project(':forge') {
     universalJar {
         archiveClassifier = 'server'
         archiveExtension = 'jar'
-        archiveBaseName = 'magma'
+        archiveBaseName = 'Magma'
         archiveVersion = MAGMA_VERSION
 
         from(extraTxts)
@@ -908,7 +908,7 @@ project(':forge') {
     publishing {
         publications {
             mavenJava(MavenPublication) {
-                artifact file("build/libs/magma-${project.version}-server.jar").canonicalPath
+                artifact file("build/libs/Magma-${project.version}-server.jar").canonicalPath
 
                 pom {
                     name = 'Magma'
