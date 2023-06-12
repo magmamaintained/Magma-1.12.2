@@ -1063,7 +1063,7 @@ def getClasspath(project, libs, artifact) {
 task ciWriteBuildNumber << {
     def file = file('src/main/java/net/minecraftforge/common/ForgeVersion.java');
     def outfile = '';
-    def ln = '\n'; //Linux line endings because we're on git!
+    def ln = '\n';
 
     file.eachLine{ String s ->
         if (s.matches('^    public static final int buildVersion    = [\\d]+;\$'))
