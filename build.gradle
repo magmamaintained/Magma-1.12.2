@@ -706,7 +706,7 @@ project(':forge') {
 
     universalJar {
         classifier = "server"
-        baseName = "Magma"
+        baseName = "magma"
         from(extraTxts)
         dependsOn(deobfDataLzma)
         from(deobfDataLzma.output){
