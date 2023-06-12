@@ -897,64 +897,75 @@ project(':forge') {
         sourceSets.test.java.srcDirs.each { extractMappedNew.addTarget it }
     }
 
+
     publishing {
         publications {
-            mavenJava(MavenPublication) {
-                artifact universalJar
-                if (changelog.exists()) {
-                    artifact(changelog) {
-                        classifier = 'changelog'
-                    }
-                }
-                artifact installerJar
-                //TODO: installer-win
-                artifact userdevJar
-                artifact sourcesJar
+            maven(MavenPublication) {
+                artifact file("projects/forge/build/libs/${project.name}-${project.version}-server.jar").canonicalPath
 
                 pom {
-                    name = 'forge'
-                    description = 'Modifactions to Minecraft to enable mod developers.'
+                    groupId = project.group
+                    version = project.version
+                    artifactId = project.name
+                    name = project.name
+                    packaging = 'jar'
+                    description = 'Minecraft Forge Hybrid server implementing the Spigot/Bukkit API (Cauldron for 1.12)'
                     url = 'https://github.com/MinecraftForge/MinecraftForge'
 
                     scm {
-                        url = 'https://github.com/MinecraftForge/MinecraftForge'
-                        connection = 'scm:git:git://github.com/MinecraftForge/MinecraftForge.git'
-                        developerConnection = 'scm:git:git@github.com:MinecraftForge/MinecraftForge.git'
+                        url = 'https://git.magmafoundation.org/magmafoundation/Magma'
+                        connection = 'scm:git:git://git.magmafoundation.org:2224/magmafoundation/Magma.git'
+                        developerConnection = 'scm:git:git@git.magmafoundation.org:2224/magmafoundation/Magma.git'
                     }
 
                     issueManagement {
-                        system = 'github'
-                        url = 'https://github.com/MinecraftForge/MinecraftForge/issues'
+                        system = 'gitlab'
+                        url = 'https://git.magmafoundation.org/magmafoundation/Magma/issues'
                     }
 
                     licenses {
                         license {
-                            name = 'LGPL 2.1'
-                            url = 'https://github.com/MinecraftForge/MinecraftForge/blob/1.12.x/LICENSE.txt'
+                            name = 'Magma Public License'
+                            url = 'https://git.magmafoundation.org/magmafoundation/Magma/-/raw/master/LICENSE'
                             distribution = 'repo'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id = 'Hexeption'
+                            name = 'Hexeption'
+                            email = 'admin@hexeption.co.uk'
                         }
                     }
                 }
             }
         }
+
         repositories {
-            maven {
-                if (System.env.MAVEN_USER) {
-                    url "https://maven.minecraftforge.net/releases/"
+            if (System.getenv("CI_JOB_TOKEN") != null) {
+                maven {
+                    // gitlab repo
+                    name = 'MagmaFoundation'
+                    url = 'https://git.magmafoundation.org/api/v4/projects/7/packages/maven/'
+                    credentials(HttpHeaderCredentials) {
+                        name = "Private-Token"
+                        value = System.getenv("CI_JOB_TOKEN")
+                    }
                     authentication {
-                        basic(BasicAuthentication)
+                        header(HttpHeaderAuthentication)
                     }
-                    credentials {
-                        username = System.env.MAVEN_USER ?: 'not'
-                        password = System.env.MAVEN_PASSWORD ?: 'set'
-                    }
-                } else {
-                    url 'file://' + rootProject.file('repo').getAbsolutePath()
+                }
+            } else {
+                maven {
+                    name = 'myRepo'
+                    url = "file://${buildDir}/repo"
                 }
             }
+
         }
     }
 }
+
 
 def dateToIso8601(date) {
     def format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
