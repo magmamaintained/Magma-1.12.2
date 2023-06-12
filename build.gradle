@@ -905,7 +905,7 @@ project(':forge') {
     publishing {
         publications {
             mavenJava(MavenPublication) {
-                artifact file("build/libs/${project.name}-${project.version}-server.jar").canonicalPath
+                artifact file("build/libs/magma-${project.version}-server.jar").canonicalPath
 
                 pom {
                     name = 'Magma'
