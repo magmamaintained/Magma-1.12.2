@@ -17,10 +17,7 @@ import com.destroystokyo.paper.exception.ServerTabCompleteException;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Location;
 import org.bukkit.Server;
-import org.bukkit.command.defaults.BukkitCommand;
-import org.bukkit.command.defaults.HelpCommand;
-import org.bukkit.command.defaults.PluginsCommand;
-import org.bukkit.command.defaults.ReloadCommand;
+import org.bukkit.command.defaults.*;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 
@@ -38,6 +35,7 @@ public class SimpleCommandMap implements CommandMap {
 		register("bukkit", new PluginsCommand("plugins"));
 		register("bukkit", new co.aikar.timings.TimingsCommand("timings")); // Spigot
 		register("bukkit", new ReloadCommand("reload"));
+		register("bukkit", new RestartCommand("restart"));
 	}
 
 	public void setFallbackCommands() {
