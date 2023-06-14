@@ -9,7 +9,7 @@
 <a href="https://bstats.org/plugin/server-implementation/Magma/17219"> <img src="https://bstats.org/signatures/server-implementation/Magma.svg" alt="Stats" width="800"> </a>
 </div>
 
-## ❓ About
+## ❓ About 
 
 Magma is the next generation of hybrid minecraft server softwares.
 
