@@ -114,9 +114,6 @@ project(':clean') {
             name 'Spigot'
             url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
         }
-        flatDir {
-            dirs 'src/main/resources'
-        }
     }
 
     dependencies {
