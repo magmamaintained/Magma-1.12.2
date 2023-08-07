@@ -25,7 +25,7 @@
                  {
 -                    p_180650_1_.func_180501_a(p_180650_2_, this.func_185528_e(i + 1), 2);
 +                    IBlockState data = this.func_185528_e(i + 1);
-+                    CraftEventFactory.handleBlockGrowEvent(p_180650_1_, p_180650_2_.func_177958_n(), p_180650_2_.func_177956_o(), p_180650_2_.func_177952_p(), this, func_176201_c(data));
++                    CraftEventFactory.handleBlockGrowEvent(p_180650_1_, p_180650_2_.func_177958_n(), p_180650_2_.func_177956_o(), p_180650_2_.func_177952_p(), data.func_177230_c(), data.func_177230_c().func_176201_c(data));
 +                    net.minecraftforge.common.ForgeHooks.onCropsGrowPost(p_180650_1_, p_180650_2_, p_180650_3_, p_180650_1_.func_180495_p(p_180650_2_));
                  }
              }
@@ -36,7 +36,7 @@
  
 -        p_176487_1_.func_180501_a(p_176487_2_, this.func_185528_e(i), 2);
 +        IBlockState data = this.func_185528_e(i);
-+        CraftEventFactory.handleBlockGrowEvent(p_176487_1_, p_176487_2_.func_177958_n(), p_176487_2_.func_177956_o(), p_176487_2_.func_177952_p(), this, func_176201_c(data));
++        CraftEventFactory.handleBlockGrowEvent(p_176487_1_, p_176487_2_.func_177958_n(), p_176487_2_.func_177956_o(), p_176487_2_.func_177952_p(), data.func_177230_c(), data.func_177230_c().func_176201_c(data));
      }
  
      protected int func_185529_b(World p_185529_1_)
