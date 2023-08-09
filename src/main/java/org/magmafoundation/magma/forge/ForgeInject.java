@@ -152,8 +152,10 @@ public class ForgeInject {
         for (Map.Entry<ResourceLocation, SoundEvent> entry : ForgeRegistries.SOUND_EVENTS.getEntries()) {
             ResourceLocation key = entry.getKey();
             if (!key.getResourceDomain().equals("minecraft")) {
-                String soundName = key.toString().toUpperCase().replaceAll("(:|\\s)", "_").replaceAll("\\W", "");
-                String soundNameWithOutModName = key.toString().toUpperCase().replaceAll("" + key.getResourceDomain().toUpperCase() + ":", "").replaceAll("(:|\\s)", "_").replaceAll("\\W", "");
+                String soundNameWithOutModName = key.getResourcePath().replace('.', '_').toUpperCase(java.util.Locale.ENGLISH);
+                String soundName = key.toString().replace(':', '.');
+//                String soundName = key.toString().toUpperCase().replaceAll("(:|\\s)", "_").replaceAll("\\W", "");
+//                String soundNameWithOutModName = key.toString().toUpperCase().replaceAll("" + key.getResourceDomain().toUpperCase() + ":", "").replaceAll("(:|\\s)", "_").replaceAll("\\W", "");
                 if (MagmaConfig.instance.debugPrintSounds.getValues()) {
                     MinecraftServer.LOGGER.info(String.format("Injecting new Forge sound %s (%s).", soundNameWithOutModName, soundName));
                 }
