@@ -207,7 +207,7 @@
                  }
              }
              else if (this.field_73134_o.contains(p_73117_1_))
-@@ -464,16 +542,58 @@
+@@ -464,17 +542,61 @@
                  this.field_73134_o.remove(p_73117_1_);
                  this.field_73132_a.func_184203_c(p_73117_1_);
                  p_73117_1_.func_152339_d(this.field_73132_a);
@@ -217,10 +217,9 @@
          }
      }
  
-     public boolean func_180233_c(EntityPlayerMP p_180233_1_)
-     {
--        double d0 = p_180233_1_.field_70165_t - (double)this.field_73128_d / 4096.0D;
--        double d1 = p_180233_1_.field_70161_v - (double)this.field_73126_f / 4096.0D;
+-    public boolean func_180233_c(EntityPlayerMP p_180233_1_)
+-    {
++    public boolean func_180233_c(EntityPlayerMP p_180233_1_) {
 +        // Paper start
 +        if (field_73132_a.func_184218_aH()) {
 +            return isTrackedBy(field_73132_a.func_184208_bv(), p_180233_1_);
@@ -228,8 +227,11 @@
 +            return true;
 +        }
 +
-+        return isInRangeOfPlayer(p_180233_1_);
-+    }
+         double d0 = p_180233_1_.field_70165_t - (double)this.field_73128_d / 4096.0D;
+         double d1 = p_180233_1_.field_70161_v - (double)this.field_73126_f / 4096.0D;
+         int i = Math.min(this.field_73130_b, this.field_187262_f);
+         return d0 >= (double)(-i) && d0 <= (double)i && d1 >= (double)(-i) && d1 <= (double)i && this.field_73132_a.func_174827_a(p_180233_1_);
+     }
 +    private static boolean hasPassengerInRange(Entity entity, EntityPlayerMP entityplayer) {
 +        if (!entity.func_184207_aI()) {
 +            return false;
@@ -263,13 +265,13 @@
 +        // Paper end
 +        double d0 = playerMP.field_70165_t - (double)this.field_73128_d / 4096.0D;
 +        double d1 = playerMP.field_70161_v - (double)this.field_73126_f / 4096.0D;
-         int i = Math.min(this.field_73130_b, this.field_187262_f);
--        return d0 >= (double)(-i) && d0 <= (double)i && d1 >= (double)(-i) && d1 <= (double)i && this.field_73132_a.func_174827_a(p_180233_1_);
++        int i = Math.min(this.field_73130_b, this.field_187262_f);
 +        return d0 >= (double)(-i) && d0 <= (double)i && d1 >= (double)(-i) && d1 <= (double)i && this.field_73132_a.func_174827_a(playerMP);
-     }
++    }
  
      private boolean func_73121_d(EntityPlayerMP p_73121_1_)
-@@ -489,13 +609,20 @@
+     {
+@@ -489,13 +611,20 @@
          }
      }
  
@@ -291,7 +293,7 @@
          if (this.field_73132_a instanceof EntityPlayerMP)
          {
              return new SPacketSpawnPlayer((EntityPlayer)this.field_73132_a);
-@@ -651,7 +778,8 @@
+@@ -651,7 +780,8 @@
          }
          else
          {
@@ -301,7 +303,7 @@
          }
      }
  
-@@ -662,6 +790,7 @@
+@@ -662,6 +792,7 @@
              this.field_73134_o.remove(p_73123_1_);
              this.field_73132_a.func_184203_c(p_73123_1_);
              p_73123_1_.func_152339_d(this.field_73132_a);
