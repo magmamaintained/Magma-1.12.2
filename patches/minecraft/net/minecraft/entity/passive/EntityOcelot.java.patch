@@ -65,7 +65,7 @@
              {
                  return true;
              }
-@@ -361,14 +365,14 @@
+@@ -361,13 +365,14 @@
      {
          p_180482_2_ = super.func_180482_a(p_180482_1_, p_180482_2_);
  
@@ -77,9 +77,8 @@
                  EntityOcelot entityocelot = new EntityOcelot(this.field_70170_p);
                  entityocelot.func_70012_b(this.field_70165_t, this.field_70163_u, this.field_70161_v, this.field_70177_z, 0.0F);
                  entityocelot.func_70873_a(-24000);
--                this.field_70170_p.func_72838_d(entityocelot);
-+                this.field_70170_p.spawnEntity(entityocelot, org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.OCELOT_BABY);
++                this.field_70170_p.prepareSpawnEntity(org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.OCELOT_BABY); // Magma - Added a reason for spawning this creature
 \ No newline at end of file
+                 this.field_70170_p.func_72838_d(entityocelot);
              }
          }
- 

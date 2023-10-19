@@ -9,7 +9,7 @@
  
  public class BlockPumpkin extends BlockHorizontal
  {
-@@ -62,34 +64,35 @@
+@@ -62,34 +64,36 @@
      private void func_180673_e(World p_180673_1_, BlockPos p_180673_2_)
      {
          BlockPattern.PatternHelper blockpattern$patternhelper = this.func_176391_l().func_177681_a(p_180673_1_, p_180673_2_);
@@ -30,7 +30,8 @@
              BlockPos blockpos1 = blockpattern$patternhelper.func_177670_a(0, 2, 0).func_177508_d();
              entitysnowman.func_70012_b((double)blockpos1.func_177958_n() + 0.5D, (double)blockpos1.func_177956_o() + 0.05D, (double)blockpos1.func_177952_p() + 0.5D, 0.0F, 0.0F);
 -            p_180673_1_.func_72838_d(entitysnowman);
-+            if (p_180673_1_.spawnEntity(entitysnowman, CreatureSpawnEvent.SpawnReason.BUILD_SNOWMAN)) {
++            p_180673_1_.prepareSpawnEntity(CreatureSpawnEvent.SpawnReason.BUILD_SNOWMAN); // Magma - Added a reason for spawning this creature
++            if (p_180673_1_.func_72838_d(entitysnowman)) {
 +                blockList.updateList();
  
 -            for (EntityPlayerMP entityplayermp : p_180673_1_.func_72872_a(EntityPlayerMP.class, entitysnowman.func_174813_aQ().func_186662_g(5.0D)))
@@ -60,7 +61,7 @@
              }
          }
          else
-@@ -102,7 +105,9 @@
+@@ -102,7 +106,9 @@
                  {
                      for (int k = 0; k < this.func_176388_T().func_177685_b(); ++k)
                      {
@@ -71,12 +72,13 @@
                      }
                  }
  
-@@ -110,24 +115,22 @@
+@@ -110,24 +116,23 @@
                  EntityIronGolem entityirongolem = new EntityIronGolem(p_180673_1_);
                  entityirongolem.func_70849_f(true);
                  entityirongolem.func_70012_b((double)blockpos.func_177958_n() + 0.5D, (double)blockpos.func_177956_o() + 0.05D, (double)blockpos.func_177952_p() + 0.5D, 0.0F, 0.0F);
 -                p_180673_1_.func_72838_d(entityirongolem);
-+                if (p_180673_1_.spawnEntity(entityirongolem, CreatureSpawnEvent.SpawnReason.BUILD_IRONGOLEM)) {
++                p_180673_1_.prepareSpawnEntity(CreatureSpawnEvent.SpawnReason.BUILD_IRONGOLEM); // Magma - Added a reason for spawning this creature
++                if (p_180673_1_.func_72838_d(entityirongolem)) {
 +                    blockList.updateList();
  
 -                for (EntityPlayerMP entityplayermp1 : p_180673_1_.func_72872_a(EntityPlayerMP.class, entityirongolem.func_174813_aQ().func_186662_g(5.0D)))
@@ -109,7 +111,7 @@
                      }
                  }
              }
-@@ -136,7 +139,7 @@
+@@ -136,7 +141,7 @@
  
      public boolean func_176196_c(World p_176196_1_, BlockPos p_176196_2_)
      {

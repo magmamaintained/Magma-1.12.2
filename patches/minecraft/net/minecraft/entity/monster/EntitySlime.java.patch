@@ -43,16 +43,15 @@
              for (int k = 0; k < j; ++k)
              {
                  float f = ((float)(k % 2) - 0.5F) * (float)i / 4.0F;
-@@ -222,7 +233,7 @@
+@@ -222,6 +233,7 @@
  
                  entityslime.func_70799_a(i / 2, true);
                  entityslime.func_70012_b(this.field_70165_t + (double)f, this.field_70163_u + 0.5D, this.field_70161_v + (double)f1, this.field_70146_Z.nextFloat() * 360.0F, 0.0F);
--                this.field_70170_p.func_72838_d(entityslime);
-+                this.field_70170_p.spawnEntity(entityslime, org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.SLIME_SPLIT);
++                this.field_70170_p.prepareSpawnEntity(org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.SLIME_SPLIT); // Magma - Added a reason for spawning this creature
+                 this.field_70170_p.func_72838_d(entityslime);
              }
          }
- 
-@@ -304,7 +315,7 @@
+@@ -304,7 +316,7 @@
          BlockPos blockpos = new BlockPos(MathHelper.func_76128_c(this.field_70165_t), 0, MathHelper.func_76128_c(this.field_70161_v));
          Chunk chunk = this.field_70170_p.func_175726_f(blockpos);
  
@@ -61,7 +60,7 @@
          {
              return false;
          }
-@@ -319,7 +330,7 @@
+@@ -319,7 +331,7 @@
                      return super.func_70601_bi();
                  }
  
@@ -70,7 +69,7 @@
                  {
                      return super.func_70601_bi();
                  }
-@@ -370,6 +381,14 @@
+@@ -370,6 +382,14 @@
          return this.func_189101_db() ? SoundEvents.field_189110_fE : SoundEvents.field_187882_fq;
      }
  
