@@ -223,7 +223,7 @@
      }
  
      @Nullable
-@@ -521,11 +608,14 @@
+@@ -521,11 +608,15 @@
  
      public static void func_186052_a(Entity p_186052_0_, World p_186052_1_)
      {
@@ -234,7 +234,8 @@
 +    }
 +
 +    public static void spawnEntity(Entity entityIn, World worldIn, org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason reason) {
-+        if (worldIn.spawnEntity(entityIn, reason) && entityIn.func_184207_aI()) {
++        worldIn.prepareSpawnEntity(reason); // Magma - Added a reason for spawning this creature
++        if (worldIn.func_72838_d(entityIn) && entityIn.func_184207_aI()) {
 +            for (Entity entity : entityIn.func_184188_bt())
              {
 -                func_186052_a(entity, p_186052_1_);
@@ -242,7 +243,7 @@
              }
          }
      }
-@@ -563,4 +653,9 @@
+@@ -563,4 +654,9 @@
              return entity;
          }
      }

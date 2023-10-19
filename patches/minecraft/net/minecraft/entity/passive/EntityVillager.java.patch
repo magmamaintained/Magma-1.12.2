@@ -320,16 +320,15 @@
              entitywitch.func_70012_b(this.field_70165_t, this.field_70163_u, this.field_70161_v, this.field_70177_z, this.field_70125_A);
              entitywitch.func_180482_a(this.field_70170_p.func_175649_E(new BlockPos(entitywitch)), (IEntityLivingData)null);
              entitywitch.func_94061_f(this.func_175446_cd());
-@@ -868,7 +947,7 @@
+@@ -868,6 +947,7 @@
                  entitywitch.func_174805_g(this.func_174833_aM());
              }
  
--            this.field_70170_p.func_72838_d(entitywitch);
-+            this.field_70170_p.spawnEntity(entitywitch, SpawnReason.LIGHTNING); // Paper - Added lightning spawn reason for this entity
++            this.field_70170_p.prepareSpawnEntity(SpawnReason.LIGHTNING); // Magma - Added a reason for spawning this creature
+             this.field_70170_p.func_72838_d(entitywitch);
              this.func_70106_y();
          }
-     }
-@@ -1089,6 +1168,9 @@
+@@ -1089,6 +1169,9 @@
                  p_190888_2_.add(new MerchantRecipe(itemstack, itemstack1));
              }
          }

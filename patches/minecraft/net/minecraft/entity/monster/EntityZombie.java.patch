@@ -75,7 +75,7 @@
  
                  for (int l = 0; l < 50; ++l)
                  {
-@@ -252,14 +276,14 @@
+@@ -252,14 +276,15 @@
                      int j1 = j + MathHelper.func_76136_a(this.field_70146_Z, 7, 40) * MathHelper.func_76136_a(this.field_70146_Z, -1, 1);
                      int k1 = k + MathHelper.func_76136_a(this.field_70146_Z, 7, 40) * MathHelper.func_76136_a(this.field_70146_Z, -1, 1);
  
@@ -87,14 +87,14 @@
  
                          if (!this.field_70170_p.func_175636_b((double)i1, (double)j1, (double)k1, 7.0D) && this.field_70170_p.func_72917_a(entityzombie.func_174813_aQ(), entityzombie) && this.field_70170_p.func_184144_a(entityzombie, entityzombie.func_174813_aQ()).isEmpty() && !this.field_70170_p.func_72953_d(entityzombie.func_174813_aQ()))
                          {
--                            this.field_70170_p.func_72838_d(entityzombie);
++                            this.field_70170_p.prepareSpawnEntity(CreatureSpawnEvent.SpawnReason.REINFORCEMENTS); // Magma - Added a reason for spawning this creature
+                             this.field_70170_p.func_72838_d(entityzombie);
 -                            entityzombie.func_70624_b(entitylivingbase);
-+                            this.field_70170_p.spawnEntity(entityzombie, CreatureSpawnEvent.SpawnReason.REINFORCEMENTS);
 +                            if (entitylivingbase != null) entityzombie.setAttackTarget(entitylivingbase, EntityTargetEvent.TargetReason.REINFORCEMENT_TARGET, true);
                              entityzombie.func_180482_a(this.field_70170_p.func_175649_E(new BlockPos(entityzombie)), (IEntityLivingData)null);
                              this.func_110148_a(field_110186_bp).func_111121_a(new AttributeModifier("Zombie reinforcement caller charge", -0.05000000074505806D, 0));
                              entityzombie.func_110148_a(field_110186_bp).func_111121_a(new AttributeModifier("Zombie reinforcement callee charge", -0.05000000074505806D, 0));
-@@ -287,7 +311,13 @@
+@@ -287,7 +312,13 @@
  
              if (this.func_184614_ca().func_190926_b() && this.func_70027_ad() && this.field_70146_Z.nextFloat() < f * 0.3F)
              {
@@ -109,7 +109,7 @@
              }
          }
  
-@@ -393,7 +423,7 @@
+@@ -393,7 +424,7 @@
              EntityZombieVillager entityzombievillager = new EntityZombieVillager(this.field_70170_p);
              entityzombievillager.func_82149_j(entityvillager);
              this.field_70170_p.func_72900_e(entityvillager);
@@ -118,16 +118,16 @@
              entityzombievillager.func_190733_a(entityvillager.func_70946_n());
              entityzombievillager.func_82227_f(entityvillager.func_70631_g_());
              entityzombievillager.func_94061_f(entityvillager.func_175446_cd());
-@@ -404,7 +434,7 @@
+@@ -403,7 +434,7 @@
+                 entityzombievillager.func_96094_a(entityvillager.func_95999_t());
                  entityzombievillager.func_174805_g(entityvillager.func_174833_aM());
              }
- 
--            this.field_70170_p.func_72838_d(entityzombievillager);
-+            this.field_70170_p.spawnEntity(entityzombievillager, CreatureSpawnEvent.SpawnReason.INFECTION);
+-
++            this.field_70170_p.prepareSpawnEntity(CreatureSpawnEvent.SpawnReason.INFECTION); // Magma - Added a reason for spawning this creature
+             this.field_70170_p.func_72838_d(entityzombievillager);
              this.field_70170_p.func_180498_a((EntityPlayer)null, 1026, new BlockPos(this), 0);
          }
-     }
-@@ -435,12 +465,12 @@
+@@ -435,12 +466,12 @@
  
          if (p_180482_2_ == null)
          {
@@ -143,16 +143,15 @@
  
              if (entityzombie$groupdata.field_142048_a)
              {
-@@ -463,7 +493,7 @@
+@@ -463,6 +494,7 @@
                      entitychicken1.func_70012_b(this.field_70165_t, this.field_70163_u, this.field_70161_v, this.field_70177_z, 0.0F);
                      entitychicken1.func_180482_a(p_180482_1_, (IEntityLivingData)null);
                      entitychicken1.func_152117_i(true);
--                    this.field_70170_p.func_72838_d(entitychicken1);
-+                    this.field_70170_p.spawnEntity(entitychicken1, CreatureSpawnEvent.SpawnReason.MOUNT);
++                    this.field_70170_p.prepareSpawnEntity(CreatureSpawnEvent.SpawnReason.MOUNT); // Magma - Added a reason for spawning this creature
+                     this.field_70170_p.func_72838_d(entitychicken1);
                      this.func_184220_m(entitychicken1);
                  }
-             }
-@@ -531,7 +561,7 @@
+@@ -531,7 +563,7 @@
  
      public void func_70645_a(DamageSource p_70645_1_)
      {
@@ -161,7 +160,7 @@
  
          if (p_70645_1_.func_76346_g() instanceof EntityCreeper)
          {
-@@ -548,6 +578,7 @@
+@@ -548,6 +580,7 @@
                  }
              }
          }
