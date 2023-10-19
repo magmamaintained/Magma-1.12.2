@@ -724,7 +724,8 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         if (fromWorld == toWorld) {
             entity.connection.teleport(to);
         } else {
-            server.getHandle().moveToWorld(entity, toWorld.dimension, true, to, true);
+            server.getHandle().prepareRecreatePlayerEntity(to, true);
+            server.getHandle().recreatePlayerEntity(entity, toWorld.dimension, true);
         }
         return true;
     }

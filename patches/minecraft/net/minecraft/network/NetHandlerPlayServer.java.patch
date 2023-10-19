@@ -941,9 +941,8 @@
 -        textcomponenttranslation.func_150256_b().func_150238_a(TextFormatting.YELLOW);
 -        this.field_147367_d.func_184103_al().func_148539_a(textcomponenttranslation);
          this.field_147369_b.func_71123_m();
--        this.field_147367_d.func_184103_al().func_72367_e(this.field_147369_b);
-+        // this.serverController.getPlayerList().playerLoggedOut(this.player);
-+        String quitMessage = this.field_147367_d.func_184103_al().playerLoggedOut(this.field_147369_b);
+         this.field_147367_d.func_184103_al().func_72367_e(this.field_147369_b);
++        String quitMessage = this.field_147367_d.func_184103_al().playerLoggedOutQuitMessage();
 +        if ((quitMessage != null) && (quitMessage.length() > 0)) {
 +            this.field_147367_d.func_184103_al().sendMessage(CraftChatMessage.fromString(quitMessage));
 +        }
