@@ -30,16 +30,15 @@
      }
  
      public void func_82691_a(World p_82691_1_)
-@@ -81,7 +83,7 @@
+@@ -81,6 +83,7 @@
              {
                  EntityIronGolem entityirongolem = new EntityIronGolem(this.field_75586_a);
                  entityirongolem.func_70107_b(vec3d.field_72450_a, vec3d.field_72448_b, vec3d.field_72449_c);
--                this.field_75586_a.func_72838_d(entityirongolem);
-+                this.field_75586_a.spawnEntity(entityirongolem, org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.VILLAGE_DEFENSE);
++                this.field_75586_a.prepareSpawnEntity(org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.VILLAGE_DEFENSE); // Magma - Added a reason for spawning this creature
+                 this.field_75586_a.func_72838_d(entityirongolem);
                  ++this.field_75587_j;
              }
-         }
-@@ -310,11 +312,11 @@
+@@ -310,11 +313,11 @@
          double d0 = Double.MAX_VALUE;
          EntityPlayer entityplayer = null;
  
@@ -54,7 +53,7 @@
  
                  if (entityplayer1 != null)
                  {
-@@ -362,6 +364,7 @@
+@@ -362,6 +365,7 @@
                  villagedoorinfo.func_75466_d();
              }
  
@@ -62,7 +61,7 @@
              if (!this.func_179860_f(villagedoorinfo.func_179852_d()) || Math.abs(this.field_75581_g - villagedoorinfo.func_75473_b()) > 1200)
              {
                  this.field_75585_c = this.field_75585_c.func_177973_b(villagedoorinfo.func_179852_d());
-@@ -415,25 +418,51 @@
+@@ -415,25 +419,51 @@
          }
      }
  
@@ -116,7 +115,7 @@
      public void func_82690_a(NBTTagCompound p_82690_1_)
      {
          this.field_75588_h = p_82690_1_.func_74762_e("PopSize");
-@@ -459,21 +488,17 @@
+@@ -459,21 +489,17 @@
          {
              NBTTagCompound nbttagcompound1 = nbttaglist1.func_150305_b(j);
  
@@ -143,7 +142,7 @@
      }
  
      public void func_82689_b(NBTTagCompound p_82689_1_)
-@@ -507,18 +532,14 @@
+@@ -507,18 +533,14 @@
          p_82689_1_.func_74782_a("Doors", nbttaglist);
          NBTTagList nbttaglist1 = new NBTTagList();
  
@@ -164,7 +163,7 @@
                      nbttagcompound1.func_74768_a("S", ((Integer)this.field_82693_j.get(s)).intValue());
                      nbttaglist1.func_74742_a(nbttagcompound1);
                  }
-@@ -530,6 +551,7 @@
+@@ -530,6 +552,7 @@
          }
  
          p_82689_1_.func_74782_a("Players", nbttaglist1);
@@ -172,7 +171,7 @@
      }
  
      public void func_82692_h()
-@@ -544,9 +566,9 @@
+@@ -544,9 +567,9 @@
  
      public void func_82683_b(int p_82683_1_)
      {
@@ -184,7 +183,7 @@
          }
      }
  
-@@ -561,4 +583,31 @@
+@@ -561,4 +584,31 @@
              this.field_75590_b = p_i1674_3_;
          }
      }

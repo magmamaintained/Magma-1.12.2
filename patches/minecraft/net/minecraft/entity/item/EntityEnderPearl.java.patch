@@ -12,7 +12,7 @@
  
  public class EntityEnderPearl extends EntityThrowable
  {
-@@ -96,24 +101,38 @@
+@@ -96,24 +101,39 @@
              {
                  EntityPlayerMP entityplayermp = (EntityPlayerMP)entitylivingbase;
  
@@ -49,7 +49,8 @@
 +                                EntityEndermite entityendermite = new EntityEndermite(this.field_70170_p);
 +                                entityendermite.func_175496_a(true);
 +                                entityendermite.func_70012_b(entitylivingbase.field_70165_t, entitylivingbase.field_70163_u, entitylivingbase.field_70161_v, entitylivingbase.field_70177_z, entitylivingbase.field_70125_A);
-+                                this.field_70170_p.spawnEntity(entityendermite, CreatureSpawnEvent.SpawnReason.ENDER_PEARL);
++                                this.field_70170_p.prepareSpawnEntity(CreatureSpawnEvent.SpawnReason.ENDER_PEARL); // Magma - Added a reason for spawning this creature
++                                this.field_70170_p.func_72838_d(entityendermite);
 +                            }
 +
 +                            if (entitylivingbase.func_184218_aH()) {
@@ -67,7 +68,7 @@
                  }
              }
              else if (entitylivingbase != null)
-@@ -141,13 +160,13 @@
+@@ -141,13 +161,13 @@
      }
  
      @Nullable

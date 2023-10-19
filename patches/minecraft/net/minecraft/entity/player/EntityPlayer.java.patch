@@ -970,7 +970,7 @@
      }
  
      private void func_192026_k(@Nullable NBTTagCompound p_192026_1_)
-@@ -2137,6 +2418,23 @@
+@@ -2137,6 +2418,24 @@
          }
      }
  
@@ -986,7 +986,8 @@
 +            }
 +
 +            entity.func_70107_b(this.field_70165_t, this.field_70163_u + 0.699999988079071D, this.field_70161_v);
-+            return this.field_70170_p.spawnEntity(entity, CreatureSpawnEvent.SpawnReason.SHOULDER_ENTITY);
++            this.field_70170_p.prepareSpawnEntity(CreatureSpawnEvent.SpawnReason.SHOULDER_ENTITY);
++            return this.field_70170_p.func_72838_d(entity);
 +        }
 +        return true;
 +    }
@@ -994,7 +995,7 @@
      @SideOnly(Side.CLIENT)
      public boolean func_98034_c(EntityPlayer p_98034_1_)
      {
-@@ -2176,7 +2474,10 @@
+@@ -2176,7 +2475,10 @@
  
      public ITextComponent func_145748_c_()
      {
@@ -1006,7 +1007,7 @@
          itextcomponent.func_150256_b().func_150241_a(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + this.func_70005_c_() + " "));
          itextcomponent.func_150256_b().func_150209_a(this.func_174823_aP());
          itextcomponent.func_150256_b().func_179989_a(this.func_70005_c_());
-@@ -2185,7 +2486,7 @@
+@@ -2185,7 +2487,7 @@
  
      public float func_70047_e()
      {
@@ -1015,7 +1016,7 @@
  
          if (this.func_70608_bn())
          {
-@@ -2368,7 +2669,7 @@
+@@ -2368,7 +2670,7 @@
          return (NBTTagCompound)this.field_70180_af.func_187225_a(field_192032_bt);
      }
  
@@ -1024,7 +1025,7 @@
      {
          this.field_70180_af.func_187227_b(field_192032_bt, p_192029_1_);
      }
-@@ -2378,7 +2679,7 @@
+@@ -2378,7 +2680,7 @@
          return (NBTTagCompound)this.field_70180_af.func_187225_a(field_192033_bu);
      }
  
@@ -1033,7 +1034,7 @@
      {
          this.field_70180_af.func_187227_b(field_192033_bu, p_192031_1_);
      }
-@@ -2418,16 +2719,178 @@
+@@ -2418,16 +2720,178 @@
  
      public boolean func_189808_dh()
      {
@@ -1214,7 +1215,7 @@
          private final int field_151433_e;
          private final String field_151430_f;
  
-@@ -2457,7 +2920,7 @@
+@@ -2457,7 +2921,7 @@
  
          static
          {
@@ -1223,7 +1224,7 @@
              {
                  field_151432_d[entityplayer$enumchatvisibility.field_151433_e] = entityplayer$enumchatvisibility;
              }
-@@ -2488,4 +2951,11 @@
+@@ -2488,4 +2952,11 @@
          OTHER_PROBLEM,
          NOT_SAFE;
      }

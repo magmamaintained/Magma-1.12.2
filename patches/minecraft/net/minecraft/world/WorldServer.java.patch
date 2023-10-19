@@ -902,14 +902,15 @@
      }
  
      public boolean func_72838_d(Entity p_72838_1_)
-@@ -1030,11 +1369,17 @@
+@@ -1030,11 +1369,18 @@
          return this.func_184165_i(p_72838_1_) ? super.func_72838_d(p_72838_1_) : false;
      }
  
 +    public boolean spawnEntity(Entity entityIn, CreatureSpawnEvent.SpawnReason spawnReason) {
 +        // World.spawnEntity(Entity) will call this, and we still want to perform
 +        // existing entity checking when it's called with a SpawnReason
-+        return this.func_184165_i(entityIn) ? super.spawnEntity(entityIn, spawnReason) : false;
++        super.prepareSpawnEntity(spawnReason); // Magma - Added a reason for spawning this creature
++        return this.func_184165_i(entityIn) ? super.func_72838_d(entityIn) : false;
 +    }
 +
      public void func_175650_b(Collection<Entity> p_175650_1_)
@@ -921,7 +922,7 @@
              {
                  this.field_72996_f.add(entity);
                  this.func_72923_a(entity);
-@@ -1046,7 +1391,6 @@
+@@ -1046,7 +1392,6 @@
      {
          if (p_184165_1_.field_70128_L)
          {
@@ -929,7 +930,7 @@
              return false;
          }
          else
-@@ -1057,7 +1401,7 @@
+@@ -1057,7 +1402,7 @@
              {
                  Entity entity = this.field_175741_N.get(uuid);
  
@@ -938,7 +939,7 @@
                  {
                      this.field_72997_g.remove(entity);
                  }
-@@ -1065,7 +1409,6 @@
+@@ -1065,7 +1410,6 @@
                  {
                      if (!(p_184165_1_ instanceof EntityPlayer))
                      {
@@ -946,7 +947,7 @@
                          return false;
                      }
  
-@@ -1113,9 +1456,17 @@
+@@ -1113,9 +1457,17 @@
  
      public boolean func_72942_c(Entity p_72942_1_)
      {
@@ -965,7 +966,7 @@
              return true;
          }
          else
-@@ -1136,10 +1487,14 @@
+@@ -1136,10 +1488,14 @@
  
      public Explosion func_72885_a(@Nullable Entity p_72885_1_, double p_72885_2_, double p_72885_4_, double p_72885_6_, float p_72885_8_, boolean p_72885_9_, boolean p_72885_10_)
      {
@@ -984,7 +985,7 @@
          if (!p_72885_10_)
          {
              explosion.func_180342_d();
-@@ -1182,7 +1537,8 @@
+@@ -1182,7 +1538,8 @@
              {
                  if (this.func_147485_a(blockeventdata))
                  {
@@ -994,7 +995,7 @@
                  }
              }
  
-@@ -1208,27 +1564,31 @@
+@@ -1208,27 +1565,31 @@
  
          if (this.field_73003_n != this.field_73004_o)
          {
@@ -1032,7 +1033,7 @@
          }
      }
  
-@@ -1265,12 +1625,20 @@
+@@ -1265,12 +1626,20 @@
  
      public void func_180505_a(EnumParticleTypes p_180505_1_, boolean p_180505_2_, double p_180505_3_, double p_180505_5_, double p_180505_7_, int p_180505_9_, double p_180505_10_, double p_180505_12_, double p_180505_14_, double p_180505_16_, int... p_180505_18_)
      {
@@ -1055,7 +1056,7 @@
          }
      }
  
-@@ -1323,10 +1691,16 @@
+@@ -1323,10 +1692,16 @@
          return this.field_193036_D;
      }
  

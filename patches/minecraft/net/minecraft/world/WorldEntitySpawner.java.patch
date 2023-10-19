@@ -200,7 +200,7 @@
                              }
                              catch (Exception exception)
                              {
-@@ -281,9 +354,13 @@
+@@ -281,9 +354,14 @@
                                  continue;
                              }
  
@@ -210,7 +210,8 @@
 +                            // CraftBukkit start - Added a reason for spawning this creature, moved entityliving.onInitialSpawn(ientitylivingdata) up
 +                            // worldIn.spawnEntity(entityliving);
                              ientitylivingdata = entityliving.func_180482_a(p_77191_0_.func_175649_E(new BlockPos(entityliving)), ientitylivingdata);
-+                            p_77191_0_.spawnEntity(entityliving, CreatureSpawnEvent.SpawnReason.CHUNK_GEN);
++                            p_77191_0_.prepareSpawnEntity(CreatureSpawnEvent.SpawnReason.CHUNK_GEN); // Magma - Added a reason for spawning this creature
++                            p_77191_0_.func_72838_d(entityliving);
 +                            // CraftBukkit end
 \ No newline at end of file
                              flag = true;

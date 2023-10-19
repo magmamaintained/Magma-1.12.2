@@ -8,13 +8,12 @@
  
  public class BlockSilverfish extends Block
  {
-@@ -63,7 +64,7 @@
+@@ -63,6 +64,7 @@
          {
              EntitySilverfish entitysilverfish = new EntitySilverfish(p_180653_1_);
              entitysilverfish.func_70012_b((double)p_180653_2_.func_177958_n() + 0.5D, (double)p_180653_2_.func_177956_o(), (double)p_180653_2_.func_177952_p() + 0.5D, 0.0F, 0.0F);
--            p_180653_1_.func_72838_d(entitysilverfish);
-+            p_180653_1_.spawnEntity(entitysilverfish, CreatureSpawnEvent.SpawnReason.SILVERFISH_BLOCK); // CraftBukkit - add SpawnReason
++            p_180653_1_.prepareSpawnEntity(CreatureSpawnEvent.SpawnReason.SILVERFISH_BLOCK); // Magma - Added a reason for spawning this creature
 \ No newline at end of file
+             p_180653_1_.func_72838_d(entitysilverfish);
              entitysilverfish.func_70656_aK();
          }
-     }

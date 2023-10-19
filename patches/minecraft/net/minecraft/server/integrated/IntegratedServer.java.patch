@@ -119,16 +119,7 @@
      public void func_71263_m()
      {
 +        if (func_71278_l())
+\ No newline at end of file
          Futures.getUnchecked(this.func_152344_a(new Runnable()
          {
              public void run()
-@@ -372,7 +400,7 @@
-                 {
-                     if (!entityplayermp.func_110124_au().equals(IntegratedServer.this.field_71349_l.field_71439_g.func_110124_au()))
-                     {
--                        IntegratedServer.this.func_184103_al().func_72367_e(entityplayermp);
-+                        IntegratedServer.this.func_184103_al().playerLoggedOut(entityplayermp);
-\ No newline at end of file
-                     }
-                 }
-             }

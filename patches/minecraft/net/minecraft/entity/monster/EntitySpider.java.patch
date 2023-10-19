@@ -15,14 +15,13 @@
      }
  
      public boolean func_70841_p()
-@@ -173,7 +179,8 @@
+@@ -173,6 +179,8 @@
              EntitySkeleton entityskeleton = new EntitySkeleton(this.field_70170_p);
              entityskeleton.func_70012_b(this.field_70165_t, this.field_70163_u, this.field_70161_v, this.field_70177_z, 0.0F);
              entityskeleton.func_180482_a(p_180482_1_, (IEntityLivingData)null);
--            this.field_70170_p.func_72838_d(entityskeleton);
 +            // this.world.spawnEntity(entityskeleton);
-+            this.field_70170_p.spawnEntity(entityskeleton, org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.JOCKEY);
++            this.field_70170_p.prepareSpawnEntity(org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.JOCKEY); // Magma - Added a reason for spawning this creature
 \ No newline at end of file
+             this.field_70170_p.func_72838_d(entityskeleton);
              entityskeleton.func_184220_m(this);
          }
- 
