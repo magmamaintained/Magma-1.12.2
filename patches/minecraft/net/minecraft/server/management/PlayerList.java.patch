@@ -451,18 +451,8 @@
      }
  
      public void func_72358_d(EntityPlayerMP p_72358_1_)
-@@ -352,10 +543,37 @@
-         p_72358_1_.func_71121_q().func_184164_w().func_72685_d(p_72358_1_);
-     }
+@@ -354,8 +545,27 @@
  
-+    // Magma start - Move quitMessage return
-+    private String quitMessage = null;
-+    public String playerLoggedOutQuitMessage() {
-+        String quitMessage = this.quitMessage;
-+        this.quitMessage = null;
-+        return quitMessage;
-+    }
-+    // Magma end
      public void func_72367_e(EntityPlayerMP p_72367_1_)
      {
 +        net.minecraftforge.fml.common.FMLCommonHandler.instance().firePlayerLoggedOut(p_72367_1_);
@@ -477,7 +467,7 @@
 +                PlayerQuitEvent playerQuitEvent = new PlayerQuitEvent(cserver.getPlayer(p_72367_1_), "\u00A7e" + p_72367_1_.func_70005_c_() + " left the game");
 +                Bukkit.getPluginManager().callEvent(playerQuitEvent);
 +                p_72367_1_.getBukkitEntity().disconnect(playerQuitEvent.getQuitMessage());
-+                quitMessage = playerQuitEvent.getQuitMessage();
++                NetHandlerPlayServer.quitMessage = playerQuitEvent.getQuitMessage();
 +            } catch (Exception e){
 +                if(!NetworkSystem.fastWorkBenchCrash){
 +                    e.printStackTrace();
@@ -489,7 +479,7 @@
          this.func_72391_b(p_72367_1_);
  
          if (p_72367_1_.func_184218_aH())
-@@ -376,22 +594,40 @@
+@@ -376,22 +586,40 @@
                  worldserver.func_72964_e(p_72367_1_.field_70176_ah, p_72367_1_.field_70164_aj).func_76630_e();
              }
          }
@@ -533,7 +523,7 @@
      }
  
      public String func_148542_a(SocketAddress p_148542_1_, GameProfile p_148542_2_)
-@@ -410,7 +646,7 @@
+@@ -410,7 +638,7 @@
          }
          else if (!this.func_152607_e(p_148542_2_))
          {
@@ -542,7 +532,7 @@
          }
          else if (this.field_72413_h.func_152708_a(p_148542_1_))
          {
-@@ -430,6 +666,72 @@
+@@ -430,6 +658,72 @@
          }
      }
  
@@ -615,7 +605,7 @@
      public EntityPlayerMP func_148545_a(GameProfile p_148545_1_)
      {
          UUID uuid = EntityPlayer.func_146094_a(p_148545_1_);
-@@ -471,30 +773,52 @@
+@@ -471,30 +765,52 @@
          return new EntityPlayerMP(this.field_72400_f, this.field_72400_f.func_71218_a(0), p_148545_1_, playerinteractionmanager);
      }
  
@@ -683,7 +673,7 @@
          entityplayermp.func_145769_d(p_72368_1_.func_145782_y());
          entityplayermp.func_174817_o(p_72368_1_);
          entityplayermp.func_184819_a(p_72368_1_.func_184591_cq());
-@@ -504,24 +828,47 @@
+@@ -504,24 +820,47 @@
              entityplayermp.func_184211_a(s);
          }
  
@@ -744,7 +734,7 @@
          worldserver.func_72863_F().func_186025_d((int)entityplayermp.field_70165_t >> 4, (int)entityplayermp.field_70161_v >> 4);
  
          while (!worldserver.func_184144_a(entityplayermp, entityplayermp.func_174813_aQ()).isEmpty() && entityplayermp.field_70163_u < 256.0D)
-@@ -529,22 +876,132 @@
+@@ -529,22 +868,132 @@
              entityplayermp.func_70107_b(entityplayermp.field_70165_t, entityplayermp.field_70163_u + 1.0D, entityplayermp.field_70161_v);
          }
  
@@ -884,7 +874,7 @@
      public void func_187243_f(EntityPlayerMP p_187243_1_)
      {
          GameProfile gameprofile = p_187243_1_.func_146103_bH();
-@@ -556,15 +1013,26 @@
+@@ -556,15 +1005,26 @@
  
      public void func_187242_a(EntityPlayerMP p_187242_1_, int p_187242_2_)
      {
@@ -913,7 +903,7 @@
          this.func_72375_a(p_187242_1_, worldserver);
          p_187242_1_.field_71135_a.func_147364_a(p_187242_1_.field_70165_t, p_187242_1_.field_70163_u, p_187242_1_.field_70161_v, p_187242_1_.field_70177_z, p_187242_1_.field_70125_A);
          p_187242_1_.field_71134_c.func_73080_a(worldserver1);
-@@ -576,17 +1044,36 @@
+@@ -576,17 +1036,36 @@
          {
              p_187242_1_.field_71135_a.func_147359_a(new SPacketEntityEffect(p_187242_1_.func_145782_y(), potioneffect));
          }
@@ -953,7 +943,7 @@
          {
              d0 = MathHelper.func_151237_a(d0 / 8.0D, p_82448_4_.func_175723_af().func_177726_b() + 16.0D, p_82448_4_.func_175723_af().func_177728_d() - 16.0D);
              d1 = MathHelper.func_151237_a(d1 / 8.0D, p_82448_4_.func_175723_af().func_177736_c() + 16.0D, p_82448_4_.func_175723_af().func_177733_e() - 16.0D);
-@@ -597,7 +1084,7 @@
+@@ -597,7 +1076,7 @@
                  p_82448_3_.func_72866_a(p_82448_1_, false);
              }
          }
@@ -962,7 +952,7 @@
          {
              d0 = MathHelper.func_151237_a(d0 * 8.0D, p_82448_4_.func_175723_af().func_177726_b() + 16.0D, p_82448_4_.func_175723_af().func_177728_d() - 16.0D);
              d1 = MathHelper.func_151237_a(d1 * 8.0D, p_82448_4_.func_175723_af().func_177736_c() + 16.0D, p_82448_4_.func_175723_af().func_177733_e() - 16.0D);
-@@ -608,7 +1095,7 @@
+@@ -608,7 +1087,7 @@
                  p_82448_3_.func_72866_a(p_82448_1_, false);
              }
          }
@@ -971,7 +961,7 @@
          {
              BlockPos blockpos;
  
-@@ -634,7 +1121,7 @@
+@@ -634,7 +1113,7 @@
  
          p_82448_3_.field_72984_F.func_76319_b();
  
@@ -980,7 +970,7 @@
          {
              p_82448_3_.field_72984_F.func_76320_a("placing");
              d0 = (double)MathHelper.func_76125_a((int)d0, -29999872, 29999872);
-@@ -643,7 +1130,8 @@
+@@ -643,7 +1122,8 @@
              if (p_82448_1_.func_70089_S())
              {
                  p_82448_1_.func_70012_b(d0, p_82448_1_.field_70163_u, d1, p_82448_1_.field_70177_z, p_82448_1_.field_70125_A);
@@ -990,7 +980,7 @@
                  p_82448_4_.func_72838_d(p_82448_1_);
                  p_82448_4_.func_72866_a(p_82448_1_, false);
              }
-@@ -654,11 +1142,158 @@
+@@ -654,11 +1134,158 @@
          p_82448_1_.func_70029_a(p_82448_4_);
      }
  
@@ -1150,7 +1140,7 @@
              this.field_72408_o = 0;
          }
      }
-@@ -671,6 +1306,22 @@
+@@ -671,6 +1298,22 @@
          }
      }
  
@@ -1173,7 +1163,7 @@
      public void func_148537_a(Packet<?> p_148537_1_, int p_148537_2_)
      {
          for (int i = 0; i < this.field_72404_b.size(); ++i)
-@@ -786,12 +1437,20 @@
+@@ -786,12 +1429,20 @@
          int i = this.field_72400_f.func_110455_j();
          this.field_72414_i.func_152687_a(new UserListOpsEntry(p_152605_1_, this.field_72400_f.func_110455_j(), this.field_72414_i.func_183026_b(p_152605_1_)));
          this.func_187245_a(this.func_177451_a(p_152605_1_.getId()), i);
@@ -1194,7 +1184,7 @@
      }
  
      private void func_187245_a(EntityPlayerMP p_187245_1_, int p_187245_2_)
-@@ -830,32 +1489,44 @@
+@@ -830,32 +1481,44 @@
      @Nullable
      public EntityPlayerMP func_152612_a(String p_152612_1_)
      {
@@ -1257,7 +1247,7 @@
                  }
              }
          }
-@@ -863,12 +1534,29 @@
+@@ -863,12 +1526,29 @@
  
      public void func_72389_g()
      {
@@ -1291,7 +1281,7 @@
      public void func_152601_d(GameProfile p_152601_1_)
      {
          this.field_72411_j.func_152687_a(new UserListWhitelistEntry(p_152601_1_));
-@@ -913,16 +1601,21 @@
+@@ -913,16 +1593,21 @@
  
          if (p_72354_2_.func_72896_J())
          {
@@ -1317,7 +1307,7 @@
          p_72385_1_.field_71135_a.func_147359_a(new SPacketHeldItemChange(p_72385_1_.field_71071_by.field_70461_c));
      }
  
-@@ -1004,17 +1697,26 @@
+@@ -1004,17 +1689,26 @@
  
      public void func_72392_r()
      {
@@ -1348,7 +1338,7 @@
      }
  
      public void func_148539_a(ITextComponent p_148539_1_)
-@@ -1022,10 +1724,19 @@
+@@ -1022,10 +1716,19 @@
          this.func_148544_a(p_148539_1_, true);
      }
  
@@ -1371,7 +1361,7 @@
  
          if (statisticsmanagerserver == null)
          {
-@@ -1034,7 +1745,7 @@
+@@ -1034,7 +1737,7 @@
  
              if (!file2.exists())
              {
@@ -1380,7 +1370,7 @@
  
                  if (file3.exists() && file3.isFile())
                  {
-@@ -1044,7 +1755,7 @@
+@@ -1044,7 +1747,7 @@
  
              statisticsmanagerserver = new StatisticsManagerServer(this.field_72400_f, file2);
              statisticsmanagerserver.func_150882_a();
@@ -1389,7 +1379,7 @@
          }
  
          return statisticsmanagerserver;
-@@ -1053,14 +1764,14 @@
+@@ -1053,14 +1756,14 @@
      public PlayerAdvancements func_192054_h(EntityPlayerMP p_192054_1_)
      {
          UUID uuid = p_192054_1_.func_110124_au();
@@ -1406,7 +1396,7 @@
          }
  
          playeradvancements.func_192739_a(p_192054_1_);
-@@ -1073,7 +1784,7 @@
+@@ -1073,7 +1776,7 @@
  
          if (this.field_72400_f.field_71305_c != null)
          {
@@ -1415,7 +1405,7 @@
              {
                  if (worldserver != null)
                  {
-@@ -1101,9 +1812,10 @@
+@@ -1101,9 +1804,10 @@
  
      public void func_193244_w()
      {
