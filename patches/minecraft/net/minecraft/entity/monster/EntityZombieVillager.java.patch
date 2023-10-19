@@ -93,16 +93,15 @@
          entityvillager.func_190672_a(this.field_70170_p.func_175649_E(new BlockPos(entityvillager)), (IEntityLivingData)null, false);
          entityvillager.func_82187_q();
  
-@@ -193,7 +211,7 @@
+@@ -193,6 +211,7 @@
              entityvillager.func_174805_g(this.func_174833_aM());
          }
  
--        this.field_70170_p.func_72838_d(entityvillager);
-+        this.field_70170_p.spawnEntity(entityvillager, org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.CURED);
++        this.field_70170_p.prepareSpawnEntity(org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.CURED); // Magma - Added a reason for spawning this creature
+         this.field_70170_p.func_72838_d(entityvillager);
  
          if (this.field_191992_by != null)
-         {
-@@ -278,4 +296,37 @@
+@@ -278,4 +297,37 @@
      {
          return ItemStack.field_190927_a;
      }

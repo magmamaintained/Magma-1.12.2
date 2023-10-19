@@ -125,11 +125,12 @@
                      }
                  }
  
-@@ -219,25 +254,24 @@
+@@ -219,25 +254,25 @@
                  entitywither.func_70012_b((double)blockpos1.func_177958_n() + 0.5D, (double)blockpos1.func_177956_o() + 0.55D, (double)blockpos1.func_177952_p() + 0.5D, blockpattern$patternhelper.func_177669_b().func_176740_k() == EnumFacing.Axis.X ? 0.0F : 90.0F, 0.0F);
                  entitywither.field_70761_aq = blockpattern$patternhelper.func_177669_b().func_176740_k() == EnumFacing.Axis.X ? 0.0F : 90.0F;
                  entitywither.func_82206_m();
-+                if (p_180679_1_.spawnEntity(entitywither, CreatureSpawnEvent.SpawnReason.BUILD_WITHER)) {
++                p_180679_1_.prepareSpawnEntity(CreatureSpawnEvent.SpawnReason.BUILD_WITHER); // Magma - Added a reason for spawning this creature
++                if (p_180679_1_.func_72838_d(entitywither)) {
 +                    blockList.updateList();
  
 -                for (EntityPlayerMP entityplayermp : p_180679_1_.func_72872_a(EntityPlayerMP.class, entitywither.func_174813_aQ().func_186662_g(50.0D)))

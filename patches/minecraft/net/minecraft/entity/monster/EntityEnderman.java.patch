@@ -110,44 +110,40 @@
      }
  
      protected void func_70088_a()
-@@ -187,9 +197,18 @@
+@@ -187,13 +197,15 @@
          this.func_175490_a(iblockstate);
      }
  
 -    private boolean func_70821_d(EntityPlayer p_70821_1_)
+-    {
 +    // Paper start
 +    private boolean func_70821_d(EntityPlayer p_70821_1_) {
-+        boolean shouldAttack = shouldAttackPlayer_default(p_70821_1_);
-+        EndermanAttackPlayerEvent event = new EndermanAttackPlayerEvent((Enderman) getBukkitEntity(), (Player) p_70821_1_.getBukkitEntity());
-+        event.setCancelled(!shouldAttack);
-+        return event.callEvent();
-+    }
++        boolean shouldAttack;
 +
-+    private boolean shouldAttackPlayer_default(EntityPlayer player)
-     {
--        ItemStack itemstack = p_70821_1_.field_71071_by.field_70460_b.get(3);
-+        // Paper ends
-+        ItemStack itemstack = player.field_71071_by.field_70460_b.get(3);
+         ItemStack itemstack = p_70821_1_.field_71071_by.field_70460_b.get(3);
  
          if (itemstack.func_77973_b() == Item.func_150898_a(Blocks.field_150423_aK))
          {
-@@ -197,12 +216,12 @@
+-            return false;
++            shouldAttack = false;
          }
          else
          {
--            Vec3d vec3d = p_70821_1_.func_70676_i(1.0F).func_72432_b();
--            Vec3d vec3d1 = new Vec3d(this.field_70165_t - p_70821_1_.field_70165_t, this.func_174813_aQ().field_72338_b + (double)this.func_70047_e() - (p_70821_1_.field_70163_u + (double)p_70821_1_.func_70047_e()), this.field_70161_v - p_70821_1_.field_70161_v);
-+            Vec3d vec3d = player.func_70676_i(1.0F).func_72432_b();
-+            Vec3d vec3d1 = new Vec3d(this.field_70165_t - player.field_70165_t, this.func_174813_aQ().field_72338_b + (double)this.func_70047_e() - (player.field_70163_u + (double)player.func_70047_e()), this.field_70161_v - player.field_70161_v);
+@@ -202,8 +214,12 @@
              double d0 = vec3d1.func_72433_c();
              vec3d1 = vec3d1.func_72432_b();
              double d1 = vec3d.func_72430_b(vec3d1);
 -            return d1 > 1.0D - 0.025D / d0 ? p_70821_1_.func_70685_l(this) : false;
-+            return d1 > 1.0D - 0.025D / d0 ? player.func_70685_l(this) : false;
++            shouldAttack = d1 > 1.0D - 0.025D / d0 ? p_70821_1_.func_70685_l(this) : false;
          }
++
++        EndermanAttackPlayerEvent event = new EndermanAttackPlayerEvent((Enderman) getBukkitEntity(), (Player) p_70821_1_.getBukkitEntity());
++        event.setCancelled(!shouldAttack);
++        return event.callEvent();
      }
  
-@@ -236,7 +255,7 @@
+     public float func_70047_e()
+@@ -236,7 +252,7 @@
          {
              float f = this.func_70013_c();
  
@@ -156,7 +152,7 @@
              {
                  this.func_70624_b((EntityLivingBase)null);
                  this.func_70820_n();
-@@ -267,7 +286,9 @@
+@@ -267,7 +283,9 @@
  
      private boolean func_70825_j(double p_70825_1_, double p_70825_3_, double p_70825_5_)
      {
@@ -167,7 +163,7 @@
  
          if (flag)
          {
-@@ -329,7 +350,7 @@
+@@ -329,7 +347,7 @@
          {
              return false;
          }
@@ -176,7 +172,7 @@
          {
              for (int i = 0; i < 64; ++i)
              {
-@@ -345,7 +366,7 @@
+@@ -345,7 +363,7 @@
          {
              boolean flag = super.func_70097_a(p_70097_1_, p_70097_2_);
  
@@ -185,7 +181,7 @@
              {
                  this.func_70820_n();
              }
-@@ -354,6 +375,18 @@
+@@ -354,6 +372,18 @@
          }
      }
  
@@ -204,7 +200,7 @@
      public boolean func_70823_r()
      {
          return ((Boolean)this.field_70180_af.func_187225_a(field_184719_bw)).booleanValue();
-@@ -385,6 +418,12 @@
+@@ -385,6 +415,12 @@
              private int field_179450_h;
              private int field_179451_i;
  
@@ -217,7 +213,7 @@
              public AIFindPlayer(EntityEnderman p_i45842_1_)
              {
                  super(p_i45842_1_, EntityPlayer.class, false);
-@@ -453,7 +492,7 @@
+@@ -453,7 +489,7 @@
                      {
                          if (this.field_179449_j.func_70821_d((EntityPlayer)this.field_75309_a))
                          {
@@ -226,7 +222,7 @@
                              {
                                  this.field_179449_j.func_70820_n();
                              }
-@@ -486,7 +525,7 @@
+@@ -486,7 +522,7 @@
                  {
                      return false;
                  }
@@ -235,7 +231,7 @@
                  {
                      return false;
                  }
-@@ -508,10 +547,14 @@
+@@ -508,10 +544,14 @@
                  IBlockState iblockstate1 = world.func_180495_p(blockpos.func_177977_b());
                  IBlockState iblockstate2 = this.field_179475_a.func_175489_ck();
  
@@ -253,7 +249,7 @@
                  }
              }
  
-@@ -551,7 +594,7 @@
+@@ -551,7 +591,7 @@
                  {
                      return false;
                  }
@@ -262,7 +258,7 @@
                  {
                      return false;
                  }
-@@ -576,8 +619,12 @@
+@@ -576,8 +616,12 @@
  
                  if (EntityEnderman.field_70827_d.contains(block) && flag)
                  {

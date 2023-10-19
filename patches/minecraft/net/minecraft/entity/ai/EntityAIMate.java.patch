@@ -52,16 +52,15 @@
              if (entityplayermp != null)
              {
                  entityplayermp.func_71029_a(StatList.field_151186_x);
-@@ -113,7 +138,7 @@
+@@ -113,6 +138,7 @@
              this.field_75391_e.func_70875_t();
              entityageable.func_70873_a(-24000);
              entityageable.func_70012_b(this.field_75390_d.field_70165_t, this.field_75390_d.field_70163_u, this.field_75390_d.field_70161_v, 0.0F, 0.0F);
--            this.field_75394_a.func_72838_d(entityageable);
-+            this.field_75394_a.spawnEntity(entityageable, org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.BREEDING);
++            this.field_75394_a.prepareSpawnEntity(org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.BREEDING); // Magma - Added a reason for spawning this creature
+             this.field_75394_a.func_72838_d(entityageable);
              Random random = this.field_75390_d.func_70681_au();
  
-             for (int i = 0; i < 7; ++i)
-@@ -129,7 +154,8 @@
+@@ -129,7 +155,8 @@
  
              if (this.field_75394_a.func_82736_K().func_82766_b("doMobLoot"))
              {

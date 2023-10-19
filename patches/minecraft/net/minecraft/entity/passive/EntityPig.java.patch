@@ -53,14 +53,12 @@
              entitypigzombie.func_184201_a(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.field_151010_B));
              entitypigzombie.func_70012_b(this.field_70165_t, this.field_70163_u, this.field_70161_v, this.field_70177_z, this.field_70125_A);
              entitypigzombie.func_94061_f(this.func_175446_cd());
-@@ -237,7 +254,8 @@
+@@ -237,6 +254,7 @@
                  entitypigzombie.func_174805_g(this.func_174833_aM());
              }
  
--            this.field_70170_p.func_72838_d(entitypigzombie);
-+            // CraftBukkit - added a reason for spawning this creature
-+            this.field_70170_p.spawnEntity(entitypigzombie, org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.LIGHTNING);
++            this.field_70170_p.prepareSpawnEntity(org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.LIGHTNING); // Magma - Added a reason for spawning this creature
 \ No newline at end of file
+             this.field_70170_p.func_72838_d(entitypigzombie);
              this.func_70106_y();
          }
-     }

@@ -31,12 +31,13 @@
      private AbstractHorse func_188515_a(DifficultyInstance p_188515_1_)
      {
          EntitySkeletonHorse entityskeletonhorse = new EntitySkeletonHorse(this.field_188516_a.field_70170_p);
-@@ -54,10 +58,11 @@
+@@ -54,10 +58,12 @@
          entityskeletonhorse.func_110163_bv();
          entityskeletonhorse.func_110234_j(true);
          entityskeletonhorse.func_70873_a(0);
 -        entityskeletonhorse.field_70170_p.func_72838_d(entityskeletonhorse);
-+        if (!entityskeletonhorse.field_70170_p.spawnEntity(entityskeletonhorse, org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.TRAP)) return null; // CraftBukkit
++        entityskeletonhorse.field_70170_p.prepareSpawnEntity(org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.TRAP); // Magma - Added a reason for spawning this creature
++        if (!entityskeletonhorse.field_70170_p.func_72838_d(entityskeletonhorse)) return null;
          return entityskeletonhorse;
      }
  
@@ -44,12 +45,13 @@
      private EntitySkeleton func_188514_a(DifficultyInstance p_188514_1_, AbstractHorse p_188514_2_)
      {
          EntitySkeleton entityskeleton = new EntitySkeleton(p_188514_2_.field_70170_p);
-@@ -73,7 +78,7 @@
+@@ -73,7 +79,8 @@
  
          entityskeleton.func_184201_a(EntityEquipmentSlot.MAINHAND, EnchantmentHelper.func_77504_a(entityskeleton.func_70681_au(), entityskeleton.func_184614_ca(), (int)(5.0F + p_188514_1_.func_180170_c() * (float)entityskeleton.func_70681_au().nextInt(18)), false));
          entityskeleton.func_184201_a(EntityEquipmentSlot.HEAD, EnchantmentHelper.func_77504_a(entityskeleton.func_70681_au(), entityskeleton.func_184582_a(EntityEquipmentSlot.HEAD), (int)(5.0F + p_188514_1_.func_180170_c() * (float)entityskeleton.func_70681_au().nextInt(18)), false));
 -        entityskeleton.field_70170_p.func_72838_d(entityskeleton);
-+        if (!entityskeleton.field_70170_p.spawnEntity(entityskeleton, org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.JOCKEY)) return null; // CraftBukkit
++        entityskeleton.field_70170_p.prepareSpawnEntity(org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.JOCKEY); // Magma - Added a reason for spawning this creature
++        if (!entityskeleton.field_70170_p.func_72838_d(entityskeleton)) return null;
 \ No newline at end of file
          return entityskeleton;
      }
