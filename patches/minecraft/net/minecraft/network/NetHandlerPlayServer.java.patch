@@ -157,7 +157,7 @@
          p_i1530_2_.func_150719_a(this);
          this.field_147369_b = p_i1530_3_;
          p_i1530_3_.field_71135_a = this;
-+        this.server = field_147367_d.server;
++        this.server = field_147367_d == null ? null : field_147367_d.server;
      }
  
 +    public CraftPlayer getPlayer() {
