@@ -46,7 +46,7 @@
  import net.minecraft.util.NonNullList;
  import net.minecraft.util.ReportedException;
  import net.minecraft.util.ResourceLocation;
-@@ -109,21 +112,40 @@
+@@ -109,21 +112,42 @@
  import net.minecraft.world.GameType;
  import net.minecraft.world.IInteractionObject;
  import net.minecraft.world.ILockableContainer;
@@ -70,10 +70,13 @@
 +import org.bukkit.inventory.MainHand;
 +import org.bukkit.craftbukkit.v1_12_R1.util.CraftChatMessage;
  
+-public class EntityPlayerMP extends EntityPlayer implements IContainerListener
++import org.magmafoundation.magma.asm.ASMPatcher;
++
 +import net.minecraft.entity.player.EntityPlayer.EnumChatVisibility;
 +import net.minecraft.entity.player.EntityPlayer.SleepResult;
 +
- public class EntityPlayerMP extends EntityPlayer implements IContainerListener
++public class EntityPlayerMP extends EntityPlayer implements IContainerListener, ASMPatcher.IEntityPlayerMP
  {
      private static final Logger field_147102_bM = LogManager.getLogger();
 -    private String field_71148_cg = "en_US";
@@ -89,7 +92,7 @@
      private final PlayerAdvancements field_192042_bX;
      private final StatisticsManagerServer field_147103_bO;
      private float field_130068_bO = Float.MIN_VALUE;
-@@ -135,13 +157,13 @@
+@@ -135,13 +159,13 @@
      private float field_71149_ch = -1.0E8F;
      private int field_71146_ci = -99999999;
      private boolean field_71147_cj = true;
@@ -107,7 +110,7 @@
      private boolean field_192040_cp;
      private final RecipeBookServer field_192041_cq = new RecipeBookServer();
      private Vec3d field_193107_ct;
-@@ -152,15 +174,39 @@
+@@ -152,15 +176,39 @@
      public boolean field_71137_h;
      public int field_71138_i;
      public boolean field_71136_j;
@@ -149,7 +152,7 @@
          {
              int i = Math.max(0, p_i45285_1_.func_184108_a(p_i45285_2_));
              int j = MathHelper.func_76128_c(p_i45285_2_.func_175723_af().func_177729_b((double)blockpos.func_177958_n(), (double)blockpos.func_177952_p()));
-@@ -179,7 +225,7 @@
+@@ -179,7 +227,7 @@
          }
  
          this.field_71133_b = p_i45285_1_;
@@ -158,7 +161,7 @@
          this.field_192042_bX = p_i45285_1_.func_184103_al().func_192054_h(this);
          this.field_70138_W = 1.0F;
          this.func_174828_a(blockpos, 0.0F, 0.0F);
-@@ -188,8 +234,33 @@
+@@ -188,8 +236,33 @@
          {
              this.func_70107_b(this.field_70165_t, this.field_70163_u + 1.0D, this.field_70161_v);
          }
@@ -192,7 +195,7 @@
      public void func_70037_a(NBTTagCompound p_70037_1_)
      {
          super.func_70037_a(p_70037_1_);
-@@ -218,6 +289,7 @@
+@@ -218,6 +291,7 @@
          {
              this.field_192041_cq.func_192825_a(p_70037_1_.func_74775_l("recipeBook"));
          }
@@ -200,7 +203,7 @@
      }
  
      public static void func_191522_a(DataFixer p_191522_0_)
-@@ -270,8 +342,34 @@
+@@ -270,8 +344,34 @@
          }
  
          p_70014_1_.func_74782_a("recipeBook", this.field_192041_cq.func_192824_e());
@@ -235,7 +238,7 @@
      public void func_82242_a(int p_82242_1_)
      {
          super.func_82242_a(p_82242_1_);
-@@ -313,6 +411,11 @@
+@@ -313,6 +413,11 @@
  
      public void func_70071_h_()
      {
@@ -247,7 +250,7 @@
          this.field_71134_c.func_73075_a();
          --this.field_147101_bU;
  
-@@ -323,7 +426,7 @@
+@@ -323,7 +428,7 @@
  
          this.field_71070_bA.func_75142_b();
  
@@ -256,7 +259,7 @@
          {
              this.func_71053_j();
              this.field_71070_bA = this.field_71069_bz;
-@@ -398,7 +501,7 @@
+@@ -398,7 +503,7 @@
  
              if (this.func_110143_aJ() != this.field_71149_ch || this.field_71146_ci != this.field_71100_bB.func_75116_a() || this.field_71100_bB.func_75115_e() == 0.0F != this.field_71147_cj)
              {
@@ -265,7 +268,7 @@
                  this.field_71149_ch = this.func_110143_aJ();
                  this.field_71146_ci = this.field_71100_bB.func_75116_a();
                  this.field_71147_cj = this.field_71100_bB.func_75115_e() == 0.0F;
-@@ -422,6 +525,12 @@
+@@ -422,6 +527,12 @@
                  this.func_184849_a(IScoreCriteria.field_186699_i, MathHelper.func_76123_f((float)this.field_184853_bW));
              }
  
@@ -278,7 +281,7 @@
              if (this.func_70658_aO() != this.field_184854_bX)
              {
                  this.field_184854_bX = this.func_70658_aO();
-@@ -450,6 +559,16 @@
+@@ -450,6 +561,16 @@
              {
                  CriteriaTriggers.field_192135_o.func_192215_a(this);
              }
@@ -295,7 +298,7 @@
          }
          catch (Throwable throwable)
          {
-@@ -462,50 +581,95 @@
+@@ -462,50 +583,95 @@
  
      private void func_184849_a(IScoreCriteria p_184849_1_, int p_184849_2_)
      {
@@ -410,7 +413,7 @@
              score.func_96648_a();
          }
  
-@@ -536,23 +700,28 @@
+@@ -536,23 +702,28 @@
          {
              super.func_191956_a(p_191956_1_, p_191956_2_, p_191956_3_);
              this.func_85039_t(p_191956_2_);
@@ -445,7 +448,7 @@
              }
  
              CriteriaTriggers.field_192122_b.func_192211_a(this, p_191956_1_, p_191956_3_);
-@@ -593,6 +762,43 @@
+@@ -593,6 +764,43 @@
          return Lists.<ScoreObjective>newArrayList();
      }
  
@@ -489,7 +492,7 @@
      public boolean func_70097_a(DamageSource p_70097_1_, float p_70097_2_)
      {
          if (this.func_180431_b(p_70097_1_))
-@@ -628,8 +834,17 @@
+@@ -628,8 +836,17 @@
                          }
                      }
                  }
@@ -509,7 +512,7 @@
              }
          }
      }
-@@ -641,13 +856,17 @@
+@@ -641,13 +858,17 @@
  
      private boolean func_175400_cq()
      {
@@ -530,7 +533,7 @@
  
          if (this.field_71093_bK == 0 && p_184204_1_ == -1)
          {
-@@ -658,8 +877,9 @@
+@@ -658,8 +879,9 @@
              this.field_193110_cw = null;
          }
  
@@ -541,7 +544,7 @@
              this.field_70170_p.func_72900_e(this);
  
              if (!this.field_71136_j)
-@@ -673,12 +893,28 @@
+@@ -673,12 +895,28 @@
          }
          else
          {
@@ -574,7 +577,7 @@
              this.field_71135_a.func_147359_a(new SPacketEffect(1032, BlockPos.field_177992_a, 0, false));
              this.field_71144_ck = -1;
              this.field_71149_ch = -1.0F;
-@@ -718,11 +954,11 @@
+@@ -718,11 +956,11 @@
          this.field_71070_bA.func_75142_b();
      }
  
@@ -589,7 +592,7 @@
          {
              this.func_71029_a(StatList.field_188064_ad);
              Packet<?> packet = new SPacketUseBed(this, p_180469_1_);
-@@ -737,6 +973,7 @@
+@@ -737,6 +975,7 @@
  
      public void func_70999_a(boolean p_70999_1_, boolean p_70999_2_, boolean p_70999_3_)
      {
@@ -597,7 +600,7 @@
          if (this.func_70608_bn())
          {
              this.func_71121_q().func_73039_n().func_151248_b(this, new SPacketAnimation(this, 2));
-@@ -808,7 +1045,7 @@
+@@ -808,7 +1047,7 @@
          BlockPos blockpos = new BlockPos(i, j, k);
          IBlockState iblockstate = this.field_70170_p.func_180495_p(blockpos);
  
@@ -606,7 +609,7 @@
          {
              BlockPos blockpos1 = blockpos.func_177977_b();
              IBlockState iblockstate1 = this.field_70170_p.func_180495_p(blockpos1);
-@@ -830,6 +1067,16 @@
+@@ -830,6 +1069,16 @@
          this.field_71135_a.func_147359_a(new SPacketSignEditorOpen(p_175141_1_.func_174877_v()));
      }
  
@@ -623,7 +626,7 @@
      public void func_71117_bO()
      {
          this.field_71139_cq = this.field_71139_cq % 100 + 1;
-@@ -837,22 +1084,54 @@
+@@ -837,22 +1086,54 @@
  
      public void func_180468_a(IInteractionObject p_180468_1_)
      {
@@ -680,7 +683,7 @@
          if (p_71007_1_ instanceof ILootContainer && ((ILootContainer)p_71007_1_).func_184276_b() != null && this.func_175149_v())
          {
              this.func_146105_b((new TextComponentTranslation("container.spectatorCantOpen", new Object[0])).func_150255_a((new Style()).func_150238_a(TextFormatting.RED)), true);
-@@ -872,8 +1151,10 @@
+@@ -872,8 +1153,10 @@
                  {
                      this.field_71135_a.func_147359_a(new SPacketChat(new TextComponentTranslation("container.isLocked", new Object[] {p_71007_1_.func_145748_c_()}), ChatType.GAME_INFO));
                      this.field_71135_a.func_147359_a(new SPacketSoundEffect(SoundEvents.field_187654_U, SoundCategory.BLOCKS, this.field_70165_t, this.field_70163_u, this.field_70161_v, 1.0F, 1.0F));
@@ -691,7 +694,7 @@
              }
  
              this.func_71117_bO();
-@@ -881,25 +1162,36 @@
+@@ -881,25 +1164,36 @@
              if (p_71007_1_ instanceof IInteractionObject)
              {
                  this.field_71135_a.func_147359_a(new SPacketOpenWindow(this.field_71139_cq, ((IInteractionObject)p_71007_1_).func_174875_k(), p_71007_1_.func_145748_c_(), p_71007_1_.func_70302_i_()));
@@ -731,7 +734,7 @@
          IInventory iinventory = ((ContainerMerchant)this.field_71070_bA).func_75174_d();
          ITextComponent itextcomponent = p_180472_1_.func_145748_c_();
          this.field_71135_a.func_147359_a(new SPacketOpenWindow(this.field_71139_cq, "minecraft:villager", itextcomponent, iinventory.func_70302_i_()));
-@@ -916,6 +1208,13 @@
+@@ -916,6 +1210,13 @@
  
      public void func_184826_a(AbstractHorse p_184826_1_, IInventory p_184826_2_)
      {
@@ -745,7 +748,7 @@
          if (this.field_71070_bA != this.field_71069_bz)
          {
              this.func_71053_j();
-@@ -923,7 +1222,8 @@
+@@ -923,7 +1224,8 @@
  
          this.func_71117_bO();
          this.field_71135_a.func_147359_a(new SPacketOpenWindow(this.field_71139_cq, "EntityHorse", p_184826_2_.func_145748_c_(), p_184826_2_.func_70302_i_(), p_184826_1_.func_145782_y()));
@@ -755,7 +758,7 @@
          this.field_71070_bA.field_75152_c = this.field_71139_cq;
          this.field_71070_bA.func_75132_a(this);
      }
-@@ -971,6 +1271,12 @@
+@@ -971,6 +1273,12 @@
      {
          this.field_71135_a.func_147359_a(new SPacketWindowItems(p_71110_1_.field_75152_c, p_71110_2_));
          this.field_71135_a.func_147359_a(new SPacketSetSlot(-1, -1, this.field_71071_by.func_70445_o()));
@@ -768,7 +771,7 @@
      }
  
      public void func_71112_a(Container p_71112_1_, int p_71112_2_, int p_71112_3_)
-@@ -988,6 +1294,7 @@
+@@ -988,6 +1296,7 @@
  
      public void func_71053_j()
      {
@@ -776,7 +779,7 @@
          this.field_71135_a.func_147359_a(new SPacketCloseWindow(this.field_71070_bA.field_75152_c));
          this.func_71128_l();
      }
-@@ -1003,6 +1310,7 @@
+@@ -1003,6 +1312,7 @@
      public void func_71128_l()
      {
          this.field_71070_bA.func_75134_a(this);
@@ -784,7 +787,7 @@
          this.field_71070_bA = this.field_71069_bz;
      }
  
-@@ -1062,6 +1370,10 @@
+@@ -1062,6 +1372,10 @@
  
          for (ResourceLocation resourcelocation : p_193102_1_)
          {
@@ -795,7 +798,7 @@
              list.add(CraftingManager.func_193373_a(resourcelocation));
          }
  
-@@ -1092,8 +1404,16 @@
+@@ -1092,8 +1406,16 @@
      public void func_71118_n()
      {
          this.field_71149_ch = -1.0E8F;
@@ -812,7 +815,7 @@
      public void func_146105_b(ITextComponent p_146105_1_, boolean p_146105_2_)
      {
          this.field_71135_a.func_147359_a(new SPacketChat(p_146105_1_, p_146105_2_ ? ChatType.GAME_INFO : ChatType.CHAT));
-@@ -1138,12 +1458,29 @@
+@@ -1138,12 +1460,29 @@
          this.field_71144_ck = -1;
          this.field_71149_ch = -1.0F;
          this.field_71146_ci = -1;
@@ -843,7 +846,7 @@
      }
  
      protected void func_70670_a(PotionEffect p_70670_1_)
-@@ -1211,6 +1548,18 @@
+@@ -1211,6 +1550,18 @@
  
      public void func_71033_a(GameType p_71033_1_)
      {
@@ -862,7 +865,7 @@
          this.field_71134_c.func_73076_a(p_71033_1_);
          this.field_71135_a.func_147359_a(new SPacketChangeGameState(3, (float)p_71033_1_.func_77148_a()));
  
-@@ -1245,34 +1594,32 @@
+@@ -1245,34 +1596,32 @@
  
      public boolean func_70003_b(int p_70003_1_, String p_70003_2_)
      {
@@ -918,7 +921,7 @@
      }
  
      public String func_71114_r()
-@@ -1285,6 +1632,17 @@
+@@ -1285,6 +1634,17 @@
  
      public void func_147100_a(CPacketClientSettings p_147100_1_)
      {
@@ -936,7 +939,7 @@
          this.field_71148_cg = p_147100_1_.func_149524_c();
          this.field_71143_cn = p_147100_1_.func_149523_e();
          this.field_71140_co = p_147100_1_.func_149520_f();
-@@ -1292,7 +1650,7 @@
+@@ -1292,7 +1652,7 @@
          this.func_184212_Q().func_187227_b(field_184828_bq, Byte.valueOf((byte)(p_147100_1_.func_186991_f() == EnumHandSide.LEFT ? 0 : 1)));
      }
  
@@ -945,7 +948,7 @@
      {
          return this.field_71143_cn;
      }
-@@ -1367,7 +1725,7 @@
+@@ -1367,7 +1727,7 @@
          if (entity != this.field_175401_bS)
          {
              this.field_71135_a.func_147359_a(new SPacketCamera(this.field_175401_bS));
@@ -954,7 +957,7 @@
          }
      }
  
-@@ -1399,7 +1757,8 @@
+@@ -1399,7 +1759,8 @@
      @Nullable
      public ITextComponent func_175396_E()
      {
@@ -964,7 +967,7 @@
      }
  
      public void func_184609_a(EnumHand p_184609_1_)
-@@ -1420,13 +1779,20 @@
+@@ -1420,13 +1781,20 @@
  
      public void func_184847_M()
      {
@@ -988,7 +991,7 @@
      }
  
      public PlayerAdvancements func_192039_O()
-@@ -1439,4 +1805,145 @@
+@@ -1439,4 +1807,145 @@
      {
          return this.field_193110_cw;
      }

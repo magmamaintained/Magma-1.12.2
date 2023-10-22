@@ -32,15 +32,15 @@
      private boolean field_188415_h;
  
      @Nullable
-@@ -78,14 +82,14 @@
+@@ -78,6 +82,7 @@
          {
              if (p_76394_1_.func_110143_aJ() < p_76394_1_.func_110138_aP())
              {
--                p_76394_1_.func_70691_i(1.0F);
-+                p_76394_1_.heal(1.0F, RegainReason.MAGIC_REGEN);
++                p_76394_1_.prepareHeal(RegainReason.MAGIC_REGEN);
+                 p_76394_1_.func_70691_i(1.0F);
              }
          }
-         else if (this == MobEffects.field_76436_u)
+@@ -85,7 +90,7 @@
          {
              if (p_76394_1_.func_110143_aJ() > 1.0F)
              {
@@ -49,7 +49,7 @@
              }
          }
          else if (this == MobEffects.field_82731_v)
-@@ -100,7 +104,19 @@
+@@ -100,7 +105,19 @@
          {
              if (!p_76394_1_.field_70170_p.field_72995_K)
              {
@@ -70,16 +70,15 @@
              }
          }
          else if ((this != MobEffects.field_76432_h || p_76394_1_.func_70662_br()) && (this != MobEffects.field_76433_i || !p_76394_1_.func_70662_br()))
-@@ -112,7 +128,7 @@
+@@ -112,6 +129,7 @@
          }
          else
          {
--            p_76394_1_.func_70691_i((float)Math.max(4 << p_76394_2_, 0));
-+            p_76394_1_.heal((float)Math.max(4 << p_76394_2_, 0), RegainReason.MAGIC);
++            p_76394_1_.prepareHeal(RegainReason.MAGIC);
+             p_76394_1_.func_70691_i((float)Math.max(4 << p_76394_2_, 0));
          }
      }
- 
-@@ -222,7 +238,6 @@
+@@ -222,7 +240,6 @@
          return this.field_76417_J;
      }
  
@@ -87,7 +86,7 @@
      public boolean func_76398_f()
      {
          return this.field_76418_K;
-@@ -293,7 +308,85 @@
+@@ -293,7 +310,85 @@
          return p_111183_2_.func_111164_d() * (double)(p_111183_1_ + 1);
      }
  
