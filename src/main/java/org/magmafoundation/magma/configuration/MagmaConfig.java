@@ -24,11 +24,8 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 import net.minecraft.server.MinecraftServer;
 import org.apache.commons.io.FileUtils;
@@ -89,6 +86,8 @@ public class MagmaConfig extends ConfigBase {
             "Instructs the server put a maximum value on experience orbs, preventing them all from merging down into 1 single orb.");
     public final BooleanValue enableAutoUnloadingDimensions = new BooleanValue(this, "auto-unload-dimensions", true,
             "Automatically unload dimensions that are not being used");
+    public final BooleanValue hideDimensionLoadUnloadLogs = new BooleanValue(this, "hide-dimension-load-unload", false,
+            "Hides dimension load/unload messages from normal logs, by changing their Log-Level to Trace");
     public List<Integer> autoUnloadDimensionsWhitelist = Lists.newArrayList(13371337);
     public final BooleanValue respawnInOtherDim = new BooleanValue(this, "respawn-in-other-dim", true, "Allows players to respawn in other dimensions");
 
