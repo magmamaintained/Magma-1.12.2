@@ -51,16 +51,15 @@
              }
  
              if (entity != null && !(entity instanceof EntityPlayer) && !(entity instanceof EntityArrow))
-@@ -395,7 +414,7 @@
+@@ -395,6 +414,7 @@
                              itemstack.func_190918_g(1);
                          }
  
--                        this.func_70691_i((float)itemfood.func_150905_g(itemstack));
-+                        this.heal((float)itemfood.func_150905_g(itemstack), org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason.EATING);
++                        this.prepareHeal(org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason.EATING);
+                         this.func_70691_i((float)itemfood.func_150905_g(itemstack));
                          return true;
                      }
-                 }
-@@ -422,7 +441,7 @@
+@@ -422,7 +442,7 @@
                  this.field_70911_d.func_75270_a(!this.func_70906_o());
                  this.field_70703_bu = false;
                  this.field_70699_by.func_75499_g();
@@ -69,7 +68,7 @@
              }
          }
          else if (itemstack.func_77973_b() == Items.field_151103_aS && !this.func_70919_bu())
-@@ -434,13 +453,16 @@
+@@ -434,13 +454,16 @@
  
              if (!this.field_70170_p.field_72995_K)
              {
