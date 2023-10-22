@@ -197,7 +197,7 @@ public class DimensionManager {
                 FMLCommonHandler.instance().getMinecraftServerInstance().worldServerList.add(world);
             }
             server.worldTickTimes.put(id, new long[100]);
-            if(MagmaConfig.instance.hideDimensionLoadUnloadLogs.getValues()) FMLLog.log.info("Loading dimension {} ({}) ({})", id, world.getWorldInfo().getWorldName(), world.getMinecraftServer());
+            if(!MagmaConfig.instance.hideDimensionLoadUnloadLogs.getValues()) FMLLog.log.info("Loading dimension {} ({}) ({})", id, world.getWorldInfo().getWorldName(), world.getMinecraftServer());
             else FMLLog.log.trace("Loading dimension {} ({}) ({})", id, world.getWorldInfo().getWorldName(), world.getMinecraftServer());
         } else {
             if (MagmaConfig.instance.enableAutoUnloadingDimensions.getValues()) { //Magma - Only unload dimensions if auto unloading is enabled
@@ -210,7 +210,7 @@ public class DimensionManager {
                     FMLCommonHandler.instance().getMinecraftServerInstance().worldServerList.remove(getWorld(id)); // Magma - remove world from our new world arraylist
                     worlds.remove(id);
                     server.worldTickTimes.remove(id);
-                    if(MagmaConfig.instance.hideDimensionLoadUnloadLogs.getValues()) FMLLog.log.info("Unloading dimension {}", id);
+                    if(!MagmaConfig.instance.hideDimensionLoadUnloadLogs.getValues()) FMLLog.log.info("Unloading dimension {}", id);
                     else FMLLog.log.trace("Unloading dimension {}", id);
                 } //Magma - End
             } // Magma - end
