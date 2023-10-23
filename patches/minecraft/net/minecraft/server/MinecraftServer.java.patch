@@ -1065,7 +1065,7 @@
          {
              this.field_71304_b.func_76320_a("save");
              this.field_71318_t.func_72389_g();
-@@ -655,187 +824,225 @@
+@@ -655,187 +824,228 @@
          }
  
          this.field_71304_b.func_76320_a("tallying");
@@ -1125,7 +1125,10 @@
 +        // Run tasks that are waiting on processing
 +        MinecraftTimings.processQueueTimer.startTiming(); // Paper
 +        while (!processQueue.isEmpty()) {
-+            processQueue.remove().run();
++            Runnable runnable = processQueue.remove();
++            if (runnable != null) {
++                runnable.run();
++            }
 +        }
 +        MinecraftTimings.processQueueTimer.stopTiming(); // Paper
  
@@ -1390,7 +1393,7 @@
                  }
              });
          }
-@@ -843,145 +1050,115 @@
+@@ -843,145 +1053,115 @@
          return p_71230_1_;
      }
  
@@ -1580,7 +1583,7 @@
                      worldserver1.func_72912_H().func_176144_a(p_147139_1_);
                      worldserver1.func_72891_a(this.func_71193_K(), this.field_71324_y);
                  }
-@@ -989,80 +1166,75 @@
+@@ -989,80 +1169,75 @@
          }
      }
  
@@ -1690,7 +1693,7 @@
                      ++l;
                  }
              }
-@@ -1071,228 +1243,193 @@
+@@ -1071,228 +1246,193 @@
          p_70000_1_.func_152768_a("worlds", Integer.valueOf(l));
      }
  
@@ -1973,7 +1976,7 @@
                      return entity;
                  }
              }
-@@ -1301,301 +1438,254 @@
+@@ -1301,301 +1441,254 @@
          return null;
      }
  
