@@ -320,7 +320,7 @@
      protected boolean func_152368_aE() throws IOException
      {
          boolean flag = false;
-@@ -673,13 +757,83 @@
+@@ -673,13 +757,80 @@
  
      public String func_71258_A()
      {
@@ -351,6 +351,7 @@
 +        // CraftBukkit end
      }
  
++    // CraftBukkit start - fire RemoteServerCommandEvent
      public String func_71252_i(String p_71252_1_)
      {
 -        this.field_184115_n.func_70007_b();
@@ -382,18 +383,14 @@
 +                }
 +            };
 +            co.aikar.timings.Timings.generateReport(new co.aikar.timings.TimingsReportListener(sender, waitable));
-+            waitable = null;
++            timingsQueue.add(waitable);
 +        }
-+
-+        processQueue.add(waitable);
-+
 +        // Paper end
++
++        processQueue.add(waitable); // Magma
++
 +        try {
-+            if (waitable == null) {
-+                return "";
-+            } else {
-+                return waitable.get();
-+            }
++            return waitable.get();
 +        } catch (java.util.concurrent.ExecutionException e) {
 +            throw new RuntimeException("Exception processing rcon command " + p_71252_1_, e.getCause());
 +        } catch (InterruptedException e) {

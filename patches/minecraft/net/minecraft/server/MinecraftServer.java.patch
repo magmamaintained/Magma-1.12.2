@@ -182,7 +182,7 @@
      private String field_71287_L;
      private boolean field_71288_M;
      private boolean field_71289_N;
-@@ -143,164 +169,233 @@
+@@ -143,164 +169,234 @@
      private final GameProfileRepository field_152365_W;
      private final PlayerProfileCache field_152366_X;
      private long field_147142_T;
@@ -202,6 +202,7 @@
 +    public static int currentTick = (int) (System.currentTimeMillis() / 50);
 +    public Thread primaryThread;
 +    public Queue<Runnable> processQueue = new java.util.concurrent.ConcurrentLinkedQueue<Runnable>();
++    public Queue<Runnable> timingsQueue = new java.util.concurrent.ConcurrentLinkedQueue<Runnable>(); // Magma
 +    public int autosavePeriod;
 +    // CraftBukkit end
 +    // Spigot start
@@ -510,7 +511,7 @@
          int i = 16;
          int j = 4;
          int k = 192;
-@@ -308,45 +403,43 @@
+@@ -308,45 +404,43 @@
          int i1 = 0;
          this.func_71192_d("menu.generatingTerrain");
          int j1 = 0;
@@ -580,7 +581,7 @@
          }
      }
  
-@@ -364,264 +457,340 @@
+@@ -364,264 +458,340 @@
  
      public abstract boolean func_183002_r();
  
@@ -1034,7 +1035,7 @@
              this.field_71295_T = false;
              this.field_71304_b.field_76327_a = true;
              this.field_71304_b.func_76317_a();
-@@ -630,23 +799,23 @@
+@@ -630,23 +800,23 @@
          this.field_71304_b.func_76320_a("root");
          this.func_71190_q();
  
@@ -1065,7 +1066,7 @@
          {
              this.field_71304_b.func_76320_a("save");
              this.field_71318_t.func_72389_g();
-@@ -655,187 +824,228 @@
+@@ -655,187 +825,233 @@
          }
  
          this.field_71304_b.func_76320_a("tallying");
@@ -1125,10 +1126,15 @@
 +        // Run tasks that are waiting on processing
 +        MinecraftTimings.processQueueTimer.startTiming(); // Paper
 +        while (!processQueue.isEmpty()) {
++            // Magma start
 +            Runnable runnable = processQueue.remove();
-+            if (runnable != null) {
++            if (timingsQueue.contains(runnable)) {
++                processQueue.remove(runnable);
++                timingsQueue.remove(runnable);
++            } else {
 +                runnable.run();
 +            }
++            // Magma end
 +        }
 +        MinecraftTimings.processQueueTimer.stopTiming(); // Paper
  
@@ -1393,7 +1399,7 @@
                  }
              });
          }
-@@ -843,145 +1053,115 @@
+@@ -843,145 +1059,115 @@
          return p_71230_1_;
      }
  
@@ -1583,7 +1589,7 @@
                      worldserver1.func_72912_H().func_176144_a(p_147139_1_);
                      worldserver1.func_72891_a(this.func_71193_K(), this.field_71324_y);
                  }
-@@ -989,80 +1169,75 @@
+@@ -989,80 +1175,75 @@
          }
      }
  
@@ -1693,7 +1699,7 @@
                      ++l;
                  }
              }
-@@ -1071,228 +1246,193 @@
+@@ -1071,228 +1252,193 @@
          p_70000_1_.func_152768_a("worlds", Integer.valueOf(l));
      }
  
@@ -1976,7 +1982,7 @@
                      return entity;
                  }
              }
-@@ -1301,301 +1441,254 @@
+@@ -1301,301 +1447,254 @@
          return null;
      }
  
