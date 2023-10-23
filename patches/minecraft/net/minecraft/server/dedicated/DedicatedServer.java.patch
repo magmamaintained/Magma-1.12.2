@@ -387,7 +387,7 @@
 +        }
 +        // Paper end
 +
-+        processQueue.add(waitable); // Magma
++        processQueue.add(waitable);
 +
 +        try {
 +            return waitable.get();
