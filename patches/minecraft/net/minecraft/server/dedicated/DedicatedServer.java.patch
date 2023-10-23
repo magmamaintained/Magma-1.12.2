@@ -320,7 +320,7 @@
      protected boolean func_152368_aE() throws IOException
      {
          boolean flag = false;
-@@ -673,13 +757,78 @@
+@@ -673,13 +757,80 @@
  
      public String func_71258_A()
      {
@@ -351,9 +351,8 @@
 +        // CraftBukkit end
      }
  
--    public String func_71252_i(String p_71252_1_)
 +    // CraftBukkit start - fire RemoteServerCommandEvent
-+    public String func_71252_i(final String p_71252_1_)
+     public String func_71252_i(String p_71252_1_)
      {
 -        this.field_184115_n.func_70007_b();
 -        this.field_71321_q.func_71556_a(this.field_184115_n, p_71252_1_);
@@ -384,10 +383,12 @@
 +                }
 +            };
 +            co.aikar.timings.Timings.generateReport(new co.aikar.timings.TimingsReportListener(sender, waitable));
-+        } else {
-+            processQueue.add(waitable);
++            timingsQueue.add(waitable);
 +        }
 +        // Paper end
++
++        processQueue.add(waitable);
++
 +        try {
 +            return waitable.get();
 +        } catch (java.util.concurrent.ExecutionException e) {
@@ -396,8 +397,8 @@
 +            Thread.currentThread().interrupt(); // Maintain interrupted state
 +            throw new RuntimeException("Interrupted processing rcon command " + p_71252_1_, e);
 +        }
++
      }
-+    // CraftBukkit end
 +
 +    @Override
 +    public PropertyManager getPropertyManager() {
