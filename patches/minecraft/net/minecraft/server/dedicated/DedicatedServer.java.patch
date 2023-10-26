@@ -383,14 +383,14 @@
 +                }
 +            };
 +            co.aikar.timings.Timings.generateReport(new co.aikar.timings.TimingsReportListener(sender, waitable));
-+            timingsQueue.add(waitable);
++            waitable = null;
 +        }
 +        // Paper end
 +
 +        processQueue.add(waitable);
 +
 +        try {
-+            return waitable.get();
++            return waitable == null ? "" : waitable.get();
 +        } catch (java.util.concurrent.ExecutionException e) {
 +            throw new RuntimeException("Exception processing rcon command " + p_71252_1_, e.getCause());
 +        } catch (InterruptedException e) {
