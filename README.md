@@ -3,10 +3,7 @@
 
 [![Forge](https://img.shields.io/badge/Minecraft%20Forge-1.12.2%20--%202860-orange.svg?style=flat)](https://files.minecraftforge.net/net/minecraftforge/forge/index_1.12.2.html)
 [![Spigot](https://img.shields.io/badge/Paper/Spigot-1.12.2-yellow.svg)](https://github.com/PaperMC/Paper/tree/ver/1.12.2)
-![TeamCity build status](https://teamcity.magmafoundation.org/app/rest/builds/buildType:id:MagmaFoundation_Magma_Build/statusIcon.svg)
-[![Discord](https://img.shields.io/discord/612695539729039411.svg?logo=discord&logoWidth=18&colorB=7289DA)](https://discord.gg/magma)
-
-<a href="https://bstats.org/plugin/server-implementation/Magma/17219"> <img src="https://bstats.org/signatures/server-implementation/Magma.svg" alt="Stats" width="800"> </a>
+[![](https://img.shields.io/discord/1175785262475923556.svg?logo=discord&logoWidth=18&colorB=7289DA)](https://discord.gg/STZjCzRZn9)
 </div>
 
 ## ❓ About 
@@ -23,7 +20,7 @@ We hope to eliminate all issues with craftbukkit forge servers. In the end, we e
 </details>
 
 ## ☕️ Java 8
-Magma for 1.12 <b>requires Java 8</b>. Java 9 or higher do <b>not</b> work due to Forge 1.12.
+Magma for 1.12.2 <b>requires Java 8</b>. Java 9 or higher do <b>not</b> work due to Forge 1.12.2.
 
 If you need a higher version of Java for other applications, you can install both versions and use `"<path to java.exe>" -jar magma.jar` instead of `java -jar magma.jar`.
 
@@ -35,12 +32,15 @@ If you want to use Magma in a BungeeCord network, we recommend to use [Waterfall
 
 In order to use Magma with BungeeCord, you have to enable `forge-support` in the BungeeCord config, set `online-mode` to false in server.properties and `bungeecord` to true in spigot.yml.
 
-## 🧪 Magma for 1.16+
+## 🧪 Other versions
 
 Magma for Minecraft 1.16 and above can be found in their own repositories. 
 
-- Click [here](https://git.magmafoundation.org/magmafoundation/Magma-1-16-x) to visit the 1.16 repository.
-- Click [here](https://git.magmafoundation.org/magmafoundation/Magma-1-18-x) to visit the 1.18 repository.
+
+- For 1.20.2 use [Ketting](https://github.com/kettingpowered)
+- For 1.20.1 [here](https://github.com/magmamaintained/Magma-1.20.1)
+- For 1.19.3 [here](https://github.com/magmamaintained/Magma-1.19.3)
+- For 1.18.2 [here](https://github.com/magmamaintained/Magma-1.18.2)
 
 ## 🪣 Deployment
 
@@ -88,14 +88,6 @@ Please read the [CONTRIBUTING.md](https://git.magmafoundation.org/magmafoundatio
 
 ## 💬 Chat
 
-You are welcome to visit Magma's Discord server [here](https://discord.gg/Magma) (recommended).
+You are welcome to visit Magma's Discord server [here](https://discord.gg/STZjCzRZn9) (recommended).
 
-You could also go to Magma's subreddit [here](https://www.reddit.com/r/Magma).
-
-## 👥 Partners
-<a href="https://craftycontrol.com/"><img src="https://i.imgur.com/243oDOX.png" width="100" height="100"></a>
-
-### YourKit
-![YourKit-Logo](https://www.yourkit.com/images/yklogo.png)
-
-[YourKit](http://www.yourkit.com/), makers of the outstanding java profiler, support open source projects of all kinds with their full featured [Java](https://www.yourkit.com/java/profiler/index.jsp) and [.NET](https://www.yourkit.com/.net/profiler/index.jsp) application profilers.
+You could also go to Magma's subreddit [here](https://discord.gg/STZjCzRZn9).
