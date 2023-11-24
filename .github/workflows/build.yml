@@ -25,6 +25,11 @@ jobs:
       - name: Setup gradle
         run: chmod +x ./gradlew
 
+      - name: Setup
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: setup
+
       - name: Build
         uses: gradle/gradle-build-action@v2
         with:

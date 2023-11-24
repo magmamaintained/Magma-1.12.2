@@ -46,7 +46,7 @@ Magma for Minecraft 1.16 and above can be found in their own repositories.
 
 ### Installation
 
-1. Download the recommended builds from the [**Releases** section](https://git.magmafoundation.org/magmafoundation/Magma/releases)
+1. Download the recommended builds from the [**Releases** section](https://github.com/magmamaintained/Magma-1.12.2/releases)
 2. Make a new directory(folder) for the server
 3. Move the jar that you downloaded into the new directory
 4. Run the jar with your command prompt or terminal, going to your directory and entering `java -jar Magma-[version]-server.jar`. Change [version] to your Magma version number.
@@ -55,7 +55,7 @@ Magma for Minecraft 1.16 and above can be found in their own repositories.
 
 - Clone the Project
   - You can use Git GUI (like GitHub Desktop/GitKraken) or clone using the terminal using:
-    - `git clone https://git.magmafoundation.org/magmafoundation/Magma`
+    - `git clone https://github.com/magmamaintained/Magma-1.12.2.git`
   - Next, clone the submodules using:
     - `git submodule update --init --recursive`
 - Building
@@ -64,21 +64,6 @@ Magma for Minecraft 1.16 and above can be found in their own repositories.
   - Now go and get a drink this may take some time
   - Navigate to `build/distributions` directory of the compiled source code
   - Copy the Jar to a new server directory (see Installation) or run `./gradlew launchServer`
-
-### Plugin Development
-
-- Clone the Project
-  - You can use Git GUI (like GitHub Desktop/GitKraken) or clone using the terminal using:
-    - `git clone https://git.magmafoundation.org/magmafoundation/Magma`
-  - Next, clone the submodules using:
-    - `git submodule update --init --recursive`
-- Building Jar
-  - First you want to run the plugin gen command
-    - `./gradlew genPluginJar`
-  - Now go and get a drink this may take some time
-  - Navigate to `build/distributions` directory
-  - You should have a jar like `Magma-xxxxxx-plugin.jar`
-  - Now create a plugin with that jar.
 
 ## ⚙️ Contributing
 
