@@ -51,10 +51,12 @@ public class MagmaUpdater {
     private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private String newSha;
     private String currentSha;
+    private String versionURL = "https://api.github.com/repos/magmamaintained/Magma-1.12.2/releases/latest";
+    private String assetURL;
 
     public boolean versionChecker() {
         try {
-            URL url = new URL("https://api.magmafoundation.org/api/v2/1.12/latest");
+            URL url = new URL(versionURL);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.addRequestProperty("User-Agent", "Magma");
@@ -62,18 +64,15 @@ public class MagmaUpdater {
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             JsonObject root = gson.fromJson(reader, JsonObject.class);
 
-            Date created_at = Date.from(Instant.parse(root.get("created_at").getAsString()));
-            String date = new SimpleDateFormat("dd-MM-yyyy").format(created_at);
-            String time = new SimpleDateFormat("H:mm a").format(created_at);
-
             newSha = root.get("tag_name").getAsString();
+            assetURL = root.get("assets").getAsJsonArray().get(0).getAsJsonObject().get("browser_download_url").getAsString();
             currentSha = Magma.class.getPackage().getImplementationVersion().split("-")[1];
 
             if (currentSha.equals(newSha)) {
                 System.out.printf("[Magma] No update found, latest version: (%s) current version: (%s)%n", currentSha, newSha);
                 return false;
             } else {
-                System.out.printf("[Magma] The latest Magma version is (%s) but you have (%s). The latest version was built on %s at %s.%n", newSha, currentSha, date, time);
+                System.out.printf("[Magma] The latest Magma version is (%s) but you have (%s).", newSha, currentSha);
                 return true;
             }
         } catch (IOException e) {
@@ -84,12 +83,11 @@ public class MagmaUpdater {
     }
 
     public void downloadJar() {
-        String url = "https://api.magmafoundation.org/api/v2/1.12/latest/" + newSha + "/download";
         try {
             Path path = Paths.get(MagmaUpdater.class.getProtectionDomain().getCodeSource().getLocation().toURI());
             System.out.println("[Magma] Updating Magma Jar ...");
-            System.out.println("[Magma] Downloading " + url + " ...");
-            URL website = new URL(url);
+            System.out.println("[Magma] Downloading " + assetURL + " ...");
+            URL website = new URL(assetURL);
             HttpURLConnection connection = (HttpURLConnection) website.openConnection();
             connection.setRequestMethod("GET");
             connection.addRequestProperty("User-Agent", "Magma");

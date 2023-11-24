@@ -71,7 +71,7 @@ ext {
             repo: 'https://maven.minecraftforge.net/',
             args: ['--input', '{input}', '--output', '{output}']
     ]
-    MAGMA_VERSION = "1.12.2-" + versioning.info.commit.substring(0, 8) // Use 8 characters for the commit hash
+    MAGMA_VERSION = "1.12.2-" + versioning.info.commit.substring(0, 7) // Use 7 characters for the commit hash
 
 }
 
@@ -905,74 +905,6 @@ project(':forge') {
         }
         sourceSets.test.java.srcDirs.each { extractMappedNew.addTarget it }
     }
-
-
-    publishing {
-        publications {
-            mavenJava(MavenPublication) {
-                artifact file("build/libs/Magma-${project.version}-server.jar").canonicalPath
-
-                pom {
-                    name = 'Magma'
-                    groupId = 'org.magmafoundation'
-                    artifactId = 'Magma'
-                    description = 'Minecraft Forge Hybrid server implementing the Spigot/Bukkit API (Cauldron for 1.12)'
-                    url = 'https://git.magmafoundation.org/magmafoundation/Magma'
-                    version = MAGMA_VERSION
-
-                    scm {
-                        url = 'https://git.magmafoundation.org/magmafoundation/Magma'
-                        connection = 'scm:git:git://git.magmafoundation.org/magmafoundation/Magma.git'
-                        developerConnection = 'scm:git:git@git.magmafoundation.org:2224/magmafoundation/Magma.git'
-                    }
-
-                    issueManagement {
-                        system = 'gitlab'
-                        url = 'https://git.magmafoundation.org/magmafoundation/Magma/issues'
-                    }
-
-                    licenses {
-                        license {
-                            name = 'LGPL 3.0'
-                            url = 'https://git.magmafoundation.org/magmafoundation/Magma/-/raw/master/LICENSE'
-                            distribution = 'repo'
-                        }
-                    }
-                    developers {
-                        developer {
-                            id = 'Hexeption'
-                            name = 'Hexeption'
-                            email = 'admin@hexeption.co.uk'
-                        }
-                    }
-                }
-            }
-        }
-        repositories {
-            if (System.getenv("CI_JOB_TOKEN") != null) {
-                maven {
-                    // gitlab repo
-                    name = 'MagmaFoundation'
-                    url = 'https://git.magmafoundation.org/api/v4/projects/7/packages/maven/'
-                    credentials(HttpHeaderCredentials) {
-                        name = "Private-Token"
-                        value = System.getenv("CI_JOB_TOKEN")
-                    }
-                    authentication {
-                        header(HttpHeaderAuthentication)
-                    }
-                }
-            } else {
-                maven {
-                    name = 'myRepo'
-                    url = "file://${buildDir}/repo"
-                }
-            }
-
-        }
-
-    }
-
 }
 
 
