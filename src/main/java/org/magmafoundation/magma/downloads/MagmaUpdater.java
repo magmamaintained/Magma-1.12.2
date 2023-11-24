@@ -72,7 +72,7 @@ public class MagmaUpdater {
                 System.out.printf("[Magma] No update found, latest version: (%s) current version: (%s)%n", currentSha, newSha);
                 return false;
             } else {
-                System.out.printf("[Magma] The latest Magma version is (%s) but you have (%s).", newSha, currentSha);
+                System.out.printf("[Magma] The latest Magma version is (%s) but you have (%s).%n", newSha, currentSha);
                 return true;
             }
         } catch (IOException e) {
