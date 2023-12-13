@@ -1,10 +1,9 @@
 --- ../src-base/minecraft/net/minecraft/server/MinecraftServer.java
 +++ ../src-work/minecraft/net/minecraft/server/MinecraftServer.java
-@@ -1,7 +1,11 @@
+@@ -1,7 +1,10 @@
  package net.minecraft.server;
  
 +import co.aikar.timings.MinecraftTimings;
-+import co.aikar.timings.Timing;
 +import co.aikar.timings.TimingsManager;
 +import com.destroystokyo.paper.utils.CachedSizeConcurrentLinkedQueue;
  import com.google.common.collect.Lists;
@@ -13,7 +12,7 @@
  import com.google.common.util.concurrent.Futures;
  import com.google.common.util.concurrent.ListenableFuture;
  import com.google.common.util.concurrent.ListenableFutureTask;
-@@ -15,97 +19,119 @@
+@@ -15,27 +18,20 @@
  import io.netty.handler.codec.base64.Base64;
  import java.awt.GraphicsEnvironment;
  import java.awt.image.BufferedImage;
@@ -44,25 +43,8 @@
 +import joptsimple.OptionSet;
  import net.minecraft.advancements.AdvancementManager;
  import net.minecraft.advancements.FunctionManager;
-+import net.minecraft.block.Block;
-+import net.minecraft.client.Minecraft;
  import net.minecraft.command.CommandBase;
- import net.minecraft.command.ICommandManager;
- import net.minecraft.command.ICommandSender;
- import net.minecraft.command.ServerCommandManager;
- import net.minecraft.crash.CrashReport;
- import net.minecraft.crash.ICrashReportDetail;
-+import net.minecraft.enchantment.Enchantment;
- import net.minecraft.entity.Entity;
- import net.minecraft.entity.player.EntityPlayer;
- import net.minecraft.entity.player.EntityPlayerMP;
- import net.minecraft.init.Bootstrap;
-+import net.minecraft.item.Item;
- import net.minecraft.network.NetworkSystem;
- import net.minecraft.network.ServerStatusResponse;
- import net.minecraft.network.play.server.SPacketTimeUpdate;
-+import net.minecraft.potion.Potion;
- import net.minecraft.profiler.ISnooperInfo;
+@@ -55,57 +51,62 @@
  import net.minecraft.profiler.Profiler;
  import net.minecraft.profiler.Snooper;
  import net.minecraft.server.dedicated.DedicatedServer;
@@ -74,7 +56,6 @@
 -import net.minecraft.util.ITickable;
 -import net.minecraft.util.ReportedException;
 -import net.minecraft.util.Util;
-+import net.minecraft.tileentity.BannerPattern;
 +import net.minecraft.util.*;
  import net.minecraft.util.datafix.DataFixer;
  import net.minecraft.util.datafix.DataFixesManager;
@@ -100,42 +81,24 @@
  import net.minecraft.world.storage.ISaveHandler;
  import net.minecraft.world.storage.WorldInfo;
 +import net.minecraftforge.common.DimensionManager;
-+import net.minecraftforge.common.util.EnumHelper;
 +import net.minecraftforge.fml.common.FMLCommonHandler;
-+import net.minecraftforge.fml.common.registry.EntityRegistry;
 +import net.minecraftforge.fml.common.registry.ForgeRegistries;
-+import net.minecraftforge.fml.relauncher.ReflectionHelper;
  import net.minecraftforge.fml.relauncher.Side;
  import net.minecraftforge.fml.relauncher.SideOnly;
-+import net.minecraftforge.registries.GameData;
  import org.apache.commons.lang3.Validate;
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
 +import org.bukkit.Bukkit;
-+import org.bukkit.Material;
-+import org.bukkit.Sound;
-+import org.bukkit.World.Environment;
-+import org.bukkit.block.banner.PatternType;
 +import org.bukkit.craftbukkit.v1_12_R1.CraftServer;
 +import org.bukkit.craftbukkit.v1_12_R1.Main;
 +import org.bukkit.craftbukkit.v1_12_R1.chunkio.ChunkIOExecutor;
-+import org.bukkit.craftbukkit.v1_12_R1.enchantments.CraftEnchantment;
-+import org.bukkit.craftbukkit.v1_12_R1.potion.CraftPotionEffectType;
 +import org.bukkit.craftbukkit.v1_12_R1.scoreboard.CraftScoreboardManager;
 +import org.bukkit.craftbukkit.v1_12_R1.util.ServerShutdownThread;
-+import org.bukkit.entity.EntityType;
-+import org.bukkit.potion.PotionEffectType;
-+import org.lwjgl.Sys;
 +import org.magmafoundation.magma.Magma;
-+import org.magmafoundation.magma.Metrics;
-+import org.magmafoundation.magma.Metrics.SimplePie;
-+import org.magmafoundation.magma.api.ServerAPI;
 +import org.magmafoundation.magma.configuration.MagmaConfig;
-+import org.magmafoundation.magma.configuration.value.values.BooleanValue;
-+import org.magmafoundation.magma.entity.CraftCustomEntity;
 +import org.magmafoundation.magma.forge.ForgeInject;
++import org.magmafoundation.magma.metrics.Metrics;
 +import org.magmafoundation.magma.patcher.PatcherManager;
-+import org.spigotmc.CustomTimingsHandler;
 +import org.spigotmc.SlackActivityAccountant;
  
 -public abstract class MinecraftServer implements ICommandSender, Runnable, IThreadListener, ISnooperInfo
@@ -168,7 +131,7 @@
      private PlayerList field_71318_t;
      private boolean field_71317_u = true;
      private boolean field_71316_v;
-@@ -123,11 +149,11 @@
+@@ -123,11 +124,11 @@
      private int field_71280_D;
      private int field_143008_E;
      public final long[] field_71311_j = new long[100];
@@ -182,7 +145,7 @@
      private String field_71287_L;
      private boolean field_71288_M;
      private boolean field_71289_N;
-@@ -143,164 +169,233 @@
+@@ -143,164 +144,233 @@
      private final GameProfileRepository field_152365_W;
      private final PlayerProfileCache field_152366_X;
      private long field_147142_T;
@@ -510,7 +473,7 @@
          int i = 16;
          int j = 4;
          int k = 192;
-@@ -308,45 +403,43 @@
+@@ -308,45 +378,43 @@
          int i1 = 0;
          this.func_71192_d("menu.generatingTerrain");
          int j1 = 0;
@@ -580,7 +543,7 @@
          }
      }
  
-@@ -364,264 +457,340 @@
+@@ -364,264 +432,340 @@
  
      public abstract boolean func_183002_r();
  
@@ -1034,7 +997,7 @@
              this.field_71295_T = false;
              this.field_71304_b.field_76327_a = true;
              this.field_71304_b.func_76317_a();
-@@ -630,23 +799,23 @@
+@@ -630,23 +774,23 @@
          this.field_71304_b.func_76320_a("root");
          this.func_71190_q();
  
@@ -1065,7 +1028,7 @@
          {
              this.field_71304_b.func_76320_a("save");
              this.field_71318_t.func_72389_g();
-@@ -655,187 +824,231 @@
+@@ -655,187 +799,231 @@
          }
  
          this.field_71304_b.func_76320_a("tallying");
@@ -1396,7 +1359,7 @@
                  }
              });
          }
-@@ -843,145 +1056,115 @@
+@@ -843,145 +1031,115 @@
          return p_71230_1_;
      }
  
@@ -1586,7 +1549,7 @@
                      worldserver1.func_72912_H().func_176144_a(p_147139_1_);
                      worldserver1.func_72891_a(this.func_71193_K(), this.field_71324_y);
                  }
-@@ -989,80 +1172,75 @@
+@@ -989,80 +1147,75 @@
          }
      }
  
@@ -1696,7 +1659,7 @@
                      ++l;
                  }
              }
-@@ -1071,228 +1249,193 @@
+@@ -1071,228 +1224,193 @@
          p_70000_1_.func_152768_a("worlds", Integer.valueOf(l));
      }
  
@@ -1979,7 +1942,7 @@
                      return entity;
                  }
              }
-@@ -1301,301 +1444,254 @@
+@@ -1301,301 +1419,254 @@
          return null;
      }
  

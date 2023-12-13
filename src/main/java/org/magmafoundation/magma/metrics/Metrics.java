@@ -16,8 +16,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.magmafoundation.magma;
+package org.magmafoundation.magma.metrics;
 
+import net.minecraft.server.MinecraftServer;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.Plugin;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.magmafoundation.magma.Magma;
+import org.magmafoundation.magma.api.ServerAPI;
+
+import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -25,13 +35,6 @@ import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.zip.GZIPOutputStream;
-import javax.net.ssl.HttpsURLConnection;
-import net.minecraft.server.MinecraftServer;
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.magmafoundation.magma.api.ServerAPI;
 
 /**
  * bStats collects some data for plugin authors.
@@ -55,7 +58,7 @@ public class Metrics {
     private static String serverUUID;
     // A list with all custom charts
     private final List<CustomChart> charts = new ArrayList<>();
-    private final String pluginName = "Magma";
+    private final String pluginName = "Magma Maintained";
     private final String pluginVersion = Magma.getVersion();
     // Is bStats enabled on this server?
     private boolean enabled;
@@ -82,10 +85,10 @@ public class Metrics {
 
             // Inform the server owners about bStats
             config.options().header(
-                "bStats collects some data for plugin authors like how many servers are using their plugins.\n" +
-                    "To honor their work, you should not disable it.\n" +
-                    "This has nearly no effect on the server performance!\n" +
-                    "Check out https://bStats.org/ to learn more :)"
+                    "bStats collects some data for plugin authors like how many servers are using their plugins.\n" +
+                            "To honor their work, you should not disable it.\n" +
+                            "This has nearly no effect on the server performance!\n" +
+                            "Check out https://bStats.org/ to learn more :)"
             ).copyDefaults(true);
             try {
                 config.save(configFile);
@@ -100,16 +103,39 @@ public class Metrics {
         logSentData = config.getBoolean("logSentData", false);
         logResponseStatusText = config.getBoolean("logResponseStatusText", false);
 
-        addCustomChart(new Metrics.SimplePie("minecraft_version", () -> {
+        addCustomChart(new SimplePie("minecraft_version", () -> {
             String version = Bukkit.getVersion();
             version = version.substring(version.indexOf("MC: ") + 4, version.length() - 1);
             return version;
         }));
-        addCustomChart(new Metrics.SimplePie("number_of_mods", () -> String.valueOf(ServerAPI.getModSize()))); // Report how many mods are running // MAGMA TODO: Add Server API
-        addCustomChart(new Metrics.SingleLineChart("players", () -> Bukkit.getOnlinePlayers().size()));
-        addCustomChart(new Metrics.SimplePie("online_mode", () -> Bukkit.getOnlineMode() ?  "online": "offline"));
-        addCustomChart(new Metrics.SimplePie("server_version", Magma::getVersion));
-        addCustomChart(new Metrics.DrilldownPie("java_version", () -> {
+        addCustomChart(new DrilldownPie("mods_vs_plugins", () -> {
+            Map<String, Map<String, Integer>> map = new HashMap<>();
+
+            Map<String, Integer> modslist = new HashMap<>();
+            String[] mods = ServerAPI.getModList().replace("[", "").replace("]", "").split(", ");
+            for (String x : mods) {
+                if (x.equals("minecraft") || x.equals("forge")) {
+                    continue;
+                }
+                modslist.put(x, 1);
+            }
+
+            Map<String, Integer> pluginlist = new HashMap<>();
+            for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
+                if (plugin.isEnabled()) {
+                    pluginlist.put(plugin.getDescription().getName(), 1);
+                }
+            }
+
+            map.put("mods", modslist);
+            map.put("plugins", pluginlist);
+
+            return map;
+        }));
+        addCustomChart(new SingleLineChart("players", () -> Bukkit.getOnlinePlayers().size()));
+        addCustomChart(new SimplePie("online_mode", () -> Bukkit.getOnlineMode() ?  "online": "offline"));
+        addCustomChart(new SimplePie("server_version", Magma::getVersion));
+        addCustomChart(new DrilldownPie("java_version", () -> {
             Map<String, Map<String, Integer>> map = new HashMap<>();
             Map<String, Integer> entry = new HashMap<>();
             entry.put(System.getProperty("java.version"), 1);
