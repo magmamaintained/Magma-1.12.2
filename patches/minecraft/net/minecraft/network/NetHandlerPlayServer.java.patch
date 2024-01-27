@@ -1396,7 +1396,7 @@
  
                      if (this.field_147367_d.func_71199_h())
                      {
-@@ -1124,17 +1891,21 @@
+@@ -1124,56 +1891,329 @@
      public void func_147356_a(CPacketCloseWindow p_147356_1_)
      {
          PacketThreadUtil.func_180031_a(p_147356_1_, this, this.field_147369_b.func_71121_q());
@@ -1405,258 +1405,280 @@
          this.field_147369_b.func_71128_l();
      }
  
-     public void func_147351_a(CPacketClickWindow p_147351_1_)
-     {
+-    public void func_147351_a(CPacketClickWindow p_147351_1_)
+-    {
++    public InventoryView inventory;
++    public boolean cancelled;
++    public InventoryType.SlotType type;
++    public InventoryClickEvent event;
++    public ClickType click;
++    public InventoryAction action;
++    public void func_147351_a(CPacketClickWindow p_147351_1_) {
          PacketThreadUtil.func_180031_a(p_147351_1_, this, this.field_147369_b.func_71121_q());
 +        if (this.field_147369_b.func_70610_aX()) return;
          this.field_147369_b.func_143004_u();
  
 -        if (this.field_147369_b.field_71070_bA.field_75152_c == p_147351_1_.func_149548_c() && this.field_147369_b.field_71070_bA.func_75129_b(this.field_147369_b))
-+        if (this.field_147369_b.field_71070_bA.field_75152_c == p_147351_1_.func_149548_c() && this.field_147369_b.field_71070_bA.func_75129_b(this.field_147369_b) && this.field_147369_b.field_71070_bA.func_75145_c(this.field_147369_b))
-         {
+-        {
 -            if (this.field_147369_b.func_175149_v())
-+            boolean cancelled = this.field_147369_b.func_175149_v(); // CraftBukkit - see below if
-+            if (false/*this.player.isSpectator()*/)
-             {
-                 NonNullList<ItemStack> nonnulllist = NonNullList.<ItemStack>func_191196_a();
+-            {
+-                NonNullList<ItemStack> nonnulllist = NonNullList.<ItemStack>func_191196_a();
++        if (this.field_147369_b.field_71070_bA.field_75152_c == p_147351_1_.func_149548_c() && this.field_147369_b.field_71070_bA.func_75129_b(this.field_147369_b) && this.field_147369_b.field_71070_bA.func_75145_c(this.field_147369_b)) {
++            cancelled = this.field_147369_b.func_175149_v(); // CraftBukkit - see below if
++            // ItemStack itemstack2 = this.player.openContainer.slotClick(packetIn.getSlotId(), packetIn.getUsedButton(), packetIn.getClickType(), this.player);
  
-@@ -1147,9 +1918,296 @@
+-                for (int i = 0; i < this.field_147369_b.field_71070_bA.field_75151_b.size(); ++i)
+-                {
+-                    nonnulllist.add(((Slot)this.field_147369_b.field_71070_bA.field_75151_b.get(i)).func_75211_c());
+-                }
++            // CraftBukkit start - Call InventoryClickEvent
++            if (p_147351_1_.func_149544_d() < -1 && p_147351_1_.func_149544_d() != -999) {
++                return;
++            }
+ 
+-                this.field_147369_b.func_71110_a(this.field_147369_b.field_71070_bA, nonnulllist);
++            inventory = this.field_147369_b.field_71070_bA.getBukkitView();
++
++            // Magma start
++            if (inventory == null) {
++                inventory = new CraftInventoryView(this.field_147369_b.getBukkitEntity(), MinecraftServer.getServerInstance().server.createInventory(this.field_147369_b.getBukkitEntity(), InventoryType.CHEST), this.field_147369_b.field_71070_bA);
++                this.field_147369_b.field_71070_bA.setBukkitView(inventory);
              }
-             else
-             {
+-            else
+-            {
 -                ItemStack itemstack2 = this.field_147369_b.field_71070_bA.func_184996_a(p_147351_1_.func_149544_d(), p_147351_1_.func_149543_e(), p_147351_1_.func_186993_f(), this.field_147369_b);
-+                // ItemStack itemstack2 = this.player.openContainer.slotClick(packetIn.getSlotId(), packetIn.getUsedButton(), packetIn.getClickType(), this.player);
++            // Magma end
  
 -                if (ItemStack.func_77989_b(p_147351_1_.func_149546_g(), itemstack2))
-+                // CraftBukkit start - Call InventoryClickEvent
-+                if (p_147351_1_.func_149544_d() < -1 && p_147351_1_.func_149544_d() != -999) {
-+                    return;
-+                }
+-                {
+-                    this.field_147369_b.field_71135_a.func_147359_a(new SPacketConfirmTransaction(p_147351_1_.func_149548_c(), p_147351_1_.func_149547_f(), true));
+-                    this.field_147369_b.field_71137_h = true;
+-                    this.field_147369_b.field_71070_bA.func_75142_b();
+-                    this.field_147369_b.func_71113_k();
+-                    this.field_147369_b.field_71137_h = false;
++            type = CraftInventoryView.getSlotType(inventory, p_147351_1_.func_149544_d());
 +
-+                InventoryView inventory = this.field_147369_b.field_71070_bA.getBukkitView();
++            click = ClickType.UNKNOWN;
++            action = InventoryAction.UNKNOWN;
 +
-+                // Magma start
-+                if(inventory == null){
-+                    inventory = new CraftInventoryView(this.field_147369_b.getBukkitEntity(), MinecraftServer.getServerInstance().server.createInventory(this.field_147369_b.getBukkitEntity(), InventoryType.CHEST), this.field_147369_b.field_71070_bA);
-+                    this.field_147369_b.field_71070_bA.setBukkitView(inventory);
-+                }
-+                // Magma end
++            ItemStack itemstack = ItemStack.field_190927_a;
 +
-+                InventoryType.SlotType type = CraftInventoryView.getSlotType(inventory, p_147351_1_.func_149544_d());
-+
-+                InventoryClickEvent event;
-+                ClickType click = ClickType.UNKNOWN;
-+                InventoryAction action = InventoryAction.UNKNOWN;
-+
-+                ItemStack itemstack = ItemStack.field_190927_a;
-+
-+                switch (p_147351_1_.func_186993_f()) {
-+                    case PICKUP:
-+                        if (p_147351_1_.func_149543_e() == 0) {
-+                            click = ClickType.LEFT;
-+                        } else if (p_147351_1_.func_149543_e() == 1) {
-+                            click = ClickType.RIGHT;
-+                        }
-+                        if (p_147351_1_.func_149543_e() == 0 || p_147351_1_.func_149543_e() == 1) {
-+                            action = InventoryAction.NOTHING; // Don't want to repeat ourselves
-+                            if (p_147351_1_.func_149544_d() == -999) {
-+                                if (!field_147369_b.field_71071_by.func_70445_o().func_190926_b()) {
-+                                    action = p_147351_1_.func_149543_e() == 0 ? InventoryAction.DROP_ALL_CURSOR : InventoryAction.DROP_ONE_CURSOR;
-+                                }
-+                            } else if (p_147351_1_.func_149544_d() < 0)  {
-+                                action = InventoryAction.NOTHING;
-+                            } else {
-+                                Slot slot = this.field_147369_b.field_71070_bA.func_75139_a(p_147351_1_.func_149544_d());
-+                                if (slot != null) {
-+                                    ItemStack clickedItem = slot.func_75211_c();
-+                                    ItemStack cursor = field_147369_b.field_71071_by.func_70445_o();
-+                                    if (clickedItem.func_190926_b()) {
-+                                        if (!cursor.func_190926_b()) {
-+                                            action = p_147351_1_.func_149543_e() == 0 ? InventoryAction.PLACE_ALL : InventoryAction.PLACE_ONE;
-+                                        }
-+                                    } else if (slot.func_82869_a(field_147369_b)) {
-+                                        if (cursor.func_190926_b()) {
-+                                            action = p_147351_1_.func_149543_e() == 0 ? InventoryAction.PICKUP_ALL : InventoryAction.PICKUP_HALF;
-+                                        } else if (slot.func_75214_a(cursor)) {
-+                                            if (clickedItem.func_77969_a(cursor) && ItemStack.func_77970_a(clickedItem, cursor)) {
-+                                                int toPlace = p_147351_1_.func_149543_e() == 0 ? cursor.func_190916_E() : 1;
-+                                                toPlace = Math.min(toPlace, clickedItem.func_77976_d() - clickedItem.func_190916_E());
-+                                                toPlace = Math.min(toPlace, slot.field_75224_c.func_70297_j_() - clickedItem.func_190916_E());
-+                                                if (toPlace == 1) {
-+                                                    action = InventoryAction.PLACE_ONE;
-+                                                } else if (toPlace == cursor.func_190916_E()) {
-+                                                    action = InventoryAction.PLACE_ALL;
-+                                                } else if (toPlace < 0) {
-+                                                    action = toPlace != -1 ? InventoryAction.PICKUP_SOME : InventoryAction.PICKUP_ONE; // this happens with oversized stacks
-+                                                } else if (toPlace != 0) {
-+                                                    action = InventoryAction.PLACE_SOME;
-+                                                }
-+                                            } else if (cursor.func_190916_E() <= slot.func_75219_a()) {
-+                                                action = InventoryAction.SWAP_WITH_CURSOR;
++            switch (p_147351_1_.func_186993_f()) {
++                case PICKUP:
++                    if (p_147351_1_.func_149543_e() == 0) {
++                        click = ClickType.LEFT;
++                    } else if (p_147351_1_.func_149543_e() == 1) {
++                        click = ClickType.RIGHT;
++                    }
++                    if (p_147351_1_.func_149543_e() == 0 || p_147351_1_.func_149543_e() == 1) {
++                        action = InventoryAction.NOTHING; // Don't want to repeat ourselves
++                        if (p_147351_1_.func_149544_d() == -999) {
++                            if (!field_147369_b.field_71071_by.func_70445_o().func_190926_b()) {
++                                action = p_147351_1_.func_149543_e() == 0 ? InventoryAction.DROP_ALL_CURSOR : InventoryAction.DROP_ONE_CURSOR;
++                            }
++                        } else if (p_147351_1_.func_149544_d() < 0) {
++                            action = InventoryAction.NOTHING;
++                        } else {
++                            Slot slot = this.field_147369_b.field_71070_bA.func_75139_a(p_147351_1_.func_149544_d());
++                            if (slot != null) {
++                                ItemStack clickedItem = slot.func_75211_c();
++                                ItemStack cursor = field_147369_b.field_71071_by.func_70445_o();
++                                if (clickedItem.func_190926_b()) {
++                                    if (!cursor.func_190926_b()) {
++                                        action = p_147351_1_.func_149543_e() == 0 ? InventoryAction.PLACE_ALL : InventoryAction.PLACE_ONE;
++                                    }
++                                } else if (slot.func_82869_a(field_147369_b)) {
++                                    if (cursor.func_190926_b()) {
++                                        action = p_147351_1_.func_149543_e() == 0 ? InventoryAction.PICKUP_ALL : InventoryAction.PICKUP_HALF;
++                                    } else if (slot.func_75214_a(cursor)) {
++                                        if (clickedItem.func_77969_a(cursor) && ItemStack.func_77970_a(clickedItem, cursor)) {
++                                            int toPlace = p_147351_1_.func_149543_e() == 0 ? cursor.func_190916_E() : 1;
++                                            toPlace = Math.min(toPlace, clickedItem.func_77976_d() - clickedItem.func_190916_E());
++                                            toPlace = Math.min(toPlace, slot.field_75224_c.func_70297_j_() - clickedItem.func_190916_E());
++                                            if (toPlace == 1) {
++                                                action = InventoryAction.PLACE_ONE;
++                                            } else if (toPlace == cursor.func_190916_E()) {
++                                                action = InventoryAction.PLACE_ALL;
++                                            } else if (toPlace < 0) {
++                                                action = toPlace != -1 ? InventoryAction.PICKUP_SOME : InventoryAction.PICKUP_ONE; // this happens with oversized stacks
++                                            } else if (toPlace != 0) {
++                                                action = InventoryAction.PLACE_SOME;
 +                                            }
-+                                        } else if (cursor.func_77973_b() == clickedItem.func_77973_b() && (!cursor.func_77981_g() || cursor.func_77960_j() == clickedItem.func_77960_j()) && ItemStack.func_77970_a(cursor, clickedItem)) {
-+                                            if (clickedItem.func_190916_E() >= 0) {
-+                                                if (clickedItem.func_190916_E() + cursor.func_190916_E() <= cursor.func_77976_d()) {
-+                                                    // As of 1.5, this is result slots only
-+                                                    action = InventoryAction.PICKUP_ALL;
-+                                                }
++                                        } else if (cursor.func_190916_E() <= slot.func_75219_a()) {
++                                            action = InventoryAction.SWAP_WITH_CURSOR;
++                                        }
++                                    } else if (cursor.func_77973_b() == clickedItem.func_77973_b() && (!cursor.func_77981_g() || cursor.func_77960_j() == clickedItem.func_77960_j()) && ItemStack.func_77970_a(cursor, clickedItem)) {
++                                        if (clickedItem.func_190916_E() >= 0) {
++                                            if (clickedItem.func_190916_E() + cursor.func_190916_E() <= cursor.func_77976_d()) {
++                                                // As of 1.5, this is result slots only
++                                                action = InventoryAction.PICKUP_ALL;
 +                                            }
 +                                        }
 +                                    }
 +                                }
 +                            }
 +                        }
-+                        break;
-+                    // TODO check on updates
-+                    case QUICK_MOVE:
-+                        if (p_147351_1_.func_149543_e() == 0) {
-+                            click = ClickType.SHIFT_LEFT;
-+                        } else if (p_147351_1_.func_149543_e() == 1) {
-+                            click = ClickType.SHIFT_RIGHT;
-+                        }
-+                        if (p_147351_1_.func_149543_e() == 0 || p_147351_1_.func_149543_e() == 1) {
-+                            if (p_147351_1_.func_149544_d() < 0) {
-+                                action = InventoryAction.NOTHING;
++                    }
++                    break;
++                // TODO check on updates
++                case QUICK_MOVE:
++                    if (p_147351_1_.func_149543_e() == 0) {
++                        click = ClickType.SHIFT_LEFT;
++                    } else if (p_147351_1_.func_149543_e() == 1) {
++                        click = ClickType.SHIFT_RIGHT;
++                    }
++                    if (p_147351_1_.func_149543_e() == 0 || p_147351_1_.func_149543_e() == 1) {
++                        if (p_147351_1_.func_149544_d() < 0) {
++                            action = InventoryAction.NOTHING;
++                        } else {
++                            Slot slot = this.field_147369_b.field_71070_bA.func_75139_a(p_147351_1_.func_149544_d());
++                            if (slot != null && slot.func_82869_a(this.field_147369_b) && slot.func_75216_d()) {
++                                action = InventoryAction.MOVE_TO_OTHER_INVENTORY;
 +                            } else {
-+                                Slot slot = this.field_147369_b.field_71070_bA.func_75139_a(p_147351_1_.func_149544_d());
-+                                if (slot != null && slot.func_82869_a(this.field_147369_b) && slot.func_75216_d()) {
-+                                    action = InventoryAction.MOVE_TO_OTHER_INVENTORY;
-+                                } else {
-+                                    action = InventoryAction.NOTHING;
-+                                }
++                                action = InventoryAction.NOTHING;
 +                            }
 +                        }
-+                        break;
-+                    case SWAP:
-+                        if (p_147351_1_.func_149543_e() >= 0 && p_147351_1_.func_149543_e() < 9) {
-+                            click = ClickType.NUMBER_KEY;
-+                            Slot clickedSlot = this.field_147369_b.field_71070_bA.func_75139_a(p_147351_1_.func_149544_d());
-+                            if (clickedSlot.func_82869_a(field_147369_b)) {
-+                                ItemStack hotbar = this.field_147369_b.field_71071_by.func_70301_a(p_147351_1_.func_149543_e());
-+                                boolean canCleanSwap = hotbar.func_190926_b() || (clickedSlot.field_75224_c == field_147369_b.field_71071_by && clickedSlot.func_75214_a(hotbar)); // the slot will accept the hotbar item
-+                                if (clickedSlot.func_75216_d()) {
-+                                    if (canCleanSwap) {
-+                                        action = InventoryAction.HOTBAR_SWAP;
-+                                    } else {
-+                                        action = InventoryAction.HOTBAR_MOVE_AND_READD;
-+                                    }
-+                                } else if (!clickedSlot.func_75216_d() && !hotbar.func_190926_b() && clickedSlot.func_75214_a(hotbar)) {
++                    }
++                    break;
++                case SWAP:
++                    if (p_147351_1_.func_149543_e() >= 0 && p_147351_1_.func_149543_e() < 9) {
++                        click = ClickType.NUMBER_KEY;
++                        Slot clickedSlot = this.field_147369_b.field_71070_bA.func_75139_a(p_147351_1_.func_149544_d());
++                        if (clickedSlot.func_82869_a(field_147369_b)) {
++                            ItemStack hotbar = this.field_147369_b.field_71071_by.func_70301_a(p_147351_1_.func_149543_e());
++                            boolean canCleanSwap = hotbar.func_190926_b() || (clickedSlot.field_75224_c == field_147369_b.field_71071_by && clickedSlot.func_75214_a(hotbar)); // the slot will accept the hotbar item
++                            if (clickedSlot.func_75216_d()) {
++                                if (canCleanSwap) {
 +                                    action = InventoryAction.HOTBAR_SWAP;
 +                                } else {
-+                                    action = InventoryAction.NOTHING;
++                                    action = InventoryAction.HOTBAR_MOVE_AND_READD;
 +                                }
++                            } else if (!clickedSlot.func_75216_d() && !hotbar.func_190926_b() && clickedSlot.func_75214_a(hotbar)) {
++                                action = InventoryAction.HOTBAR_SWAP;
 +                            } else {
 +                                action = InventoryAction.NOTHING;
 +                            }
-+                        }
-+                        break;
-+                    case CLONE:
-+                        if (p_147351_1_.func_149543_e() == 2) {
-+                            click = ClickType.MIDDLE;
-+                            if (p_147351_1_.func_149544_d() == -999) {
-+                                action = InventoryAction.NOTHING;
-+                            } else {
-+                                Slot slot = this.field_147369_b.field_71070_bA.func_75139_a(p_147351_1_.func_149544_d());
-+                                if (slot != null && slot.func_75216_d() && field_147369_b.field_71075_bZ.field_75098_d && field_147369_b.field_71071_by.func_70445_o().func_190926_b()) {
-+                                    action = InventoryAction.CLONE_STACK;
-+                                } else {
-+                                    action = InventoryAction.NOTHING;
-+                                }
-+                            }
 +                        } else {
-+                            click = ClickType.UNKNOWN;
-+                            action = InventoryAction.UNKNOWN;
-+                        }
-+                        break;
-+                    case THROW:
-+                        if (p_147351_1_.func_149544_d() >= 0) {
-+                            if (p_147351_1_.func_149543_e() == 0) {
-+                                click = ClickType.DROP;
-+                                Slot slot = this.field_147369_b.field_71070_bA.func_75139_a(p_147351_1_.func_149544_d());
-+                                if (slot != null && slot.func_75216_d() && slot.func_82869_a(field_147369_b) && !slot.func_75211_c().func_190926_b() && slot.func_75211_c().func_77973_b() != Item.func_150898_a(Blocks.field_150350_a)) {
-+                                    action = InventoryAction.DROP_ONE_SLOT;
-+                                } else {
-+                                    action = InventoryAction.NOTHING;
-+                                }
-+                            } else if (p_147351_1_.func_149543_e() == 1) {
-+                                click = ClickType.CONTROL_DROP;
-+                                Slot slot = this.field_147369_b.field_71070_bA.func_75139_a(p_147351_1_.func_149544_d());
-+                                if (slot != null && slot.func_75216_d() && slot.func_82869_a(field_147369_b) && !slot.func_75211_c().func_190926_b() && slot.func_75211_c().func_77973_b() != Item.func_150898_a(Blocks.field_150350_a)) {
-+                                    action = InventoryAction.DROP_ALL_SLOT;
-+                                } else {
-+                                    action = InventoryAction.NOTHING;
-+                                }
-+                            }
-+                        } else {
-+                            // Sane default (because this happens when they are holding nothing. Don't ask why.)
-+                            click = ClickType.LEFT;
-+                            if (p_147351_1_.func_149543_e() == 1) {
-+                                click = ClickType.RIGHT;
-+                            }
 +                            action = InventoryAction.NOTHING;
 +                        }
-+                        break;
-+                    case QUICK_CRAFT:
++                    }
++                    break;
++                case CLONE:
++                    if (p_147351_1_.func_149543_e() == 2) {
++                        click = ClickType.MIDDLE;
++                        if (p_147351_1_.func_149544_d() == -999) {
++                            action = InventoryAction.NOTHING;
++                        } else {
++                            Slot slot = this.field_147369_b.field_71070_bA.func_75139_a(p_147351_1_.func_149544_d());
++                            if (slot != null && slot.func_75216_d() && field_147369_b.field_71075_bZ.field_75098_d && field_147369_b.field_71071_by.func_70445_o().func_190926_b()) {
++                                action = InventoryAction.CLONE_STACK;
++                            } else {
++                                action = InventoryAction.NOTHING;
++                            }
++                        }
++                    } else {
++                        click = ClickType.UNKNOWN;
++                        action = InventoryAction.UNKNOWN;
++                    }
++                    break;
++                case THROW:
++                    if (p_147351_1_.func_149544_d() >= 0) {
++                        if (p_147351_1_.func_149543_e() == 0) {
++                            click = ClickType.DROP;
++                            Slot slot = this.field_147369_b.field_71070_bA.func_75139_a(p_147351_1_.func_149544_d());
++                            if (slot != null && slot.func_75216_d() && slot.func_82869_a(field_147369_b) && !slot.func_75211_c().func_190926_b() && slot.func_75211_c().func_77973_b() != Item.func_150898_a(Blocks.field_150350_a)) {
++                                action = InventoryAction.DROP_ONE_SLOT;
++                            } else {
++                                action = InventoryAction.NOTHING;
++                            }
++                        } else if (p_147351_1_.func_149543_e() == 1) {
++                            click = ClickType.CONTROL_DROP;
++                            Slot slot = this.field_147369_b.field_71070_bA.func_75139_a(p_147351_1_.func_149544_d());
++                            if (slot != null && slot.func_75216_d() && slot.func_82869_a(field_147369_b) && !slot.func_75211_c().func_190926_b() && slot.func_75211_c().func_77973_b() != Item.func_150898_a(Blocks.field_150350_a)) {
++                                action = InventoryAction.DROP_ALL_SLOT;
++                            } else {
++                                action = InventoryAction.NOTHING;
++                            }
++                        }
++                    } else {
++                        // Sane default (because this happens when they are holding nothing. Don't ask why.)
++                        click = ClickType.LEFT;
++                        if (p_147351_1_.func_149543_e() == 1) {
++                            click = ClickType.RIGHT;
++                        }
++                        action = InventoryAction.NOTHING;
++                    }
++                    break;
++                case QUICK_CRAFT:
++                    itemstack = this.field_147369_b.field_71070_bA.func_184996_a(p_147351_1_.func_149544_d(), p_147351_1_.func_149543_e(), p_147351_1_.func_186993_f(), this.field_147369_b);
++                    break;
++                case PICKUP_ALL:
++                    click = ClickType.DOUBLE_CLICK;
++                    action = InventoryAction.NOTHING;
++                    if (p_147351_1_.func_149544_d() >= 0 && !this.field_147369_b.field_71071_by.func_70445_o().func_190926_b()) {
++                        ItemStack cursor = this.field_147369_b.field_71071_by.func_70445_o();
++                        action = InventoryAction.NOTHING;
++                        // Quick check for if we have any of the item
++                        if (inventory.getTopInventory().contains(org.bukkit.Material.getMaterial(Item.func_150891_b(cursor.func_77973_b()))) || inventory.getBottomInventory().contains(org.bukkit.Material.getMaterial(Item.func_150891_b(cursor.func_77973_b())))) {
++                            action = InventoryAction.COLLECT_TO_CURSOR;
++                        }
++                    }
++                    break;
++                default:
++                    break;
++            }
++
++            if (p_147351_1_.func_186993_f() != net.minecraft.inventory.ClickType.QUICK_CRAFT) {
++                if (click == ClickType.NUMBER_KEY) {
++                    event = new InventoryClickEvent(inventory, type, p_147351_1_.func_149544_d(), click, action, p_147351_1_.func_149543_e());
++                } else {
++                    event = new InventoryClickEvent(inventory, type, p_147351_1_.func_149544_d(), click, action);
+                 }
+-                else
+-                {
+-                    this.field_147372_n.func_76038_a(this.field_147369_b.field_71070_bA.field_75152_c, Short.valueOf(p_147351_1_.func_149547_f()));
+-                    this.field_147369_b.field_71135_a.func_147359_a(new SPacketConfirmTransaction(p_147351_1_.func_149548_c(), p_147351_1_.func_149547_f(), false));
+-                    this.field_147369_b.field_71070_bA.func_75128_a(this.field_147369_b, false);
+-                    NonNullList<ItemStack> nonnulllist1 = NonNullList.<ItemStack>func_191196_a();
+ 
+-                    for (int j = 0; j < this.field_147369_b.field_71070_bA.field_75151_b.size(); ++j)
+-                    {
+-                        ItemStack itemstack = ((Slot)this.field_147369_b.field_71070_bA.field_75151_b.get(j)).func_75211_c();
+-                        ItemStack itemstack1 = itemstack.func_190926_b() ? ItemStack.field_190927_a : itemstack;
+-                        nonnulllist1.add(itemstack1);
++                org.bukkit.inventory.Inventory top = inventory.getTopInventory();
++                if (p_147351_1_.func_149544_d() == 0 && top instanceof CraftingInventory) {
++                    // Cauldron start - vanilla compatibility (mod recipes)
++                    org.bukkit.inventory.Recipe recipe = null;
++                    try {
++                        recipe = ((CraftingInventory) top).getRecipe();
++                    } catch (AbstractMethodError e) {
++                        // do nothing
+                     }
++                    // Cauldron end
++                    if (recipe != null) {
++                        if (click == ClickType.NUMBER_KEY) {
++                            event = new CraftItemEvent(recipe, inventory, type, p_147351_1_.func_149544_d(), click, action, p_147351_1_.func_149543_e());
++                        } else {
++                            event = new CraftItemEvent(recipe, inventory, type, p_147351_1_.func_149544_d(), click, action);
++                        }
++                    }
++                }
+ 
+-                    this.field_147369_b.func_71110_a(this.field_147369_b.field_71070_bA, nonnulllist1);
++                event.setCancelled(cancelled);
++                Container oldContainer = this.field_147369_b.field_71070_bA; // SPIGOT-1224
++                server.getPluginManager().callEvent(event);
++                if (this.field_147369_b.field_71070_bA != oldContainer) {
++                    return;
+                 }
++
++                switch (event.getResult()) {
++                    case ALLOW:
++                    case DEFAULT:
 +                        itemstack = this.field_147369_b.field_71070_bA.func_184996_a(p_147351_1_.func_149544_d(), p_147351_1_.func_149543_e(), p_147351_1_.func_186993_f(), this.field_147369_b);
 +                        break;
-+                    case PICKUP_ALL:
-+                        click = ClickType.DOUBLE_CLICK;
-+                        action = InventoryAction.NOTHING;
-+                        if (p_147351_1_.func_149544_d() >= 0 && !this.field_147369_b.field_71071_by.func_70445_o().func_190926_b()) {
-+                            ItemStack cursor = this.field_147369_b.field_71071_by.func_70445_o();
-+                            action = InventoryAction.NOTHING;
-+                            // Quick check for if we have any of the item
-+                                if (inventory.getTopInventory().contains(org.bukkit.Material.getMaterial(Item.func_150891_b(cursor.func_77973_b()))) || inventory.getBottomInventory().contains(org.bukkit.Material.getMaterial(Item.func_150891_b(cursor.func_77973_b())))) {
-+                                    action = InventoryAction.COLLECT_TO_CURSOR;
-+                                }
-+                            }
-+                        break;
-+                    default:
-+                        break;
-+                }
-+
-+                if (p_147351_1_.func_186993_f() != net.minecraft.inventory.ClickType.QUICK_CRAFT) {
-+                    if (click == ClickType.NUMBER_KEY) {
-+                        event = new InventoryClickEvent(inventory, type, p_147351_1_.func_149544_d(), click, action, p_147351_1_.func_149543_e());
-+                    } else {
-+                        event = new InventoryClickEvent(inventory, type, p_147351_1_.func_149544_d(), click, action);
-+                    }
-+
-+                    org.bukkit.inventory.Inventory top = inventory.getTopInventory();
-+                    if (p_147351_1_.func_149544_d() == 0 && top instanceof CraftingInventory) {
-+                        // Cauldron start - vanilla compatibility (mod recipes)
-+                        org.bukkit.inventory.Recipe recipe = null;
-+                        try
-+                        {
-+                            recipe = ((CraftingInventory) top).getRecipe();
-+                        }
-+                        catch (AbstractMethodError e)
-+                        {
-+                            // do nothing
-+                        }
-+                        // Cauldron end
-+                        if (recipe != null) {
-+                            if (click == ClickType.NUMBER_KEY) {
-+                                event = new CraftItemEvent(recipe, inventory, type, p_147351_1_.func_149544_d(), click, action, p_147351_1_.func_149543_e());
-+                            } else {
-+                                event = new CraftItemEvent(recipe, inventory, type, p_147351_1_.func_149544_d(), click, action);
-+                            }
-+                        }
-+                    }
-+
-+                    event.setCancelled(cancelled);
-+                    Container oldContainer = this.field_147369_b.field_71070_bA; // SPIGOT-1224
-+                    server.getPluginManager().callEvent(event);
-+                    if (this.field_147369_b.field_71070_bA != oldContainer) {
-+                        return;
-+                    }
-+
-+                    switch (event.getResult()) {
-+                        case ALLOW:
-+                        case DEFAULT:
-+                            itemstack = this.field_147369_b.field_71070_bA.func_184996_a(p_147351_1_.func_149544_d(), p_147351_1_.func_149543_e(), p_147351_1_.func_186993_f(), this.field_147369_b);
-+                            break;
-+                        case DENY:
++                    case DENY:
 +                            /* Needs enum constructor in InventoryAction
 +                            if (action.modifiesOtherSlots()) {
 +
@@ -1668,69 +1690,77 @@
 +                                    this.player.playerConnection.sendPacket(new Packet103SetSlot(this.player.activeContainer.windowId, packet102windowclick.slot, this.player.activeContainer.getSlot(packet102windowclick.slot).getItem()));
 +                                }
 +                            }*/
-+                            switch (action) {
-+                                // Modified other slots
-+                                case PICKUP_ALL:
-+                                case MOVE_TO_OTHER_INVENTORY:
-+                                case HOTBAR_MOVE_AND_READD:
-+                                case HOTBAR_SWAP:
-+                                case COLLECT_TO_CURSOR:
-+                                case UNKNOWN:
-+                                    this.field_147369_b.func_71120_a(this.field_147369_b.field_71070_bA);
-+                                    break;
-+                                // Modified cursor and clicked
-+                                case PICKUP_SOME:
-+                                case PICKUP_HALF:
-+                                case PICKUP_ONE:
-+                                case PLACE_ALL:
-+                                case PLACE_SOME:
-+                                case PLACE_ONE:
-+                                case SWAP_WITH_CURSOR:
-+                                    this.field_147369_b.field_71135_a.func_147359_a(new SPacketSetSlot(-1, -1, this.field_147369_b.field_71071_by.func_70445_o()));
-+                                    this.field_147369_b.field_71135_a.func_147359_a(new SPacketSetSlot(this.field_147369_b.field_71070_bA.field_75152_c, p_147351_1_.func_149544_d(), this.field_147369_b.field_71070_bA.func_75139_a(p_147351_1_.func_149544_d()).func_75211_c()));
-+                                    break;
-+                                // Modified clicked only
-+                                case DROP_ALL_SLOT:
-+                                case DROP_ONE_SLOT:
-+                                    this.field_147369_b.field_71135_a.func_147359_a(new SPacketSetSlot(this.field_147369_b.field_71070_bA.field_75152_c, p_147351_1_.func_149544_d(), this.field_147369_b.field_71070_bA.func_75139_a(p_147351_1_.func_149544_d()).func_75211_c()));
-+                                    break;
-+                                // Modified cursor only
-+                                case DROP_ALL_CURSOR:
-+                                case DROP_ONE_CURSOR:
-+                                case CLONE_STACK:
-+                                    this.field_147369_b.field_71135_a.func_147359_a(new SPacketSetSlot(-1, -1, this.field_147369_b.field_71071_by.func_70445_o()));
-+                                    break;
-+                                // Nothing
-+                                case NOTHING:
-+                                    break;
-+                            }
-+                            return;
-+                    }
-+
-+                    if (event instanceof CraftItemEvent) {
-+                        // Need to update the inventory on crafting to
-+                        // correctly support custom recipes
-+                        field_147369_b.func_71120_a(field_147369_b.field_71070_bA);
-+                    }
++                        switch (action) {
++                            // Modified other slots
++                            case PICKUP_ALL:
++                            case MOVE_TO_OTHER_INVENTORY:
++                            case HOTBAR_MOVE_AND_READD:
++                            case HOTBAR_SWAP:
++                            case COLLECT_TO_CURSOR:
++                            case UNKNOWN:
++                                this.field_147369_b.func_71120_a(this.field_147369_b.field_71070_bA);
++                                break;
++                            // Modified cursor and clicked
++                            case PICKUP_SOME:
++                            case PICKUP_HALF:
++                            case PICKUP_ONE:
++                            case PLACE_ALL:
++                            case PLACE_SOME:
++                            case PLACE_ONE:
++                            case SWAP_WITH_CURSOR:
++                                this.field_147369_b.field_71135_a.func_147359_a(new SPacketSetSlot(-1, -1, this.field_147369_b.field_71071_by.func_70445_o()));
++                                this.field_147369_b.field_71135_a.func_147359_a(new SPacketSetSlot(this.field_147369_b.field_71070_bA.field_75152_c, p_147351_1_.func_149544_d(), this.field_147369_b.field_71070_bA.func_75139_a(p_147351_1_.func_149544_d()).func_75211_c()));
++                                break;
++                            // Modified clicked only
++                            case DROP_ALL_SLOT:
++                            case DROP_ONE_SLOT:
++                                this.field_147369_b.field_71135_a.func_147359_a(new SPacketSetSlot(this.field_147369_b.field_71070_bA.field_75152_c, p_147351_1_.func_149544_d(), this.field_147369_b.field_71070_bA.func_75139_a(p_147351_1_.func_149544_d()).func_75211_c()));
++                                break;
++                            // Modified cursor only
++                            case DROP_ALL_CURSOR:
++                            case DROP_ONE_CURSOR:
++                            case CLONE_STACK:
++                                this.field_147369_b.field_71135_a.func_147359_a(new SPacketSetSlot(-1, -1, this.field_147369_b.field_71071_by.func_70445_o()));
++                                break;
++                            // Nothing
++                            case NOTHING:
++                                break;
++                        }
++                        return;
 +                }
-+                // CraftBukkit end
 +
-+                if (ItemStack.areItemStacksEqualUsingNBTShareTag(p_147351_1_.func_149546_g(), itemstack))
-                 {
-                     this.field_147369_b.field_71135_a.func_147359_a(new SPacketConfirmTransaction(p_147351_1_.func_149548_c(), p_147351_1_.func_149547_f(), true));
-                     this.field_147369_b.field_71137_h = true;
-@@ -1166,8 +2224,8 @@
++                if (event instanceof CraftItemEvent) {
++                    // Need to update the inventory on crafting to
++                    // correctly support custom recipes
++                    field_147369_b.func_71120_a(field_147369_b.field_71070_bA);
++                }
+             }
++            // CraftBukkit end
++
++            if (ItemStack.areItemStacksEqualUsingNBTShareTag(p_147351_1_.func_149546_g(), itemstack)) {
++                this.field_147369_b.field_71135_a.func_147359_a(new SPacketConfirmTransaction(p_147351_1_.func_149548_c(), p_147351_1_.func_149547_f(), true));
++                this.field_147369_b.field_71137_h = true;
++                this.field_147369_b.field_71070_bA.func_75142_b();
++                this.field_147369_b.func_71113_k();
++                this.field_147369_b.field_71137_h = false;
++            } else {
++                this.field_147372_n.func_76038_a(this.field_147369_b.field_71070_bA.field_75152_c, Short.valueOf(p_147351_1_.func_149547_f()));
++                this.field_147369_b.field_71135_a.func_147359_a(new SPacketConfirmTransaction(p_147351_1_.func_149548_c(), p_147351_1_.func_149547_f(), false));
++                this.field_147369_b.field_71070_bA.func_75128_a(this.field_147369_b, false);
++                NonNullList<ItemStack> nonnulllist1 = NonNullList.<ItemStack>func_191196_a();
++
++                for (int j = 0; j < this.field_147369_b.field_71070_bA.field_75151_b.size(); ++j) {
++                    ItemStack itemstack2 = ((Slot) this.field_147369_b.field_71070_bA.field_75151_b.get(j)).func_75211_c();
++                    ItemStack itemstack1 = itemstack2.func_190926_b() ? ItemStack.field_190927_a : itemstack2;
++                    nonnulllist1.add(itemstack1);
++                }
++
++                this.field_147369_b.func_71110_a(this.field_147369_b.field_71070_bA, nonnulllist1);
++            }
+         }
+     }
  
-                     for (int j = 0; j < this.field_147369_b.field_71070_bA.field_75151_b.size(); ++j)
-                     {
--                        ItemStack itemstack = ((Slot)this.field_147369_b.field_71070_bA.field_75151_b.get(j)).func_75211_c();
--                        ItemStack itemstack1 = itemstack.func_190926_b() ? ItemStack.field_190927_a : itemstack;
-+                        ItemStack itemstack2 = ((Slot)this.field_147369_b.field_71070_bA.field_75151_b.get(j)).func_75211_c();
-+                        ItemStack itemstack1 = itemstack2.func_190926_b() ? ItemStack.field_190927_a : itemstack2;
-                         nonnulllist1.add(itemstack1);
-                     }
- 
-@@ -1191,6 +2249,7 @@
+@@ -1191,6 +2231,7 @@
      public void func_147338_a(CPacketEnchantItem p_147338_1_)
      {
          PacketThreadUtil.func_180031_a(p_147338_1_, this, this.field_147369_b.func_71121_q());
@@ -1738,7 +1768,7 @@
          this.field_147369_b.func_143004_u();
  
          if (this.field_147369_b.field_71070_bA.field_75152_c == p_147338_1_.func_149539_c() && this.field_147369_b.field_71070_bA.func_75129_b(this.field_147369_b) && !this.field_147369_b.func_175149_v())
-@@ -1230,8 +2289,47 @@
+@@ -1230,8 +2271,47 @@
              }
  
              boolean flag1 = p_147344_1_.func_149627_c() >= 1 && p_147344_1_.func_149627_c() <= 45;
@@ -1787,7 +1817,7 @@
              if (flag1 && flag2)
              {
                  if (itemstack.func_190926_b())
-@@ -1261,6 +2359,7 @@
+@@ -1261,6 +2341,7 @@
      public void func_147339_a(CPacketConfirmTransaction p_147339_1_)
      {
          PacketThreadUtil.func_180031_a(p_147339_1_, this, this.field_147369_b.func_71121_q());
@@ -1795,7 +1825,7 @@
          Short oshort = this.field_147372_n.func_76041_a(this.field_147369_b.field_71070_bA.field_75152_c);
  
          if (oshort != null && p_147339_1_.func_149533_d() == oshort.shortValue() && this.field_147369_b.field_71070_bA.field_75152_c == p_147339_1_.func_149532_c() && !this.field_147369_b.field_71070_bA.func_75129_b(this.field_147369_b) && !this.field_147369_b.func_175149_v())
-@@ -1272,6 +2371,7 @@
+@@ -1272,6 +2353,7 @@
      public void func_147343_a(CPacketUpdateSign p_147343_1_)
      {
          PacketThreadUtil.func_180031_a(p_147343_1_, this, this.field_147369_b.func_71121_q());
@@ -1803,7 +1833,7 @@
          this.field_147369_b.func_143004_u();
          WorldServer worldserver = this.field_147367_d.func_71218_a(this.field_147369_b.field_71093_bK);
          BlockPos blockpos = p_147343_1_.func_179722_a();
-@@ -1288,19 +2388,35 @@
+@@ -1288,19 +2370,35 @@
  
              TileEntitySign tileentitysign = (TileEntitySign)tileentity;
  
@@ -1841,7 +1871,7 @@
              tileentitysign.func_70296_d();
              worldserver.func_184138_a(blockpos, iblockstate, iblockstate, 3);
          }
-@@ -1308,6 +2424,7 @@
+@@ -1308,6 +2406,7 @@
  
      public void func_147353_a(CPacketKeepAlive p_147353_1_)
      {
@@ -1849,7 +1879,7 @@
          if (this.field_194403_g && p_147353_1_.func_149460_c() == this.field_194404_h)
          {
              int i = (int)(this.func_147363_d() - this.field_194402_f);
-@@ -1316,7 +2433,11 @@
+@@ -1316,7 +2415,11 @@
          }
          else if (!this.field_147369_b.func_70005_c_().equals(this.field_147367_d.func_71214_G()))
          {
@@ -1862,7 +1892,7 @@
          }
      }
  
-@@ -1328,20 +2449,28 @@
+@@ -1328,20 +2431,28 @@
      public void func_147348_a(CPacketPlayerAbilities p_147348_1_)
      {
          PacketThreadUtil.func_180031_a(p_147348_1_, this, this.field_147369_b.func_71121_q());
@@ -1898,7 +1928,7 @@
      }
  
      public void func_147352_a(CPacketClientSettings p_147352_1_)
-@@ -1357,6 +2486,11 @@
+@@ -1357,6 +2468,11 @@
  
          if ("MC|BEdit".equals(s))
          {
@@ -1910,7 +1940,7 @@
              PacketBuffer packetbuffer = p_147349_1_.func_180760_b();
  
              try
-@@ -1383,15 +2517,22 @@
+@@ -1383,15 +2499,22 @@
                  if (itemstack.func_77973_b() == Items.field_151099_bA && itemstack.func_77973_b() == itemstack1.func_77973_b())
                  {
                      itemstack1.func_77983_a("pages", itemstack.func_77978_p().func_150295_c("pages", 8));
@@ -1933,7 +1963,7 @@
              PacketBuffer packetbuffer1 = p_147349_1_.func_180760_b();
  
              try
-@@ -1431,12 +2572,14 @@
+@@ -1431,12 +2554,14 @@
                      }
  
                      itemstack2.func_77983_a("pages", nbttaglist);
@@ -1949,7 +1979,7 @@
              }
          }
          else if ("MC|TrSel".equals(s))
-@@ -1454,6 +2597,7 @@
+@@ -1454,6 +2579,7 @@
              catch (Exception exception5)
              {
                  field_147370_c.error("Couldn't select trade", (Throwable)exception5);
@@ -1957,7 +1987,7 @@
              }
          }
          else if ("MC|AdvCmd".equals(s))
-@@ -1516,6 +2660,7 @@
+@@ -1516,6 +2642,7 @@
              catch (Exception exception4)
              {
                  field_147370_c.error("Couldn't set command block", (Throwable)exception4);
@@ -1965,7 +1995,7 @@
              }
          }
          else if ("MC|AutoCmd".equals(s))
-@@ -1594,6 +2739,7 @@
+@@ -1594,6 +2721,7 @@
              catch (Exception exception3)
              {
                  field_147370_c.error("Couldn't set command block", (Throwable)exception3);
@@ -1973,7 +2003,7 @@
              }
          }
          else if ("MC|Beacon".equals(s))
-@@ -1620,6 +2766,7 @@
+@@ -1620,6 +2748,7 @@
                  catch (Exception exception2)
                  {
                      field_147370_c.error("Couldn't set beacon", (Throwable)exception2);
@@ -1981,7 +2011,7 @@
                  }
              }
          }
-@@ -1731,6 +2878,7 @@
+@@ -1731,6 +2860,7 @@
              catch (Exception exception1)
              {
                  field_147370_c.error("Couldn't set structure block", (Throwable)exception1);
@@ -1989,7 +2019,7 @@
              }
          }
          else if ("MC|PickItem".equals(s))
-@@ -1748,7 +2896,43 @@
+@@ -1748,7 +2878,43 @@
              catch (Exception exception)
              {
                  field_147370_c.error("Couldn't pick item", (Throwable)exception);
