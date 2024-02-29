@@ -94,6 +94,7 @@ public class BlockEvent extends Event
      *
      * @author cpw
      */
+     @Cancelable // Magma
     public static class HarvestDropsEvent extends BlockEvent
     {
         private final int fortuneLevel;
