@@ -342,7 +342,7 @@ public class ForgeEventFactory
     {
         BlockEvent.HarvestDropsEvent event = new BlockEvent.HarvestDropsEvent(world, pos, state, fortune, dropChance, drops, player, silkTouch);
         MinecraftForge.EVENT_BUS.post(event);
-        return event.getDropChance();
+        return event.isCanceled() ? 0 : event.getDropChance(); // Magma
     }
 
     public static IBlockState fireFluidPlaceBlockEvent(World world, BlockPos pos, BlockPos liquidPos, IBlockState state)
