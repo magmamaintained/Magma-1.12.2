@@ -1,7 +1,7 @@
 buildscript {
     repositories {
         mavenLocal()
-        maven { url = 'https://nexus.c0d3m4513r.com/repository/Magma/' }
+        maven { url = 'https://reposilite.c0d3m4513r.com/Magma/' }
         maven { url = 'https://maven.minecraftforge.net/' }
         jcenter()
         mavenCentral()
@@ -90,7 +90,7 @@ project(':clean') {
     compileJava.sourceCompatibility = compileJava.targetCompatibility = sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
     repositories {
-        maven { url = 'https://nexus.c0d3m4513r.com/repository/Magma/' }
+        maven { url = 'https://reposilite.c0d3m4513r.com/Magma/' }
         mavenCentral()
         maven { url = 'https://maven.minecraftforge.net/' }
         maven {
@@ -197,7 +197,7 @@ project(':forge') {
     eclipse.classpath.file.whenMerged { cls -> cls.entries.removeIf { e -> e instanceof SourceFolder && e.path.startsWith('src/') && !e.path.startsWith('src/main/') } }
 
     repositories {
-        maven { url = 'https://nexus.c0d3m4513r.com/repository/Magma/' }
+        maven { url = 'https://reposilite.c0d3m4513r.com/Magma/' }
         mavenCentral()
         maven { url = 'https://maven.minecraftforge.net/' }
         maven {
