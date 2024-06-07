@@ -68,9 +68,8 @@
     },
     {
       "name": "net.minecraft:launchwrapper:1.12",
-      "repo": "https://reposilite.c0d3m4513r.com/Magma",
-      "md5": "ae0a689b7ed72e377618933bb9742916",
-      "md5_skip": true
+      "repo": "https://reposilite.c0d3m4513r.com/Minecraft",
+      "md5": "934b2d91c7c5be4a49577c9e6b40e8da",
     },
     {
       "name": "org.apache.logging.log4j:log4j-api:2.17.2",
