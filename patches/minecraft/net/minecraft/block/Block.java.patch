@@ -1,6 +1,6 @@
 --- ../src-base/minecraft/net/minecraft/block/Block.java
 +++ ../src-work/minecraft/net/minecraft/block/Block.java
-@@ -1,10 +1,7 @@
+@@ -1,10 +1,8 @@
  package net.minecraft.block;
  
 -import com.google.common.collect.Sets;
@@ -8,10 +8,11 @@
  import java.util.List;
  import java.util.Random;
 -import java.util.Set;
++import java.util.concurrent.atomic.AtomicReference;
  import javax.annotation.Nullable;
  import net.minecraft.block.material.EnumPushReaction;
  import net.minecraft.block.material.MapColor;
-@@ -21,6 +18,7 @@
+@@ -21,6 +19,7 @@
  import net.minecraft.entity.item.EntityItem;
  import net.minecraft.entity.item.EntityXPOrb;
  import net.minecraft.entity.player.EntityPlayer;
@@ -19,7 +20,7 @@
  import net.minecraft.init.Blocks;
  import net.minecraft.init.Enchantments;
  import net.minecraft.init.Items;
-@@ -51,12 +49,15 @@
+@@ -51,12 +50,15 @@
  import net.minecraft.world.World;
  import net.minecraftforge.fml.relauncher.Side;
  import net.minecraftforge.fml.relauncher.SideOnly;
@@ -38,7 +39,7 @@
      public static final AxisAlignedBB field_185505_j = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
      @Nullable
      public static final AxisAlignedBB field_185506_k = null;
-@@ -75,11 +76,22 @@
+@@ -75,11 +77,22 @@
      public float field_149763_I;
      protected final Material field_149764_J;
      protected final MapColor field_181083_K;
@@ -61,7 +62,7 @@
      public static int func_149682_b(Block p_149682_0_)
      {
          return field_149771_c.func_148757_b(p_149682_0_);
-@@ -319,7 +331,7 @@
+@@ -319,7 +332,7 @@
  
      public boolean func_176200_f(IBlockAccess p_176200_1_, BlockPos p_176200_2_)
      {
@@ -70,7 +71,7 @@
      }
  
      public Block func_149711_c(float p_149711_1_)
-@@ -357,9 +369,10 @@
+@@ -357,9 +370,10 @@
          return this.field_149789_z;
      }
  
@@ -82,7 +83,7 @@
      }
  
      @Deprecated
-@@ -372,13 +385,13 @@
+@@ -372,13 +386,13 @@
      @SideOnly(Side.CLIENT)
      public int func_185484_c(IBlockState p_185484_1_, IBlockAccess p_185484_2_, BlockPos p_185484_3_)
      {
@@ -98,7 +99,7 @@
          }
          else
          {
-@@ -442,7 +455,7 @@
+@@ -442,7 +456,7 @@
                  }
          }
  
@@ -107,7 +108,7 @@
      }
  
      @Deprecated
-@@ -534,6 +547,10 @@
+@@ -534,6 +548,10 @@
  
      public void func_180663_b(World p_180663_1_, BlockPos p_180663_2_, IBlockState p_180663_3_)
      {
@@ -118,7 +119,7 @@
      }
  
      public int func_149745_a(Random p_149745_1_)
-@@ -549,16 +566,7 @@
+@@ -549,16 +567,7 @@
      @Deprecated
      public float func_180647_a(IBlockState p_180647_1_, EntityPlayer p_180647_2_, World p_180647_3_, BlockPos p_180647_4_)
      {
@@ -136,7 +137,7 @@
      }
  
      public final void func_176226_b(World p_176226_1_, BlockPos p_176226_2_, IBlockState p_176226_3_, int p_176226_4_)
-@@ -568,20 +576,17 @@
+@@ -568,20 +577,16 @@
  
      public void func_180653_a(World p_180653_1_, BlockPos p_180653_2_, IBlockState p_180653_3_, float p_180653_4_, int p_180653_5_)
      {
@@ -150,9 +151,7 @@
 -            for (int j = 0; j < i; ++j)
 +            for (ItemStack drop : drops)
              {
--                if (p_180653_1_.field_73012_v.nextFloat() <= p_180653_4_)
-+                // CraftBukkit - <= to < to allow for plugins to completely disable block drops from explosions
-+                if (p_180653_1_.field_73012_v.nextFloat() < p_180653_4_)
+                 if (p_180653_1_.field_73012_v.nextFloat() <= p_180653_4_)
                  {
 -                    Item item = this.func_180660_a(p_180653_3_, p_180653_1_.field_73012_v, p_180653_5_);
 -
@@ -164,7 +163,7 @@
                  }
              }
          }
-@@ -589,27 +594,47 @@
+@@ -589,8 +594,13 @@
  
      public static void func_180635_a(World p_180635_0_, BlockPos p_180635_1_, ItemStack p_180635_2_)
      {
@@ -179,15 +178,7 @@
              float f = 0.5F;
              double d0 = (double)(p_180635_0_.field_73012_v.nextFloat() * 0.5F) + 0.25D;
              double d1 = (double)(p_180635_0_.field_73012_v.nextFloat() * 0.5F) + 0.25D;
-             double d2 = (double)(p_180635_0_.field_73012_v.nextFloat() * 0.5F) + 0.25D;
-             EntityItem entityitem = new EntityItem(p_180635_0_, (double)p_180635_1_.func_177958_n() + d0, (double)p_180635_1_.func_177956_o() + d1, (double)p_180635_1_.func_177952_p() + d2, p_180635_2_);
-             entityitem.func_174869_p();
--            p_180635_0_.func_72838_d(entityitem);
-+            if (p_180635_0_.captureDrops != null) {
-+                p_180635_0_.captureDrops.add(entityitem);
-+            } else {
-+                p_180635_0_.func_72838_d(entityitem);
-+            }
+@@ -601,15 +611,27 @@
          }
      }
  
@@ -196,11 +187,12 @@
 +        return 0;
 +    }
 +    // CraftBukkit end
-+
++    public AtomicReference<EntityPlayerMP> dropXpOnBlockBreak = new AtomicReference<>(null); // Magma
++    
      public void func_180637_b(World p_180637_1_, BlockPos p_180637_2_, int p_180637_3_)
      {
 -        if (!p_180637_1_.field_72995_K && p_180637_1_.func_82736_K().func_82766_b("doTileDrops"))
-+        dropXpOnBlockBreak(p_180637_1_, p_180637_2_, p_180637_3_, null);
++        dropXpOnBlockBreak(p_180637_1_, p_180637_2_, p_180637_3_, dropXpOnBlockBreak.getAndSet(null)); // Magma
 +    }
 +
 +    public void dropXpOnBlockBreak(World worldIn, BlockPos pos, int amount, EntityPlayerMP player)
@@ -219,7 +211,7 @@
              }
          }
      }
-@@ -619,6 +644,7 @@
+@@ -619,6 +641,7 @@
          return 0;
      }
  
@@ -227,7 +219,7 @@
      public float func_149638_a(Entity p_149638_1_)
      {
          return this.field_149781_w / 5.0F;
-@@ -657,7 +683,7 @@
+@@ -657,7 +680,7 @@
  
      public boolean func_176196_c(World p_176196_1_, BlockPos p_176196_2_)
      {
@@ -236,7 +228,7 @@
      }
  
      public boolean func_180639_a(World p_180639_1_, BlockPos p_180639_2_, IBlockState p_180639_3_, EntityPlayer p_180639_4_, EnumHand p_180639_5_, EnumFacing p_180639_6_, float p_180639_7_, float p_180639_8_, float p_180639_9_)
-@@ -669,6 +695,8 @@
+@@ -669,6 +692,8 @@
      {
      }
  
@@ -245,7 +237,7 @@
      public IBlockState func_180642_a(World p_180642_1_, BlockPos p_180642_2_, EnumFacing p_180642_3_, float p_180642_4_, float p_180642_5_, float p_180642_6_, int p_180642_7_, EntityLivingBase p_180642_8_)
      {
          return this.func_176203_a(p_180642_7_);
-@@ -710,21 +738,35 @@
+@@ -710,21 +735,35 @@
          p_180657_2_.func_71029_a(StatList.func_188055_a(this));
          p_180657_2_.func_71020_j(0.005F);
  
@@ -284,7 +276,7 @@
      }
  
      protected ItemStack func_180643_i(IBlockState p_180643_1_)
-@@ -810,6 +852,7 @@
+@@ -810,6 +849,7 @@
          p_176216_2_.field_70181_x = 0.0D;
      }
  
@@ -292,7 +284,7 @@
      public ItemStack func_185473_a(World p_185473_1_, BlockPos p_185473_2_, IBlockState p_185473_3_)
      {
          return new ItemStack(Item.func_150898_a(this), 1, this.func_180651_a(p_185473_3_));
-@@ -898,27 +941,28 @@
+@@ -898,27 +938,28 @@
          return this.field_176228_M;
      }
  
@@ -326,7 +318,7 @@
      public SoundType func_185467_w()
      {
          return this.field_149762_H;
-@@ -934,6 +978,1386 @@
+@@ -934,6 +975,1386 @@
      {
      }
  
@@ -1713,7 +1705,7 @@
      public static void func_149671_p()
      {
          func_176215_a(0, field_176230_a, (new BlockAir()).func_149663_c("air"));
-@@ -1105,7 +2529,7 @@
+@@ -1105,7 +2526,7 @@
          Block block11 = (new BlockQuartz()).func_149672_a(SoundType.field_185851_d).func_149711_c(0.8F).func_149663_c("quartzBlock");
          func_176219_a(155, "quartz_block", block11);
          func_176219_a(156, "quartz_stairs", (new BlockStairs(block11.func_176223_P().func_177226_a(BlockQuartz.field_176335_a, BlockQuartz.EnumType.DEFAULT))).func_149663_c("stairsQuartz"));
@@ -1722,7 +1714,7 @@
          func_176219_a(158, "dropper", (new BlockDropper()).func_149711_c(3.5F).func_149672_a(SoundType.field_185851_d).func_149663_c("dropper"));
          func_176219_a(159, "stained_hardened_clay", (new BlockStainedHardenedClay()).func_149711_c(1.25F).func_149752_b(7.0F).func_149672_a(SoundType.field_185851_d).func_149663_c("clayHardenedStained"));
          func_176219_a(160, "stained_glass_pane", (new BlockStainedGlassPane()).func_149711_c(0.3F).func_149672_a(SoundType.field_185853_f).func_149663_c("thinStainedGlass"));
-@@ -1230,31 +2654,6 @@
+@@ -1230,31 +2651,6 @@
                  block15.field_149783_u = flag;
              }
          }
@@ -1754,7 +1746,7 @@
      }
  
      private static void func_176215_a(int p_176215_0_, ResourceLocation p_176215_1_, Block p_176215_2_)
-@@ -1267,6 +2666,18 @@
+@@ -1267,6 +2663,18 @@
          func_176215_a(p_176219_0_, new ResourceLocation(p_176219_1_), p_176219_2_);
      }
  

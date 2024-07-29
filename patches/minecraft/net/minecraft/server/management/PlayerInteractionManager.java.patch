@@ -255,7 +255,7 @@
          {
              return false;
          }
-@@ -264,53 +370,41 @@
+@@ -264,53 +370,42 @@
              }
              else
              {
@@ -316,12 +316,13 @@
 +                // Drop experience
 +                if (!this.func_73083_d() && flag1 && exp > 0)
 +                {
-+                    iblockstate.func_177230_c().dropXpOnBlockBreak(field_73092_a, p_180237_1_, exp, this.field_73090_b);
++                    iblockstate.func_177230_c().dropXpOnBlockBreak.set(this.field_73090_b); // Magma
++                    iblockstate.func_177230_c().func_180637_b(field_73092_a, p_180237_1_, exp);
 +                }
                  return flag1;
              }
          }
-@@ -328,8 +422,11 @@
+@@ -328,8 +423,11 @@
          }
          else
          {
@@ -333,7 +334,7 @@
              ActionResult<ItemStack> actionresult = p_187250_3_.func_77957_a(p_187250_2_, p_187250_1_, p_187250_4_);
              ItemStack itemstack = actionresult.func_188398_b();
  
-@@ -357,6 +454,7 @@
+@@ -357,6 +455,7 @@
  
                  if (itemstack.func_190926_b())
                  {
@@ -341,7 +342,7 @@
                      p_187250_1_.func_184611_a(p_187250_4_, ItemStack.field_190927_a);
                  }
  
-@@ -370,9 +468,58 @@
+@@ -370,9 +469,58 @@
          }
      }
  
@@ -401,7 +402,7 @@
          {
              TileEntity tileentity = p_187251_2_.func_175625_s(p_187251_5_);
  
-@@ -402,13 +549,27 @@
+@@ -402,13 +550,27 @@
          }
          else
          {
@@ -432,7 +433,7 @@
                  }
              }
  
-@@ -420,7 +581,7 @@
+@@ -420,7 +582,7 @@
              {
                  return EnumActionResult.PASS;
              }
@@ -441,7 +442,7 @@
              {
                  if (p_187251_3_.func_77973_b() instanceof ItemBlock && !p_187251_1_.func_189808_dh())
                  {
-@@ -436,21 +597,43 @@
+@@ -436,21 +598,43 @@
                  {
                      int j = p_187251_3_.func_77960_j();
                      int i = p_187251_3_.func_190916_E();
