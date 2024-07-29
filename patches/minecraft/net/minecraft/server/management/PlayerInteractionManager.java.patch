@@ -44,15 +44,7 @@
          this.field_73092_a.func_72854_c();
      }
  
-@@ -81,14 +84,14 @@
- 
-     public void func_73075_a()
-     {
--        ++this.field_73100_i;
-+        this.field_73100_i = MinecraftServer.currentTick;  // CraftBukkit
- 
-         if (this.field_73097_j)
-         {
+@@ -88,7 +91,7 @@
              int i = this.field_73100_i - this.field_73093_n;
              IBlockState iblockstate = this.field_73092_a.func_180495_p(this.field_180241_i);
  
@@ -200,11 +192,7 @@
                  this.field_73094_o = i;
              }
          }
-@@ -201,10 +287,11 @@
-     {
-         if (p_180785_1_.equals(this.field_180240_f))
-         {
-+            this.field_73100_i = MinecraftServer.currentTick; // CraftBukkit
+@@ -204,7 +290,7 @@
              int i = this.field_73100_i - this.field_73089_e;
              IBlockState iblockstate = this.field_73092_a.func_180495_p(p_180785_1_);
  
@@ -213,7 +201,7 @@
              {
                  float f = iblockstate.func_185903_a(this.field_73090_b, this.field_73090_b.field_70170_p, p_180785_1_) * (float)(i + 1);
  
-@@ -222,6 +309,21 @@
+@@ -222,6 +308,21 @@
                      this.field_73093_n = this.field_73089_e;
                  }
              }
@@ -235,7 +223,7 @@
          }
      }
  
-@@ -233,13 +335,17 @@
+@@ -233,13 +334,17 @@
  
      private boolean func_180235_c(BlockPos p_180235_1_)
      {
@@ -257,7 +245,7 @@
          }
  
          return flag;
-@@ -247,7 +353,8 @@
+@@ -247,7 +352,8 @@
  
      public boolean func_180237_b(BlockPos p_180237_1_)
      {
@@ -267,7 +255,7 @@
          {
              return false;
          }
-@@ -264,53 +371,41 @@
+@@ -264,53 +370,41 @@
              }
              else
              {
@@ -333,7 +321,7 @@
                  return flag1;
              }
          }
-@@ -328,8 +423,11 @@
+@@ -328,8 +422,11 @@
          }
          else
          {
@@ -345,7 +333,7 @@
              ActionResult<ItemStack> actionresult = p_187250_3_.func_77957_a(p_187250_2_, p_187250_1_, p_187250_4_);
              ItemStack itemstack = actionresult.func_188398_b();
  
-@@ -357,6 +455,7 @@
+@@ -357,6 +454,7 @@
  
                  if (itemstack.func_190926_b())
                  {
@@ -353,7 +341,7 @@
                      p_187250_1_.func_184611_a(p_187250_4_, ItemStack.field_190927_a);
                  }
  
-@@ -370,9 +469,58 @@
+@@ -370,9 +468,58 @@
          }
      }
  
@@ -413,7 +401,7 @@
          {
              TileEntity tileentity = p_187251_2_.func_175625_s(p_187251_5_);
  
-@@ -402,13 +550,27 @@
+@@ -402,13 +549,27 @@
          }
          else
          {
@@ -444,7 +432,7 @@
                  }
              }
  
-@@ -420,7 +582,7 @@
+@@ -420,7 +581,7 @@
              {
                  return EnumActionResult.PASS;
              }
@@ -453,7 +441,7 @@
              {
                  if (p_187251_3_.func_77973_b() instanceof ItemBlock && !p_187251_1_.func_189808_dh())
                  {
-@@ -436,21 +598,43 @@
+@@ -436,21 +597,43 @@
                  {
                      int j = p_187251_3_.func_77960_j();
                      int i = p_187251_3_.func_190916_E();
